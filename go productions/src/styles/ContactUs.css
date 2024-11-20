@@ -1,0 +1,72 @@
+.contact-us-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #000; /* Black background */
+  padding: 20px;
+  max-width: 85rem;
+  margin: auto;
+}
+
+.location-header {
+  position: relative;
+  max-width: 85rem;
+  margin: auto;
+}
+
+.location-header h2 {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.contact-form {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form h2 {
+  color: #fff; /* White text for header */
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.contact-input,
+.contact-textarea {
+  background-color: #333; /* Dark gray background for inputs */
+  color: #fff; /* White text */
+  border: none;
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 20px;
+  height: 35px;
+}
+
+.contact-textarea {
+  height: 190px; /* Height for the textarea */
+  font-size: 20px;
+}
+
+.contact-btn {
+  background-color: #444; /* Darker button */
+  color: #fff; /* White text */
+  border: none;
+  padding: 10px;
+  font-size: 20px;
+  max-width: 20%;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.map-container {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-image {
+  width: 100%; /* Full width for the image */
+  height: auto;
+  object-fit: cover;
+}

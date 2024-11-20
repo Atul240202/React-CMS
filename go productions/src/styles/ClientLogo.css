@@ -1,0 +1,39 @@
+body {
+  align-items: center;
+  justify-content: center;
+}
+
+.slider {
+  height: 100px;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.slide-track {
+  display: flex;
+  width: calc(300px * 14); /* Adjust this based on the number of logos */
+  animation: scroll 40s linear infinite;
+  color: black;
+}
+
+.slide {
+  height: 100px;
+  width: 300px;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(
+      calc(-250px * 7)
+    ); /* Adjust this based on the number of logos */
+  }
+}
+
+.slider:hover .slide-track {
+  animation-play-state: paused;
+}

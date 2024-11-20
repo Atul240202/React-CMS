@@ -1,0 +1,57 @@
+.imageSlider {
+  max-width: 100%;
+  filter: grayscale(100%); /* Makes the image black & white initially */
+  transition: filter 0.3s ease; /* Smooth transition effect */
+}
+
+.imageSlider:hover {
+  filter: grayscale(0%); /* Restores the image color on hover */
+}
+
+:root {
+  --body-color: #000;
+}
+
+.swiper-container {
+  max-width: 100vw;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--body-color);
+}
+
+.curved-swiper {
+  position: relative;
+  width: calc(100vw - 18px);
+  margin-inline: auto;
+}
+
+.curved-swiper::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -10%;
+  width: 120%;
+  height: 100px;
+  background: var(--body-color);
+  border-radius: 100%;
+  z-index: 100;
+}
+
+.curved-swiper::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: -10%;
+  width: 120%;
+  height: 100px;
+  background: var(--body-color);
+  border-radius: 100%;
+  z-index: 1000;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: #000;
+}

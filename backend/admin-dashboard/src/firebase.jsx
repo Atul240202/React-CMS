@@ -1,0 +1,1385 @@
+import { initializeApp } from 'firebase/app';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  getDoc,
+  query,
+  where,
+  writeBatch,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: 'AIzaSyAP5PHGZzfwWmpokGKo3CZOJVLo-r0w4Zg',
+  authDomain: 'go-productions.firebaseapp.com',
+  databaseURL: 'https://go-productions-default-rtdb.firebaseio.com',
+  projectId: 'go-productions',
+  storageBucket: 'go-productions.firebasestorage.app',
+  messagingSenderId: '518642601161',
+  appId: '1:518642601161:web:8bae0f4dcd0f5ec76dd118',
+  measurementId: 'G-WV6RVR1TZV',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Utility function to upload a client
+export async function uploadClient(name, clientKey, file, fileType) {
+  try {
+    // Get file extension and generate a unique filename
+    console.log('file type', fileType, file[0].name);
+    const fileExtension = file[0].name.split('.').pop();
+    console.log('file extension', fileExtension);
+    const uniqueFileName = `${clientKey}_${Date.now()}.${fileExtension}`;
+    console.log('client uniqieFileName', uniqueFileName);
+    // Upload image to Firebase Storage with metadata
+    const storageRef = ref(storage, `clients/${uniqueFileName}`);
+    const metadata = {
+      contentType: fileType,
+    };
+    await uploadBytes(storageRef, file[0], metadata);
+    const imageUrl = await getDownloadURL(storageRef);
+    console.log('client imageUrl', imageUrl);
+
+    // Add client data to Firestore
+    const clientData = {
+      name,
+      image: imageUrl,
+      clientKey,
+      fileType: fileType,
+      fileName: uniqueFileName,
+    };
+    const docRef = await addDoc(collection(db, 'clients'), clientData);
+
+    return { id: docRef.id, ...clientData };
+  } catch (error) {
+    console.error('Error uploading client:', error);
+    throw error;
+  }
+}
+// Utility function to get all clients
+export async function getClients() {
+  try {
+    const clientsSnapshot = await getDocs(collection(db, 'clients'));
+    return clientsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error('Error getting clients:', error);
+    throw error;
+  }
+}
+
+// Utility function to delete a client
+export async function deleteClient(clientId, imagePath) {
+  try {
+    // Delete client document from Firestore
+    await deleteDoc(doc(db, 'clients', clientId));
+
+    // Delete image from Firebase Storage
+    const storageRef = ref(storage, imagePath);
+    await deleteObject(storageRef);
+  } catch (error) {
+    console.error('Error deleting client:', error);
+    throw error;
+  }
+}
+
+// Utility function to update a client
+export async function updateClient(clientId, updatedData, newFile = null) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    let imageUrl = updatedData.image;
+
+    if (newFile) {
+      // Upload new image to Firebase Storage
+      const storageRef = ref(storage, `clients/${updatedData.name}`);
+      await uploadBytes(storageRef, newFile);
+      imageUrl = await getDownloadURL(storageRef);
+
+      // Delete old image if it exists
+      if (updatedData.image) {
+        const oldImageRef = ref(storage, updatedData.image);
+        await deleteObject(oldImageRef);
+      }
+    }
+
+    // Update client data in Firestore
+    await updateDoc(clientRef, { ...updatedData, image: imageUrl });
+
+    return { id: clientId, ...updatedData, image: imageUrl };
+  } catch (error) {
+    console.error('Error updating client:', error);
+    throw error;
+  }
+}
+
+// Utility function to get a single client
+export async function getClient(clientId) {
+  try {
+    const clientDoc = await getDoc(doc(db, 'clients', clientId));
+    if (clientDoc.exists()) {
+      return { id: clientDoc.id, ...clientDoc.data() };
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error getting client:', error);
+    throw error;
+  }
+}
+
+export async function getClientLogo(clientId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      return clientData.image || clientData.logo || ''; // Change 'logo' to 'image' to match the data structure
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error getting client logo:', error);
+    throw error;
+  }
+}
+
+export async function uploadMotion(clientId, motionData, videoFile) {
+  try {
+    // Upload video
+    const videoRef = ref(storage, `motions/${clientId}/${Date.now()}`);
+    await uploadBytes(videoRef, videoFile);
+    console.log('new video file', videoFile);
+    const videoUrl = await getDownloadURL(videoRef);
+
+    // Get client data
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+
+      // Prepare motion data
+      const motionDoc = {
+        ...motionData,
+        video: videoUrl,
+        logo: clientData.image || '', // Use the client's image as the logo
+        clientId: clientId,
+      };
+
+      // Add motion to client document
+      const updatedMotions = clientData.motions
+        ? [...clientData.motions, motionDoc]
+        : [motionDoc];
+
+      await updateDoc(clientRef, { motions: updatedMotions });
+      return { id: clientId, ...motionDoc };
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error uploading motion:', error);
+    throw error;
+  }
+}
+
+export async function getMotions() {
+  try {
+    const clientsSnapshot = await getDocs(collection(db, 'clients'));
+    let allMotions = [];
+    clientsSnapshot.forEach((doc) => {
+      const clientData = doc.data();
+      if (clientData.motions) {
+        allMotions = [
+          ...allMotions,
+          ...clientData.motions.map((motion) => ({
+            ...motion,
+            clientId: doc.id,
+            clientName: clientData.name,
+          })),
+        ];
+      }
+    });
+    return allMotions;
+  } catch (error) {
+    console.error('Error getting motions:', error);
+    throw error;
+  }
+}
+
+export async function updateMotion(
+  clientId,
+  motionId,
+  updatedData,
+  newVideoFile
+) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      const motionIndex = clientData.motions.findIndex(
+        (m) => m.id === motionId
+      );
+
+      if (motionIndex !== -1) {
+        let updatedMotion = {
+          ...clientData.motions[motionIndex],
+          ...updatedData,
+        };
+
+        if (newVideoFile) {
+          const videoRef = ref(
+            storage,
+            `motions/${clientId}/${Date.now()}_${updatedData.name}`
+          );
+
+          // Create file metadata including the content type
+          const metadata = {
+            contentType: updatedData.type,
+          };
+          console.log('update data', updatedData);
+          console.log('motion metadata', metadata);
+          console.log('newVideoFile', newVideoFile);
+
+          // Upload the file and metadata
+          await uploadBytes(videoRef, updatedData, metadata);
+          updatedMotion.video = await getDownloadURL(videoRef);
+        }
+
+        const updatedMotions = [...clientData.motions];
+        updatedMotions[motionIndex] = updatedMotion;
+
+        await updateDoc(clientRef, { motions: updatedMotions });
+
+        return { id: motionId, ...updatedMotion };
+      } else {
+        throw new Error('Motion not found');
+      }
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error updating motion:', error);
+    throw error;
+  }
+}
+
+export async function deleteMotion(clientId, motionIndex) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      if (motionIndex >= 0 && motionIndex < clientData.motions.length) {
+        const motionToDelete = clientData.motions[motionIndex];
+
+        // Delete video from Storage if it's a Firebase Storage URL
+        if (
+          motionToDelete.video &&
+          motionToDelete.video.startsWith(
+            'https://firebasestorage.googleapis.com'
+          )
+        ) {
+          const videoRef = ref(storage, motionToDelete.video);
+          await deleteObject(videoRef);
+        }
+
+        const updatedMotions = [
+          ...clientData.motions.slice(0, motionIndex),
+          ...clientData.motions.slice(motionIndex + 1),
+        ];
+        await updateDoc(clientRef, { motions: updatedMotions });
+      } else {
+        throw new Error('Motion index out of range');
+      }
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error deleting motion:', error);
+    throw error;
+  }
+}
+
+export async function getClientsByName() {
+  try {
+    const clientsSnapshot = await getDocs(collection(db, 'clients'));
+    return clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name,
+    }));
+  } catch (error) {
+    console.error('Error getting clients:', error);
+    throw error;
+  }
+}
+
+// Code for Still related logic for connecting with Firebase
+
+export async function getStills() {
+  try {
+    const clients = await getClients();
+    const stills = [];
+
+    for (const client of clients) {
+      if (client.stills) {
+        const clientStills = Object.entries(client.stills).map(
+          ([id, still]) => ({
+            id,
+            clientId: client.id,
+            ...still,
+          })
+        );
+        stills.push(...clientStills);
+      }
+    }
+
+    return stills;
+  } catch (error) {
+    console.error('Error getting stills:', error);
+    throw error;
+  }
+}
+
+async function uploadImage(file, path) {
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return await getDownloadURL(storageRef);
+}
+
+export async function updateStill(
+  clientId,
+  stillId,
+  stillData,
+  file,
+  setUploadProgress
+) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (!clientDoc.exists()) {
+      throw new Error('Client not found');
+    }
+
+    let updatedStillData = { ...stillData };
+    console.log('Updated still in firebase', updatedStillData);
+    if (file) {
+      const downloadURL = await uploadImage(
+        file,
+        `stills/${clientId}/${stillId}`
+      );
+      updatedStillData.image = downloadURL;
+    }
+
+    await updateDoc(clientRef, {
+      [`stills.${stillId}`]: updatedStillData,
+    });
+
+    return { id: stillId, clientId, ...updatedStillData };
+  } catch (error) {
+    console.error('Error updating still:', error);
+    throw error;
+  }
+}
+
+export async function deleteStill(clientId, stillId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (!clientDoc.exists()) {
+      throw new Error('Client not found');
+    }
+
+    const updatedStills = { ...clientDoc.data().stills };
+    delete updatedStills[stillId];
+
+    await updateDoc(clientRef, { stills: updatedStills });
+
+    // Delete the image from storage if it exists
+    const storageRef = ref(storage, `stills/${clientId}/${stillId}`);
+    try {
+      await deleteObject(storageRef);
+    } catch (error) {
+      console.warn('Image not found in storage or already deleted');
+    }
+  } catch (error) {
+    console.error('Error deleting still:', error);
+    throw error;
+  }
+}
+
+export async function addStill(clientId, stillData, mainFile, gridFiles) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (!clientDoc.exists()) {
+      throw new Error('Client not found');
+    }
+
+    console.log(
+      'Still related data in addStill',
+      clientId,
+      stillData,
+      mainFile,
+      gridFiles
+    );
+
+    let newStillData = { ...stillData };
+
+    if (mainFile) {
+      const mainImageUrl = await uploadImage(
+        mainFile,
+        `stills/${clientId}/main_${Date.now()}`
+      );
+      newStillData.image = mainImageUrl;
+    }
+
+    if (gridFiles && gridFiles.length > 0) {
+      const internalImages = {};
+      for (let i = 0; i < gridFiles.length; i++) {
+        const gridImageUrl = await uploadImage(
+          gridFiles[i],
+          `stills/${clientId}/grid_${Date.now()}_${i}`
+        );
+        internalImages[`item${i + 1}`] = gridImageUrl;
+      }
+      newStillData.internalImages = internalImages;
+    }
+
+    const stillId = Date.now().toString();
+    await updateDoc(clientRef, {
+      [`stills.${stillId}`]: newStillData,
+    });
+
+    return { id: stillId, clientId, ...newStillData };
+  } catch (error) {
+    console.error('Error adding still:', error);
+    throw error;
+  }
+}
+
+export async function getLocations() {
+  try {
+    const locationsSnapshot = await getDocs(collection(db, 'locations'));
+    return locationsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error getting locations:', error);
+    throw error;
+  }
+}
+
+export async function addLocation(locationData, mainFile, gridFiles) {
+  console.log('firebase location data', locationData, mainFile);
+  console.log('grid files in firebase', gridFiles);
+  try {
+    const mainImageUrl = await uploadImage(
+      mainFile[0],
+      `locations/main_${Date.now()}`
+    );
+    const gridImageUrls = {};
+
+    for (let i = 0; i < gridFiles.length; i++) {
+      console.log('nested grid files', gridFiles[i]);
+      const value = gridFiles[i][0];
+      console.log('nested nested grid value', value);
+      const gridImageUrl = await uploadImage(
+        value,
+        `locations/grid_${Date.now()}_${i}`
+      );
+      gridImageUrls[`image${i + 1}`] = gridImageUrl;
+    }
+
+    const newLocationData = {
+      ...locationData,
+      image: mainImageUrl,
+      locationImages: gridImageUrls,
+    };
+
+    console.log('Firebase new location data', newLocationData);
+
+    const docRef = await addDoc(collection(db, 'locations'), newLocationData);
+    return { id: docRef.id, ...newLocationData };
+  } catch (error) {
+    console.error('Error adding location:', error);
+    throw error;
+  }
+}
+
+export async function updateLocation(
+  locationId,
+  locationData,
+  mainFile,
+  gridFiles
+) {
+  try {
+    const locationRef = doc(db, 'locations', locationId);
+    let updatedLocationData = { ...locationData };
+
+    if (mainFile) {
+      const mainImageUrl = await uploadImage(
+        mainFile[0],
+        `locations/main_${locationId}_${Date.now()}`
+      );
+      updatedLocationData.image = mainImageUrl;
+    }
+
+    if (gridFiles && gridFiles.length > 0) {
+      const gridImageUrls = {};
+      for (let i = 0; i < gridFiles.length; i++) {
+        const gridImageUrl = await uploadImage(
+          gridFiles[i],
+          `locations/grid_${locationId}_${Date.now()}_${i}`
+        );
+        console.log('Update location grid image file', gridImageUrl);
+        gridImageUrls[`image${i + 1}`] = gridImageUrl;
+      }
+      updatedLocationData.locationImages = {
+        ...updatedLocationData.locationImages,
+        ...gridImageUrls,
+      };
+    }
+
+    await updateDoc(locationRef, updatedLocationData);
+    return { id: locationId, ...updatedLocationData };
+  } catch (error) {
+    console.error('Error updating location:', error);
+    throw error;
+  }
+}
+
+export async function deleteLocation(locationId) {
+  try {
+    await deleteDoc(doc(db, 'locations', locationId));
+    // You may want to delete associated images from storage here
+  } catch (error) {
+    console.error('Error deleting location:', error);
+    throw error;
+  }
+}
+
+export async function deleteLocationImage(locationId, imageKey) {
+  try {
+    const locationRef = doc(db, 'locations', locationId);
+    const locationDoc = await getDoc(locationRef);
+
+    if (!locationDoc.exists()) {
+      throw new Error('Location not found');
+    }
+
+    const updatedImages = { ...locationDoc.data().locationImages };
+    delete updatedImages[imageKey];
+
+    await updateDoc(locationRef, { locationImages: updatedImages });
+
+    // Delete the image from storage
+    const storageRef = ref(storage, `locations/${locationId}/${imageKey}`);
+    await deleteObject(storageRef);
+  } catch (error) {
+    console.error('Error deleting location image:', error);
+    throw error;
+  }
+}
+
+// Add this function to your firebase.js file
+export async function addLocationGridImage(locationId, file, url) {
+  console.log('Updated location file', file, locationId);
+  try {
+    const locationRef = doc(db, 'locations', locationId);
+    const locationDoc = await getDoc(locationRef);
+
+    if (!locationDoc.exists()) {
+      throw new Error('Location not found');
+    }
+
+    const locationData = locationDoc.data();
+
+    console.log('Location data:', locationData);
+    const existingImages = locationData.locationImages || {};
+
+    // Find the next available image number
+    let nextImageNumber = 1;
+    while (existingImages[`image${nextImageNumber}`]) {
+      nextImageNumber++;
+    }
+
+    const newImageKey = `image${nextImageNumber}`;
+    const imageUrl = await uploadImage(
+      file[0],
+      `locations/${locationId}/grid_${newImageKey}_${Date.now()}`
+    );
+
+    console.log('firebase image url', imageUrl);
+
+    const updatedLocationImages = {
+      ...existingImages,
+      [newImageKey]: url[0],
+    };
+
+    console.log('Updated location image data', updatedLocationImages);
+
+    await updateDoc(locationRef, { locationImages: updatedLocationImages });
+
+    return { [newImageKey]: imageUrl };
+  } catch (error) {
+    console.error('Error adding location grid image:', error);
+    throw error;
+  }
+}
+
+// Hero Banner Functions
+
+/**
+ * Upload a hero banner image and add it to Firestore
+ * @param {File} imageFile - The image file to upload
+ * @param {number} sequence - The sequence number (0-3)
+ * @returns {Promise<string>} The ID of the created hero banner document
+ */
+export const addHeroBanner = async (imageFile, sequence) => {
+  try {
+    // Upload image to Storage
+    const storageRef = ref(
+      storage,
+      `heroBanners/${Date.now()}_${imageFile.name}`
+    );
+    const uploadResult = await uploadBytes(storageRef, imageFile);
+    const imageUrl = await getDownloadURL(uploadResult.ref);
+
+    // Add to Firestore
+    const heroBannerRef = collection(db, 'heroBanners');
+    const docRef = await addDoc(heroBannerRef, {
+      imageUrl,
+      sequence,
+      createdAt: new Date().toISOString(),
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding hero banner:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all hero banners ordered by sequence
+ * @returns {Promise<Array>} Array of hero banners
+ */
+export const getHeroBanners = async () => {
+  try {
+    const heroBannerRef = collection(db, 'heroBanners');
+    const q = query(heroBannerRef, orderBy('sequence'));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error getting hero banners:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a hero banner's image and/or sequence
+ * @param {string} id - The hero banner document ID
+ * @param {Object} updates - The updates to apply
+ * @param {File} [updates.imageFile] - New image file (optional)
+ * @param {number} [updates.sequence] - New sequence number (optional)
+ */
+export const updateHeroBanner = async (id, updates) => {
+  try {
+    const heroBannerRef = doc(db, 'heroBanners', id);
+    const updateData = {};
+
+    if (updates.imageFile) {
+      // Upload new image
+      const storageRef = ref(
+        storage,
+        `heroBanners/${Date.now()}_${updates.imageFile.name}`
+      );
+      const uploadResult = await uploadBytes(storageRef, updates.imageFile);
+      updateData.imageUrl = await getDownloadURL(uploadResult.ref);
+
+      // Delete old image if it exists
+      const oldDoc = await getDoc(heroBannerRef);
+      if (oldDoc.exists() && oldDoc.data().imageUrl) {
+        const oldImageRef = ref(storage, oldDoc.data().imageUrl);
+        await deleteObject(oldImageRef).catch(console.error);
+      }
+    }
+
+    if (typeof updates.sequence === 'number') {
+      updateData.sequence = updates.sequence;
+    }
+
+    await updateDoc(heroBannerRef, {
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Error updating hero banner:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a hero banner and its image
+ * @param {string} id - The hero banner document ID
+ */
+export const deleteHeroBanner = async (id) => {
+  try {
+    const heroBannerRef = doc(db, 'heroBanners', id);
+
+    // Get the document to find the image URL
+    const docSnap = await getDoc(heroBannerRef);
+    if (docSnap.exists()) {
+      const { imageUrl } = docSnap.data();
+
+      // Delete image from Storage
+      if (imageUrl) {
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef).catch(console.error);
+      }
+    }
+
+    // Delete document from Firestore
+    await deleteDoc(heroBannerRef);
+  } catch (error) {
+    console.error('Error deleting hero banner:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update the sequence of multiple hero banners
+ * @param {Array<{id: string, sequence: number}>} updates - Array of updates
+ */
+export const updateHeroBannerSequences = async (updates) => {
+  try {
+    const batch = writeBatch(db);
+
+    updates.forEach(({ id, sequence }) => {
+      const heroBannerRef = doc(db, 'heroBanners', id);
+      batch.update(heroBannerRef, {
+        sequence,
+        updatedAt: new Date().toISOString(),
+      });
+    });
+
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating hero banner sequences:', error);
+    throw error;
+  }
+};
+
+// 1. Get client names and logos
+export async function getClientsInfo() {
+  try {
+    const clientsRef = collection(db, 'clients');
+    const clientsSnapshot = await getDocs(clientsRef);
+    const clientsInfo = clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().clientKey,
+      logo: doc.data().image,
+    }));
+    console.log('Clients info:', clientsInfo);
+    return clientsInfo;
+  } catch (error) {
+    console.error('Error fetching clients info:', error);
+    throw error;
+  }
+}
+
+// 2. Fetch product titles based on selected client
+export async function getProductTitlesByClient(clientId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const stills = clientDoc.data().stills || {};
+      const productTitles = Object.values(stills).map(
+        (still) => still.credits?.['PRODUCT TITLE'] || 'Untitled Product'
+      );
+      console.log('Product titles:', productTitles);
+      return productTitles;
+    } else {
+      console.log('No such client!');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching product titles:', error);
+    throw error;
+  }
+}
+
+// 3. Fetch internal images based on selected product title
+export async function getInternalImagesByProduct(clientId, productTitle) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const stills = clientDoc.data().stills || {};
+      const selectedStill = Object.values(stills).find(
+        (still) => still.credits?.['PRODUCT TITLE'] === productTitle
+      );
+      if (selectedStill) {
+        const internalImages = selectedStill.internalImages || {};
+        console.log('Internal images:', internalImages);
+        return internalImages;
+      } else {
+        console.log('No such product!');
+        return {};
+      }
+    } else {
+      console.log('No such client!');
+      return {};
+    }
+  } catch (error) {
+    console.error('Error fetching internal images:', error);
+    throw error;
+  }
+}
+
+// 4. Create nested 'homepage' schema under still
+export async function createHomepageSchema(
+  clientId,
+  stillId,
+  selectedImageUrl,
+  sequence,
+  productTitle
+) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      const homepageData = {
+        image: selectedImageUrl,
+        sequence: sequence,
+        clientName: clientData.clientKey,
+        logo: clientData.image,
+        productTitle: productTitle,
+      };
+      await updateDoc(clientRef, {
+        [`stills.${stillId}.homepage`]: homepageData,
+      });
+      console.log('Homepage schema created successfully');
+      return homepageData;
+    } else {
+      console.log('No such client!');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error creating homepage schema:', error);
+    throw error;
+  }
+}
+
+// 5. Update sequence of stills on homepage
+export async function updateStillSequence(clientId, stillId, newSequence) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    await updateDoc(clientRef, {
+      [`stills.${stillId}.homepage.sequence`]: newSequence,
+    });
+    console.log('Still sequence updated successfully');
+  } catch (error) {
+    console.error('Error updating still sequence:', error);
+    throw error;
+  }
+}
+
+// 6. Update all values under homepage schema
+export async function updateHomepageSchema(clientId, stillId, updatedData) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    await updateDoc(clientRef, {
+      [`stills.${stillId}.homepage`]: updatedData,
+    });
+    console.log('Homepage schema updated successfully');
+  } catch (error) {
+    console.error('Error updating homepage schema:', error);
+    throw error;
+  }
+}
+
+// 7. Add a new still grid item
+export async function addStillGridItem(
+  clientId,
+  productTitle,
+  croppedImageUrl,
+  isPortrait
+) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      const stills = clientData.stills || {};
+
+      // Find the still with the matching product title
+      const stillId = Object.keys(stills).find(
+        (key) => stills[key].credits?.['PRODUCT TITLE'] === productTitle
+      );
+
+      if (stillId) {
+        const newStillGridItem = {
+          image: croppedImageUrl,
+          isPortrait: isPortrait,
+          rowOrder: Object.keys(stills).length,
+          clientName: clientData.clientKey,
+          logo: clientData.image,
+          productTitle: productTitle,
+          urlForSpecificStillPage: `/stills/${clientId}/${stillId}`,
+        };
+
+        await updateDoc(clientRef, {
+          [`stills.${stillId}.homepage`]: newStillGridItem,
+        });
+
+        console.log('Still grid item added successfully');
+        return { id: stillId, ...newStillGridItem };
+      } else {
+        throw new Error('No matching still found for the given product title');
+      }
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error adding still grid item:', error);
+    throw error;
+  }
+}
+
+// 8. Update an existing still grid item
+export async function updateStillGridItem(clientId, stillId, updatedData) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    await updateDoc(clientRef, {
+      [`stills.${stillId}.homepage`]: updatedData,
+    });
+    console.log('Still grid item updated successfully');
+  } catch (error) {
+    console.error('Error updating still grid item:', error);
+    throw error;
+  }
+}
+
+// 9. Delete a still grid item
+export async function deleteStillGridItem(clientId, stillId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    await updateDoc(clientRef, {
+      [`stills.${stillId}.homepage`]: deleteField(),
+    });
+    console.log('Still grid item deleted successfully');
+  } catch (error) {
+    console.error('Error deleting still grid item:', error);
+    throw error;
+  }
+}
+
+// 10. Update still grid item order
+export async function updateStillGridItemOrder(items) {
+  try {
+    const batch = writeBatch(db);
+
+    for (const item of items) {
+      const clientRef = doc(db, 'clients', item.clientId);
+      batch.update(clientRef, {
+        [`stills.${item.id}.homepage.rowOrder`]: item.rowOrder,
+      });
+    }
+
+    await batch.commit();
+    console.log('Still grid item order updated successfully');
+  } catch (error) {
+    console.error('Error updating still grid item order:', error);
+    throw error;
+  }
+}
+
+export async function getClientsForMotion() {
+  try {
+    const clientsRef = collection(db, 'clients');
+    const clientsSnapshot = await getDocs(clientsRef);
+    return clientsSnapshot.docs
+      .filter((doc) => doc.data().motions && doc.data().motions.length > 0)
+      .map((doc) => ({
+        id: doc.id,
+        name: doc.data().clientKey,
+      }));
+  } catch (error) {
+    console.error('Error fetching clients for motion:', error);
+    throw error;
+  }
+}
+
+export async function getProductTitlesByClientForMotion(clientId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const motions = clientDoc.data().motions || [];
+      return [...new Set(motions.map((motion) => motion.productTitle))];
+    }
+    return [];
+  } catch (error) {
+    console.error('Error fetching product titles:', error);
+    throw error;
+  }
+}
+
+export async function getVideoByProductTitle(clientId, productTitle) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const motions = clientDoc.data().motions || [];
+      const selectedMotion = motions.find(
+        (motion) => motion.productTitle === productTitle
+      );
+      if (selectedMotion) {
+        return {
+          url: selectedMotion.video,
+          productTitle: selectedMotion.productTitle,
+          clientName: clientDoc.data().clientKey,
+          logo: selectedMotion.credits?.logo || clientDoc.data().image,
+        };
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching video:', error);
+    throw error;
+  }
+}
+
+export async function uploadHomeMotion(clientId, productTitle, videoData) {
+  try {
+    const homeMotionsRef = collection(db, 'homeMotions');
+    const newMotionRef = await addDoc(homeMotionsRef, {
+      clientId,
+      productTitle,
+      thumbnail: videoData.url, // Using video URL as thumbnail for simplicity
+      video: videoData.url,
+      clientName: videoData.clientName,
+      logo: videoData.logo,
+      order: await getNextMotionOrder(),
+    });
+    return {
+      id: newMotionRef.id,
+      clientId,
+      productTitle,
+      thumbnail: videoData.url,
+      video: videoData.url,
+      clientName: videoData.clientName,
+      logo: videoData.logo,
+      order: await getNextMotionOrder(),
+    };
+  } catch (error) {
+    console.error('Error uploading home motion:', error);
+    throw error;
+  }
+}
+
+async function getNextMotionOrder() {
+  const homeMotionsRef = collection(db, 'homeMotions');
+  const motionsQuery = query(
+    homeMotionsRef,
+    orderBy('order', 'desc'),
+    limit(1)
+  );
+  const motionsSnapshot = await getDocs(motionsQuery);
+  if (motionsSnapshot.empty) {
+    return 0;
+  }
+  return motionsSnapshot.docs[0].data().order + 1;
+}
+
+export async function getHomeMotions() {
+  try {
+    const homeMotionsRef = collection(db, 'homeMotions');
+    const motionsQuery = query(homeMotionsRef, orderBy('order'));
+    const motionsSnapshot = await getDocs(motionsQuery);
+    return motionsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching home motions:', error);
+    throw error;
+  }
+}
+
+export async function updateHomeMotionOrder(motions) {
+  const batch = writeBatch(db);
+  motions.forEach((motion) => {
+    const motionRef = doc(db, 'homeMotions', motion.id);
+    batch.update(motionRef, { order: motion.order });
+  });
+  await batch.commit();
+}
+
+export async function deleteHomeMotion(motionId) {
+  try {
+    const motionRef = doc(db, 'homeMotions', motionId);
+    await deleteDoc(motionRef);
+  } catch (error) {
+    console.error('Error deleting home motion:', error);
+    throw error;
+  }
+}
+
+export async function updateHomeMotion(updatedMotion) {
+  try {
+    const motionRef = doc(db, 'homeMotions', updatedMotion.id);
+    await updateDoc(motionRef, {
+      clientId: updatedMotion.clientId,
+      productTitle: updatedMotion.productTitle,
+      thumbnail: updatedMotion.thumbnail,
+      video: updatedMotion.video,
+      clientName: updatedMotion.clientName,
+      logo: updatedMotion.logo,
+    });
+  } catch (error) {
+    console.error('Error updating home motion:', error);
+    throw error;
+  }
+}
+
+// Fetch locations
+export async function getHomeLocations() {
+  try {
+    const locationsRef = collection(db, 'locations');
+    const locationsSnapshot = await getDocs(locationsRef);
+    return locationsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    throw error;
+  }
+}
+
+// Fetch location image based on location text
+export async function getHomeLocationImage(locationId) {
+  try {
+    const locationRef = doc(db, 'locations', locationId);
+    const locationDoc = await getDoc(locationRef);
+    if (locationDoc.exists()) {
+      return locationDoc.data().image;
+    }
+    throw new Error('Location not found');
+  } catch (error) {
+    console.error('Error fetching location image:', error);
+    throw error;
+  }
+}
+
+// Upload data to homeLocation schema
+export async function uploadHomeLocation(locationData) {
+  try {
+    const homeLocationsRef = collection(db, 'homeLocations');
+    const newLocationRef = await addDoc(homeLocationsRef, {
+      ...locationData,
+      order: await getNextLocationOrder(),
+    });
+    return { id: newLocationRef.id, ...locationData };
+  } catch (error) {
+    console.error('Error uploading home location:', error);
+    throw error;
+  }
+}
+
+// Delete location data
+export async function deleteHomeLocation(locationId) {
+  try {
+    const locationRef = doc(db, 'homeLocations', locationId);
+    await deleteDoc(locationRef);
+  } catch (error) {
+    console.error('Error deleting home location:', error);
+    throw error;
+  }
+}
+
+// Update location data
+export async function updateHomeLocation(updatedLocation) {
+  try {
+    const locationRef = doc(db, 'homeLocations', updatedLocation.id);
+    await updateDoc(locationRef, updatedLocation);
+  } catch (error) {
+    console.error('Error updating home location:', error);
+    throw error;
+  }
+}
+
+// Get location data
+export async function getHomeLocationsData() {
+  try {
+    const homeLocationsRef = collection(db, 'homeLocations');
+    const locationsQuery = query(homeLocationsRef, orderBy('order'));
+    const locationsSnapshot = await getDocs(locationsQuery);
+    return locationsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching home locations:', error);
+    throw error;
+  }
+}
+
+// Helper function to get the next order for a new location
+async function getNextLocationOrder() {
+  const homeLocationsRef = collection(db, 'homeLocations');
+  const locationsQuery = query(
+    homeLocationsRef,
+    orderBy('order', 'desc'),
+    limit(1)
+  );
+  const locationsSnapshot = await getDocs(locationsQuery);
+  if (locationsSnapshot.empty) {
+    return 0;
+  }
+  return locationsSnapshot.docs[0].data().order + 1;
+}
+
+// Fetch clients
+export async function getHomeClients() {
+  try {
+    const clientsRef = collection(db, 'clients');
+    const clientsSnapshot = await getDocs(clientsRef);
+    return clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching clients:', error);
+    throw error;
+  }
+}
+
+// Fetch client image based on client key
+export async function getHomeClientImage(clientKey) {
+  try {
+    const clientsRef = collection(db, 'clients');
+    const q = query(clientsRef, where('clientKey', '==', clientKey));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data().image;
+    }
+    throw new Error('Client not found');
+  } catch (error) {
+    console.error('Error fetching client image:', error);
+    throw error;
+  }
+}
+
+// Upload data to homeClient schema
+export async function uploadHomeClient(clientData) {
+  try {
+    const homeClientsRef = collection(db, 'homeClients');
+    const newClientRef = await addDoc(homeClientsRef, {
+      ...clientData,
+      sequence: await getNextClientSequence(),
+    });
+    return { id: newClientRef.id, ...clientData };
+  } catch (error) {
+    console.error('Error uploading home client:', error);
+    throw error;
+  }
+}
+
+// Delete client data
+export async function deleteHomeClient(clientId) {
+  try {
+    const clientRef = doc(db, 'homeClients', clientId);
+    await deleteDoc(clientRef);
+  } catch (error) {
+    console.error('Error deleting home client:', error);
+    throw error;
+  }
+}
+
+// Update client data
+export async function updateHomeClient(updatedClient) {
+  try {
+    const clientRef = doc(db, 'homeClients', updatedClient.id);
+    await updateDoc(clientRef, updatedClient);
+  } catch (error) {
+    console.error('Error updating home client:', error);
+    throw error;
+  }
+}
+
+// Update client sequence
+export async function updateHomeClientSequence(clients) {
+  const batch = writeBatch(db);
+  clients.forEach((client, index) => {
+    const clientRef = doc(db, 'homeClients', client.id);
+    batch.update(clientRef, { sequence: index });
+  });
+  await batch.commit();
+}
+
+// Get client data
+export async function getHomeClientsData() {
+  try {
+    const homeClientsRef = collection(db, 'homeClients');
+    const clientsQuery = query(homeClientsRef, orderBy('sequence'));
+    const clientsSnapshot = await getDocs(clientsQuery);
+    return clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching home clients:', error);
+    throw error;
+  }
+}
+
+// Helper function to get the next sequence for a new client
+async function getNextClientSequence() {
+  const homeClientsRef = collection(db, 'homeClients');
+  const clientsQuery = query(
+    homeClientsRef,
+    orderBy('sequence', 'desc'),
+    limit(1)
+  );
+  const clientsSnapshot = await getDocs(clientsQuery);
+  if (clientsSnapshot.empty) {
+    return 0;
+  }
+  return clientsSnapshot.docs[0].data().sequence + 1;
+}
+
+export { db, storage };

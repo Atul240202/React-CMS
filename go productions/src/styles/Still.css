@@ -1,0 +1,153 @@
+.still-section {
+  padding: 40px;
+  color: white;
+  text-align: center;
+  max-width: 85vw;
+  margin: auto;
+}
+
+.still-header {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.still-header h2 {
+  font-size: 48px;
+  font-weight: 800;
+  margin-block: 0;
+}
+
+.still-header p {
+  font-size: 24px;
+  margin-top: 8px;
+}
+
+.still-header .see-more {
+  position: absolute;
+  right: 0;
+  top: 70%;
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+}
+
+.still-images {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+  height: 66vh;
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.image-container img {
+  display: block;
+  width: 100%;
+  transition: transform 0.5s ease;
+}
+
+.main-image {
+  object-fit: contain;
+}
+
+.image-container.large {
+  width: 66%;
+}
+
+.image-container.small {
+  width: 34%;
+}
+
+.image-container:hover img {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 5%, transparent 25%),
+    /* Top gradient */
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 5%, transparent 25%); /* Bottom gradient */
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.logo {
+  max-width: 30%;
+  transition: transform 0.5s ease;
+}
+
+.top-center {
+  transform: translateY(-100%);
+  transition: 1s;
+  position: absolute;
+  width: 100%;
+  align-self: center;
+  top: 5%;
+}
+
+.image-container.large:hover .top-center {
+  transform: translateY(10%);
+}
+
+.left-center {
+  transform: translateX(-100%);
+  transition: 1s;
+  position: absolute;
+  width: 100%;
+  top: 5%;
+}
+
+.image-container.small:hover .left-center {
+  transform: translateX(30%);
+}
+
+/* Text Hover Effects */
+.hover-text {
+  color: white;
+  font-size: 40px;
+  font-family: 'Chesna Grotesk', sans-serif;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.bottom-center {
+  position: absolute;
+  bottom: 10%;
+  text-align: center;
+  width: 100%;
+  transform: translateY(100%);
+  transition: 1s;
+}
+
+.image-container:hover .bottom-center {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.right-center {
+  position: absolute;
+  right: 10%;
+  bottom: 5%;
+  transform: translateX(100%);
+  transition: 1s;
+}
+
+.image-container.small:hover .right-center {
+  transform: translateX(0);
+  opacity: 1;
+}

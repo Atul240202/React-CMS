@@ -1,0 +1,20 @@
+.shoot-location-container {
+  max-width: 100vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto;
+}
+
+.location-header {
+  position: relative;
+  padding-top: 5vh;
+}
+
+.location-header h2 {
+  font-size: 48px;
+  margin: 10px;
+  font-weight: 800;
+}
