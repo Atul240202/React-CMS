@@ -316,3 +316,4 @@ export const createClientPages = () => {
 };
 
 export const clientPages = createClientPages();
+<div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'></div>;

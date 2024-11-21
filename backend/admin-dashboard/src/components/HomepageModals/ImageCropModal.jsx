@@ -5,7 +5,11 @@ import ReactCrop from 'react-image-crop';
 import { ClipLoader } from 'react-spinners';
 import 'react-image-crop/dist/ReactCrop.css';
 import toast from 'react-hot-toast';
-import { addHeroBanner, updateHeroBanner } from '../../firebase';
+import {
+  addHeroBanner,
+  updateHeroBanner,
+  updateStillGridItem,
+} from '../../firebase';
 
 Modal.setAppElement('#root');
 
@@ -17,6 +21,7 @@ export default function ImageCropModal({
   aspectRatio = 16 / 9,
   editBannerId = null,
   sequence = 0,
+  component,
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const [crop, setCrop] = useState({
@@ -128,20 +133,22 @@ export default function ImageCropModal({
         type: 'image/jpeg',
       });
 
+      console.log('Still file data', file);
+      console.log('Still component data', component);
       if (editBannerId) {
         await updateHeroBanner(editBannerId, { imageFile: file });
       } else {
-        await addHeroBanner(file, sequence);
+        if (component === 'hero') {
+          await addHeroBanner(file, sequence);
+        }
       }
 
       toast.success(
-        editBannerId
-          ? 'Banner updated successfully'
-          : 'Banner uploaded successfully',
+        editBannerId ? 'Updated successfully' : 'Uploaded successfully',
         { id: loadingToast }
       );
 
-      onCropComplete();
+      onCropComplete(editBannerId, file);
       onClose();
     } catch (error) {
       console.error('Error processing image:', error);
@@ -194,6 +201,7 @@ export default function ImageCropModal({
               onLoad={(e) => onImageLoad(e.currentTarget)}
               alt='Crop preview'
               className='max-w-full max-h-[70vh] object-contain'
+              crossOrigin='anonymous'
             />
           </ReactCrop>
         </div>

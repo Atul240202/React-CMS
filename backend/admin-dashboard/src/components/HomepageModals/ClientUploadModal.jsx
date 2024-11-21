@@ -11,7 +11,7 @@ import {
   updateHomeClient,
 } from '../../firebase';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import ImageCropModal from './ImageCropModal';
+import ClientCrop from './ClientCrop';
 
 Modal.setAppElement('#root');
 
@@ -28,6 +28,7 @@ export default function ClientUploadModal({
   const [isUploading, setIsUploading] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [croppedImage, setCroppedImage] = useState(null);
+  const [imageFile, setImageFile] = useState({});
 
   useEffect(() => {
     if (isOpen) {
@@ -62,17 +63,20 @@ export default function ClientUploadModal({
       try {
         const imageUrl = await getHomeClientImage(clientKey);
         setClientImage(imageUrl);
+        setShowCropModal(true);
       } catch (error) {
         console.error('Error fetching client image:', error);
         toast.error('Failed to fetch client image');
       }
     } else {
       setClientImage(null);
+      setCroppedImage(null);
     }
   };
 
-  const handleCropComplete = (croppedImageUrl) => {
+  const handleCropComplete = (file, croppedImageUrl) => {
     setCroppedImage(croppedImageUrl);
+    setImageFile(file);
     setShowCropModal(false);
   };
 
@@ -93,17 +97,15 @@ export default function ClientUploadModal({
           ...editingClient,
           clientKey: selectedClient,
           name: selectedClientData.name,
-          image: croppedImage,
         };
-        await updateHomeClient(updatedClient);
+        await updateHomeClient(updatedClient, imageFile);
         onUpdate(updatedClient);
       } else {
         const newClient = {
           clientKey: selectedClient,
           name: selectedClientData.name,
-          image: croppedImage,
         };
-        const uploadedClient = await uploadHomeClient(newClient);
+        const uploadedClient = await uploadHomeClient(newClient, imageFile);
         onUpload(uploadedClient);
       }
       toast.success(
@@ -167,14 +169,14 @@ export default function ClientUploadModal({
             </select>
           </div>
 
-          {clientImage && (
+          {croppedImage && (
             <div>
               <label className='block text-sm font-medium text-gray-400 mb-1'>
                 Client Image
               </label>
               <div className='relative'>
                 <LazyLoadImage
-                  src={croppedImage || clientImage}
+                  src={croppedImage}
                   alt='Selected client'
                   effect='blur'
                   className='w-full rounded'
@@ -222,12 +224,11 @@ export default function ClientUploadModal({
         </div>
       </div>
 
-      <ImageCropModal
+      <ClientCrop
         isOpen={showCropModal}
         onClose={() => setShowCropModal(false)}
         imageUrl={clientImage}
         onCropComplete={handleCropComplete}
-        aspectRatio={3 / 2}
       />
     </Modal>
   );

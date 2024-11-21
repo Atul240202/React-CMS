@@ -10,6 +10,7 @@ import {
   getHeroBanners,
   deleteHeroBanner,
   updateHeroBannerSequences,
+  updateHeroBanner,
 } from '../../firebase';
 
 export default function HeroBannerSection() {
@@ -117,27 +118,29 @@ export default function HeroBannerSection() {
     <DndProvider backend={HTML5Backend}>
       <section className='mb-12'>
         <h2 className='text-2xl font-bold mb-4'>HERO BANNER</h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-60'>
-          {banners.map((banner, index) => (
-            <DraggableHeroBanner
-              key={banner.id}
-              id={banner.id}
-              src={banner.imageUrl}
-              index={index}
-              moveHeroBanner={moveHeroBanner}
-              onRemove={handleRemove}
-              onEdit={handleEdit}
-            />
-          ))}
-          {banners.length < 4 && (
-            <button
-              className='w-full h-60 bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors duration-200 border-2 border-zinc-600 hover:border-zinc-500'
-              onClick={() => setIsUploadModalOpen(true)}
-              aria-label='Add hero banner'
-            >
-              <Plus className='h-8 w-8' />
-            </button>
-          )}
+        <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-60'>
+            {banners.map((banner, index) => (
+              <DraggableHeroBanner
+                key={banner.id}
+                id={banner.id}
+                src={banner.imageUrl}
+                index={index}
+                moveHeroBanner={moveHeroBanner}
+                onRemove={handleRemove}
+                onEdit={handleEdit}
+              />
+            ))}
+            {banners.length < 4 && (
+              <button
+                className='w-full h-60 bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors duration-200 border-2 border-zinc-600 hover:border-zinc-500'
+                onClick={() => setIsUploadModalOpen(true)}
+                aria-label='Add hero banner'
+              >
+                <Plus className='h-8 w-8' />
+              </button>
+            )}
+          </div>
         </div>
 
         <HomeUploadModal
@@ -164,6 +167,7 @@ export default function HeroBannerSection() {
             aspectRatio={16 / 9}
             editBannerId={editBannerId}
             sequence={banners.length}
+            component='hero'
           />
         )}
       </section>

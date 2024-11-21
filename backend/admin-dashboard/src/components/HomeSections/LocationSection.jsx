@@ -59,44 +59,46 @@ export default function LocationSection() {
   return (
     <section className='mb-12'>
       <h2 className='text-2xl font-bold mb-4'>LOCATION</h2>
-      <div className='grid grid-cols-4 gap-4'>
-        {locations.map((location) => (
-          <div
-            key={location.id}
-            className='relative aspect-[4/3] overflow-hidden group'
-          >
-            <Link to={location.url} className='block w-full h-full'>
-              <LazyLoadImage
-                src={location.image}
-                alt={location.name}
-                effect='blur'
-                className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
-              />
-            </Link>
-            <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-              <button
-                onClick={() => handleEdit(location)}
-                className='p-2 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
-              >
-                <Pencil className='h-4 w-4 text-white' />
-              </button>
-              <button
-                onClick={() => handleDelete(location.id)}
-                className='p-2 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
-              >
-                <X className='h-4 w-4 text-white' />
-              </button>
+      <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
+        <div className='grid grid-cols-4 gap-4'>
+          {locations.map((location) => (
+            <div
+              key={location.id}
+              className='relative aspect-[4/3] overflow-hidden group'
+            >
+              <Link to={location.url} className='block w-full h-full'>
+                <LazyLoadImage
+                  src={location.image}
+                  alt={location.name}
+                  effect='blur'
+                  className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
+                />
+              </Link>
+              <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+                <button
+                  onClick={() => handleEdit(location)}
+                  className='p-2 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                >
+                  <Pencil className='h-4 w-4 text-white' />
+                </button>
+                <button
+                  onClick={() => handleDelete(location.id)}
+                  className='p-2 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                >
+                  <X className='h-4 w-4 text-white' />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-        {locations.length < 4 && (
-          <button
-            className='aspect-[4/3] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
-            onClick={() => setShowUploadModal(true)}
-          >
-            <Plus className='h-8 w-8' />
-          </button>
-        )}
+          ))}
+          {locations.length < 4 && (
+            <button
+              className='aspect-[4/3] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
+              onClick={() => setShowUploadModal(true)}
+            >
+              <Plus className='h-8 w-8' />
+            </button>
+          )}
+        </div>
       </div>
 
       <LocationUploadModal

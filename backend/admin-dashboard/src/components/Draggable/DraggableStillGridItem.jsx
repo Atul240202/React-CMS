@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';

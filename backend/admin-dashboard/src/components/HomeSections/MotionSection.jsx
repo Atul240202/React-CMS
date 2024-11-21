@@ -94,72 +94,74 @@ export default function MotionSection() {
   return (
     <section className='mb-12'>
       <h2 className='text-2xl font-bold mb-4'>MOTION</h2>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId='motions' direction='horizontal'>
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className='grid grid-cols-4 gap-4'
-            >
-              {localMotions.map((motion, index) => (
-                <Draggable
-                  key={motion.id}
-                  draggableId={motion.id}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`relative aspect-video bg-zinc-900 overflow-hidden group ${
-                        snapshot.isDragging ? 'shadow-lg' : ''
-                      }`}
-                    >
-                      <Link
-                        to={`/motion/${
-                          motion.clientId
-                        }?product=${encodeURIComponent(motion.productTitle)}`}
+      <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId='motions' direction='horizontal'>
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className='grid grid-cols-4 gap-4'
+              >
+                {localMotions.map((motion, index) => (
+                  <Draggable
+                    key={motion.id}
+                    draggableId={motion.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`relative aspect-video bg-zinc-900 overflow-hidden group ${
+                          snapshot.isDragging ? 'shadow-lg' : ''
+                        }`}
                       >
-                        <video
-                          src={motion.thumbnail}
-                          alt={motion.productTitle}
-                          effect='blur'
-                          className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
-                        />
-                      </Link>
-                      <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-                        <button
-                          onClick={() => handleEdit(motion)}
-                          className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                        <Link
+                          to={`/motion/${
+                            motion.clientId
+                          }?product=${encodeURIComponent(motion.productTitle)}`}
                         >
-                          <Pencil className='h-4 w-4 text-white' />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(motion.id)}
-                          className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
-                        >
-                          <X className='h-4 w-4 text-white' />
-                        </button>
+                          <video
+                            src={motion.thumbnail}
+                            alt={motion.productTitle}
+                            effect='blur'
+                            className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
+                          />
+                        </Link>
+                        <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+                          <button
+                            onClick={() => handleEdit(motion)}
+                            className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                          >
+                            <Pencil className='h-4 w-4 text-white' />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(motion.id)}
+                            className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                          >
+                            <X className='h-4 w-4 text-white' />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-              {localMotions.length < 4 && (
-                <button
-                  className='aspect-video bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
-                  onClick={() => setShowUploadModal(true)}
-                >
-                  <Plus className='h-8 w-8' />
-                </button>
-              )}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+                {localMotions.length < 4 && (
+                  <button
+                    className='aspect-video bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
+                    onClick={() => setShowUploadModal(true)}
+                  >
+                    <Plus className='h-8 w-8' />
+                  </button>
+                )}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
 
       <MotionUploadModal
         isOpen={showUploadModal}

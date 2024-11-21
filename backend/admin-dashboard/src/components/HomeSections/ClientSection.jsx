@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -80,66 +82,68 @@ export default function ClientSection() {
   return (
     <section className='mb-12'>
       <h2 className='text-2xl font-bold mb-4'>CLIENT</h2>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId='clients' direction='horizontal'>
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className='grid grid-cols-5 gap-4'
-            >
-              {clients.map((client, index) => (
-                <Draggable
-                  key={client.id}
-                  draggableId={client.id}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`relative aspect-[3/2] bg-zinc-900 rounded-lg p-6 flex items-center justify-center group hover:bg-zinc-800 transition-colors ${
-                        snapshot.isDragging ? 'shadow-lg' : ''
-                      }`}
-                    >
-                      <LazyLoadImage
-                        src={client.image}
-                        alt={client.name}
-                        effect='blur'
-                        className='w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-80'
-                      />
-                      <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-                        <button
-                          onClick={() => handleEdit(client)}
-                          className='p-1 bg-blue-500 rounded-full hover:bg-blue-600 transition-colors'
-                        >
-                          <Pencil className='h-4 w-4 text-white' />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(client.id)}
-                          className='p-1 bg-red-500 rounded-full hover:bg-red-600 transition-colors'
-                        >
-                          <X className='h-4 w-4 text-white' />
-                        </button>
+      <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId='clients' direction='horizontal'>
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className='grid grid-cols-5 gap-4'
+              >
+                {clients.map((client, index) => (
+                  <Draggable
+                    key={client.id}
+                    draggableId={client.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`relative aspect-[3/2] bg-zinc-900 p-6 flex items-center justify-center group hover:bg-zinc-800 transition-colors ${
+                          snapshot.isDragging ? 'shadow-lg' : ''
+                        }`}
+                      >
+                        <LazyLoadImage
+                          src={client.image}
+                          alt={client.name}
+                          effect='blur'
+                          className='w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-80'
+                        />
+                        <div className='absolute top-2 right-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+                          <button
+                            onClick={() => handleEdit(client)}
+                            className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                          >
+                            <Pencil className='h-4 w-4 text-white' />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(client.id)}
+                            className='p-1 bg-black border border-white rounded-full hover:bg-zinc-800 transition-colors'
+                          >
+                            <X className='h-4 w-4 text-white' />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-              {clients.length < 10 && (
-                <button
-                  className='aspect-[3/2] bg-zinc-800 rounded-lg flex items-center justify-center hover:bg-zinc-700 transition-colors'
-                  onClick={() => setShowUploadModal(true)}
-                >
-                  <Plus className='h-8 w-8' />
-                </button>
-              )}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+                {clients.length < 10 && (
+                  <button
+                    className='aspect-[3/2] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
+                    onClick={() => setShowUploadModal(true)}
+                  >
+                    <Plus className='h-8 w-8' />
+                  </button>
+                )}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
 
       <ClientUploadModal
         isOpen={showUploadModal}

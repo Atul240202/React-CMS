@@ -933,15 +933,19 @@ export async function updateHomepageSchema(clientId, stillId, updatedData) {
 export async function addStillGridItem(
   clientId,
   productTitle,
-  croppedImageUrl,
+  file,
   isPortrait
 ) {
   try {
+    const storageRef = ref(storage, `homeStill/${Date.now()}_${file.name}`);
+    const uploadResult = await uploadBytes(storageRef, file);
+    const croppedImageUrl = await getDownloadURL(uploadResult.ref);
     const clientRef = doc(db, 'clients', clientId);
     const clientDoc = await getDoc(clientRef);
-
+    console.log('Still client data', clientDoc);
     if (clientDoc.exists()) {
       const clientData = clientDoc.data();
+
       const stills = clientData.stills || {};
 
       // Find the still with the matching product title
@@ -1026,6 +1030,146 @@ export async function updateStillGridItemOrder(items) {
   }
 }
 
+/// New still logic (May remove previous one)
+
+export async function getHomeStills() {
+  try {
+    const homeStillsRef = collection(db, 'homeStills');
+    const homeStillsQuery = query(homeStillsRef, orderBy('rowOrder'));
+    const homeStillsSnapshot = await getDocs(homeStillsQuery);
+    return homeStillsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching home stills:', error);
+    throw error;
+  }
+}
+
+// Add a new still grid item
+export async function addHomeStill(clientId, productTitle, file, isPortrait) {
+  try {
+    const storageRef = ref(storage, `homeStill/${Date.now()}_${file.name}`);
+    const uploadResult = await uploadBytes(storageRef, file);
+    const croppedImageUrl = await getDownloadURL(uploadResult.ref);
+
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const clientData = clientDoc.data();
+      const homeStillsRef = collection(db, 'homeStills');
+      const homeStillsQuery = query(
+        homeStillsRef,
+        orderBy('rowOrder', 'desc'),
+        limit(1)
+      );
+      const homeStillsSnapshot = await getDocs(homeStillsQuery);
+      const lastRowOrder = homeStillsSnapshot.empty
+        ? -1
+        : homeStillsSnapshot.docs[0].data().rowOrder;
+
+      const newHomeStill = {
+        image: croppedImageUrl,
+        isPortrait: isPortrait,
+        rowOrder: lastRowOrder + 1,
+        clientName: clientData.clientKey,
+        clientId: clientId,
+        logo: clientData.image,
+        productTitle: productTitle,
+        urlForSpecificStillPage: `/stills/${clientId}/${productTitle}`,
+      };
+
+      const newHomeStillRef = await addDoc(homeStillsRef, newHomeStill);
+      console.log('Home still added successfully');
+      return { id: newHomeStillRef.id, ...newHomeStill };
+    } else {
+      throw new Error('Client not found');
+    }
+  } catch (error) {
+    console.error('Error adding home still:', error);
+    throw error;
+  }
+}
+
+// Update an existing home still
+export async function updateHomeStill(stillId, updatedData) {
+  try {
+    const stillRef = doc(db, 'homeStills', stillId);
+    await updateDoc(stillRef, updatedData);
+    console.log('Home still updated successfully');
+  } catch (error) {
+    console.error('Error updating home still:', error);
+    throw error;
+  }
+}
+
+// Delete a home still
+export async function deleteHomeStill(stillId) {
+  try {
+    const stillRef = doc(db, 'homeStills', stillId);
+    await deleteDoc(stillRef);
+    console.log('Home still deleted successfully');
+  } catch (error) {
+    console.error('Error deleting home still:', error);
+    throw error;
+  }
+}
+
+// Update home still order
+export async function updateHomeStillOrder(items) {
+  try {
+    const batch = writeBatch(db);
+
+    for (const item of items) {
+      const stillRef = doc(db, 'homeStills', item.id);
+      batch.update(stillRef, { rowOrder: item.rowOrder });
+    }
+
+    await batch.commit();
+    console.log('Home still order updated successfully');
+  } catch (error) {
+    console.error('Error updating home still order:', error);
+    throw error;
+  }
+}
+
+// Update grid size
+export async function updateHomeStillGridSize(size) {
+  try {
+    const homeStillsRef = collection(db, 'homeStills');
+    const homeStillsQuery = query(
+      homeStillsRef,
+      orderBy('rowOrder'),
+      limit(size)
+    );
+    const homeStillsSnapshot = await getDocs(homeStillsQuery);
+
+    const batch = writeBatch(db);
+    homeStillsSnapshot.docs.forEach((doc, index) => {
+      batch.update(doc.ref, { isVisible: true, rowOrder: index });
+    });
+
+    const remainingStillsQuery = query(
+      homeStillsRef,
+      orderBy('rowOrder'),
+      limit(1000)
+    );
+    const remainingStillsSnapshot = await getDocs(remainingStillsQuery);
+    remainingStillsSnapshot.docs.slice(size).forEach((doc) => {
+      batch.update(doc.ref, { isVisible: false });
+    });
+
+    await batch.commit();
+    console.log('Home still grid size updated successfully');
+  } catch (error) {
+    console.error('Error updating home still grid size:', error);
+    throw error;
+  }
+}
+
+/// New still logic ends here
 export async function getClientsForMotion() {
   try {
     const clientsRef = collection(db, 'clients');
@@ -1305,11 +1449,15 @@ export async function getHomeClientImage(clientKey) {
 }
 
 // Upload data to homeClient schema
-export async function uploadHomeClient(clientData) {
+export async function uploadHomeClient(clientData, file) {
+  const storageRef = ref(storage, `homeClient/${Date.now()}_${file.name}`);
+  const uploadResult = await uploadBytes(storageRef, file);
+  const croppedImageUrl = await getDownloadURL(uploadResult.ref);
   try {
     const homeClientsRef = collection(db, 'homeClients');
     const newClientRef = await addDoc(homeClientsRef, {
       ...clientData,
+      image: croppedImageUrl,
       sequence: await getNextClientSequence(),
     });
     return { id: newClientRef.id, ...clientData };
@@ -1331,10 +1479,16 @@ export async function deleteHomeClient(clientId) {
 }
 
 // Update client data
-export async function updateHomeClient(updatedClient) {
+export async function updateHomeClient(updatedClient, file) {
+  const storageRef = ref(storage, `homeClient/${Date.now()}_${file.name}`);
+  const uploadResult = await uploadBytes(storageRef, file);
+  const croppedImageUrl = await getDownloadURL(uploadResult.ref);
   try {
     const clientRef = doc(db, 'homeClients', updatedClient.id);
-    await updateDoc(clientRef, updatedClient);
+    await updateDoc(clientRef, {
+      ...updatedClient,
+      image: croppedImageUrl,
+    });
   } catch (error) {
     console.error('Error updating home client:', error);
     throw error;
