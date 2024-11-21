@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import ClientUploadModal from '../HomepageModals/ClientUploadModal';
 import {
   getHomeClientsData,

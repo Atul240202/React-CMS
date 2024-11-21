@@ -96,8 +96,6 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
     }
 
     setIsLoading(true);
-    console.log('New location image data', locationData, mainFile);
-    console.log('grid files in firebase', gridFiles);
     try {
       const newLocation = await addLocation(locationData, mainFile, gridFiles);
       onAddLocation(newLocation);
@@ -247,7 +245,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
 
             <div className='flex justify-center'>
               <button
-                className='px-8 py-2  rounded border border-white hover:bg-zinc-800 disabled:bg-gray-600'
+                className='px-8 py-2 rounded border border-white hover:bg-zinc-800 disabled:bg-gray-600'
                 onClick={handleSubmit}
                 disabled={isLoading}
               >
@@ -262,6 +260,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
+        requireCrop={uploadType === 'main'}
       />
 
       {isLoading && (

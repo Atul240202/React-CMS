@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Link } from 'react-router-dom';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import MotionUploadModal from '../HomepageModals/MotionUploadModal';
 import {
   getHomeMotions,

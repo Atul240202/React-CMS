@@ -64,6 +64,7 @@ export async function uploadClient(name, clientKey, file, fileType) {
       clientKey,
       fileType: fileType,
       fileName: uniqueFileName,
+      sequence: Date.now(), // Add a default sequence value
     };
     const docRef = await addDoc(collection(db, 'clients'), clientData);
 
@@ -77,9 +78,29 @@ export async function uploadClient(name, clientKey, file, fileType) {
 export async function getClients() {
   try {
     const clientsSnapshot = await getDocs(collection(db, 'clients'));
-    return clientsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      sequence: doc.data().sequence || Math.floor(0), // Assign 0 sequence if not available
+    }));
   } catch (error) {
     console.error('Error getting clients:', error);
+    throw error;
+  }
+}
+
+export async function updateClientSequence(updates) {
+  const batch = writeBatch(db);
+
+  updates.forEach(({ id, sequence }) => {
+    const clientRef = doc(db, 'clients', id);
+    batch.update(clientRef, { sequence });
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating client sequences:', error);
     throw error;
   }
 }
@@ -212,13 +233,36 @@ export async function getMotions() {
             ...motion,
             clientId: doc.id,
             clientName: clientData.name,
+            sequence: motion.sequence || Math.floor(Math.random() * 1000), // Assign random sequence if not available
           })),
         ];
+        console.log('All motions data', allMotions);
       }
     });
     return allMotions;
   } catch (error) {
     console.error('Error getting motions:', error);
+    throw error;
+  }
+}
+
+export async function updateMotionSequence(updates) {
+  const batch = writeBatch(db);
+
+  updates.forEach(({ id, clientId, sequence }) => {
+    const clientRef = doc(db, 'clients', clientId);
+    batch.update(clientRef, {
+      [`motions`]: arrayRemove({ id: id }),
+    });
+    batch.update(clientRef, {
+      [`motions`]: arrayUnion({ id: id, sequence: sequence }),
+    });
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating motion sequences:', error);
     throw error;
   }
 }
@@ -255,9 +299,6 @@ export async function updateMotion(
           const metadata = {
             contentType: updatedData.type,
           };
-          console.log('update data', updatedData);
-          console.log('motion metadata', metadata);
-          console.log('newVideoFile', newVideoFile);
 
           // Upload the file and metadata
           await uploadBytes(videoRef, updatedData, metadata);
@@ -352,7 +393,7 @@ export async function getStills() {
         stills.push(...clientStills);
       }
     }
-
+    stills.sort((a, b) => (a.sequence || 0) - (b.sequence || 0));
     return stills;
   } catch (error) {
     console.error('Error getting stills:', error);
@@ -429,6 +470,24 @@ export async function deleteStill(clientId, stillId) {
   }
 }
 
+export async function updateStillDashboardSequence(updates) {
+  const batch = writeBatch(db);
+  console.log('Sequence update', updates);
+  updates.forEach(({ id, clientId, sequence }) => {
+    const clientRef = doc(db, 'clients', clientId);
+    batch.update(clientRef, {
+      [`stills.${id}.sequence`]: sequence,
+    });
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating still sequences:', error);
+    throw error;
+  }
+}
+
 export async function addStill(clientId, stillData, mainFile, gridFiles) {
   try {
     const clientRef = doc(db, 'clients', clientId);
@@ -469,6 +528,16 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
     }
 
     const stillId = Date.now().toString();
+
+    // Get the current highest sequence number
+    const stills = await getStills();
+    const maxSequence = stills.reduce(
+      (max, still) => Math.max(max, still.sequence || 0),
+      -1
+    );
+
+    newStillData.sequence = maxSequence + 1;
+
     await updateDoc(clientRef, {
       [`stills.${stillId}`]: newStillData,
     });
@@ -486,6 +555,7 @@ export async function getLocations() {
     return locationsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
+      sequence: doc.data().sequence || 0, // Assign 0 if sequence is not available
     }));
   } catch (error) {
     console.error('Error getting locations:', error);
@@ -518,6 +588,7 @@ export async function addLocation(locationData, mainFile, gridFiles) {
       ...locationData,
       image: mainImageUrl,
       locationImages: gridImageUrls,
+      sequence: Date.now(), // Add a default sequence value
     };
 
     console.log('Firebase new location data', newLocationData);
@@ -526,6 +597,22 @@ export async function addLocation(locationData, mainFile, gridFiles) {
     return { id: docRef.id, ...newLocationData };
   } catch (error) {
     console.error('Error adding location:', error);
+    throw error;
+  }
+}
+
+export async function updateLocationSequence(updates) {
+  const batch = writeBatch(db);
+
+  updates.forEach(({ id, sequence }) => {
+    const locationRef = doc(db, 'locations', id);
+    batch.update(locationRef, { sequence });
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating location sequences:', error);
     throw error;
   }
 }
@@ -605,7 +692,6 @@ export async function deleteLocationImage(locationId, imageKey) {
   }
 }
 
-// Add this function to your firebase.js file
 export async function addLocationGridImage(locationId, file, url) {
   console.log('Updated location file', file, locationId);
   try {

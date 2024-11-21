@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, X } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import StillUploadModal from '../HomepageModals/StillUploadModal';
 import ImageCropModal from '../HomepageModals/ImageCropModal';
