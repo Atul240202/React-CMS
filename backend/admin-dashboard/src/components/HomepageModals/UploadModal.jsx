@@ -1,15 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { X, Upload, HelpCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  uploadBytes,
-} from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import GridImageCropModal from './GridImageCropModal';
 import ClientCrop from './ClientCrop';
+import Compressor from 'compressorjs';
 
 const UploadModal = ({
   isOpen,
@@ -26,26 +22,30 @@ const UploadModal = ({
   const [clientNameError, setClientNameError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
+  const [showClientCropModal, setShowClientCropModal] = useState(false);
   const [currentFileUrl, setCurrentFileUrl] = useState('');
   const [currentFile, setCurrentFile] = useState(null);
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      if (requireCrop) {
-        try {
-          const file = acceptedFiles[0];
-          setCurrentFile(file);
-          const imageUrl = URL.createObjectURL(file);
-          setCurrentFileUrl(imageUrl);
-          setShowCropModal(true);
-        } catch (error) {
-          console.error('Error during file preparation:', error);
-        }
+      if (isClientDashboard) {
+        const file = acceptedFiles[0];
+        setCurrentFile(file);
+        const imageUrl = URL.createObjectURL(file);
+        setCurrentFileUrl(imageUrl);
+        setShowClientCropModal(true);
+        onClose(); // Close the UploadModal when opening ClientCrop
+      } else if (requireCrop) {
+        const file = acceptedFiles[0];
+        setCurrentFile(file);
+        const imageUrl = URL.createObjectURL(file);
+        setCurrentFileUrl(imageUrl);
+        setShowCropModal(true);
       } else {
         setFiles(acceptedFiles);
       }
     },
-    [requireCrop]
+    [isClientDashboard, requireCrop, onClose]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -53,7 +53,7 @@ const UploadModal = ({
     accept: acceptVideo
       ? { 'video/*': ['.mp4', '.webm', '.ogg'] }
       : { 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] },
-    multiple: !requireCrop && multiple,
+    multiple: !isClientDashboard && !requireCrop && multiple,
   });
 
   const validateClientName = () => {
@@ -63,6 +63,43 @@ const UploadModal = ({
     }
     setClientNameError('');
     return true;
+  };
+
+  const compressImage = (file) => {
+    console.log('Before compression', file);
+    return new Promise((resolve, reject) => {
+      new Compressor(file, {
+        quality: 0.8, // Increased quality
+        maxWidth: 4000, // Increased max width
+        maxHeight: 4000, // Increased max height
+        success(result) {
+          // If the compressed file is smaller than 2MB, increase quality until it's at least 2MB
+          if (result.size < 2 * 1024 * 1024) {
+            new Compressor(file, {
+              quality: 0.95, // Higher quality
+              maxWidth: 5000, // Even larger max width
+              maxHeight: 5000, // Even larger max height
+              success(finalResult) {
+                resolve(finalResult);
+              },
+              error(err) {
+                console.error('Second compression error:', err);
+                resolve(file); // If compression fails, use the original file
+              },
+            });
+            console.log('After compression', file);
+          } else {
+            resolve(result);
+          }
+        },
+
+        error(err) {
+          console.error('Compression error:', err);
+          resolve(file); // If compression fails, use the original file
+        },
+      });
+      console.log('After compression1', file);
+    });
   };
 
   const handleUpload = async (filesToUpload) => {
@@ -76,11 +113,16 @@ const UploadModal = ({
     }
 
     setIsUploading(true);
-
+    console.log('Files to upload:', filesToUpload);
     try {
       const uploadPromises = filesToUpload.map(async (file) => {
+        let fileToUpload = file;
+        if (!isClientDashboard && file.type.startsWith('image/')) {
+          fileToUpload = await compressImage(file);
+        }
+
         const storageRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+        const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
 
         return new Promise((resolve, reject) => {
           uploadTask.on(
@@ -103,7 +145,7 @@ const UploadModal = ({
                 const downloadURL = await getDownloadURL(
                   uploadTask.snapshot.ref
                 );
-                resolve({ file, downloadURL });
+                resolve({ file: fileToUpload, downloadURL });
               } catch (error) {
                 console.error('Error getting download URL:', error);
                 reject(error);
@@ -118,12 +160,7 @@ const UploadModal = ({
       const uploadedFiles = results.map((r) => r.file);
 
       if (isClientDashboard) {
-        onUpload(
-          clientName,
-          results.map((r) => r.downloadURL),
-          filesToUpload,
-          filesToUpload[0].type
-        );
+        onUpload(clientName, urls[0], uploadedFiles[0], uploadedFiles[0].type);
       } else {
         onUpload(urls, uploadedFiles);
       }
@@ -143,6 +180,12 @@ const UploadModal = ({
   const handleCropComplete = async (croppedFile) => {
     setFiles([croppedFile]);
     setShowCropModal(false);
+    await handleUpload([croppedFile]);
+  };
+
+  const handleClientCropComplete = async (croppedFile, croppedImageUrl) => {
+    setFiles([croppedFile]);
+    setShowClientCropModal(false);
     await handleUpload([croppedFile]);
   };
 
@@ -209,7 +252,7 @@ const UploadModal = ({
             </p>
           </div>
 
-          {files.length > 0 && !requireCrop && (
+          {files.length > 0 && !requireCrop && !isClientDashboard && (
             <div className='mt-4'>
               <p className='text-gray-300'>Selected files:</p>
               <ul className='list-disc list-inside'>
@@ -249,15 +292,11 @@ const UploadModal = ({
               >
                 Cancel
               </button>
-              {!requireCrop && (
+              {!requireCrop && !isClientDashboard && (
                 <button
                   onClick={() => handleUpload(files)}
                   className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700'
-                  disabled={
-                    isClientDashboard
-                      ? !clientName.trim() || files.length === 0 || isUploading
-                      : files.length === 0 || isUploading
-                  }
+                  disabled={files.length === 0 || isUploading}
                 >
                   {isUploading ? 'Uploading...' : 'Upload'}
                 </button>
@@ -275,6 +314,16 @@ const UploadModal = ({
         }}
         imageUrl={currentFileUrl}
         onCropComplete={handleCropComplete}
+      />
+
+      <ClientCrop
+        isOpen={showClientCropModal}
+        onClose={() => {
+          setShowClientCropModal(false);
+          URL.revokeObjectURL(currentFileUrl);
+        }}
+        imageUrl={currentFileUrl}
+        onCropComplete={handleClientCropComplete}
       />
     </>
   );

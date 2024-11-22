@@ -21,6 +21,12 @@ import {
   getDownloadURL,
   deleteObject,
 } from 'firebase/storage';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -38,6 +44,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
+
+//signup
+export const signUp = async (name, email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential.user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//login
+export const signIn = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential.user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//logout
+export const logout = async () => {
+  try {
+    await signOut(auth); // Correct function to sign out
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Utility function to upload a client
 export async function uploadClient(name, clientKey, file, fileType) {

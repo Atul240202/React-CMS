@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { X, Pencil, Plus, LoaderCircle, Trash2 } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';

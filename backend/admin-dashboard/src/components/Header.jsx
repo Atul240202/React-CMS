@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Menu, User, LogOut, X } from 'lucide-react';
+import { logout } from '../firebase'; // Import the logout function
 import jamMenu from '../assets/jam_menu.png';
 import gopro from '../assets/gopro.png';
 
-// Profile Modal Component
 const ProfileModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -14,14 +14,13 @@ const ProfileModal = ({ isOpen, onClose }) => {
         fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
       }}
     >
-      <div className='bg-white  w-full max-w-md p-6 relative'>
+      <div className='bg-white w-full max-w-md p-6 relative'>
         <button
           onClick={onClose}
           className='absolute right-4 top-4 text-zinc-900 hover:text-zinc-500'
         >
           <X className='h-6 w-6' />
         </button>
-
         <div className='flex flex-col items-center pt-4'>
           <div className='relative mb-6'>
             <img
@@ -30,22 +29,17 @@ const ProfileModal = ({ isOpen, onClose }) => {
               className='w-28 h-28 rounded-full object-cover'
             />
           </div>
-
           <div className='w-full space-y-4'>
             <div className='flex flex-row border border-gray-700 rounded p-3'>
-              <div className='text-lg font-black text-zinc-800 pr-2'>
-                NAME:{' '}
-              </div>
+              <div className='text-lg font-black text-zinc-800 pr-2'>NAME:</div>
               <div className='text-lg text-zinc-700'>JONAS KAHNWALD</div>
             </div>
-
             <div className='flex flex-row border border-gray-700 rounded p-3'>
               <div className='text-lg font-black text-zinc-800 pr-2'>
                 MAIL ID:
               </div>
               <div className='text-lg text-zinc-700'>JONAS@GMAIL.COM</div>
             </div>
-
             <button className='text-blue-500 hover:text-blue-400 font-medium'>
               CHANGE PASSWORD
             </button>
@@ -56,7 +50,6 @@ const ProfileModal = ({ isOpen, onClose }) => {
   );
 };
 
-// Logout Modal Component
 const LogoutModal = ({ isOpen, onClose, onLogout }) => {
   if (!isOpen) return null;
 
@@ -74,12 +67,10 @@ const LogoutModal = ({ isOpen, onClose, onLogout }) => {
         >
           <X className='h-6 w-6' />
         </button>
-
         <div className='flex flex-col items-center pt-4'>
           <h2 className='text-xl font-bold text-zinc-900 mb-6'>
             ARE YOU SURE YOU WANT TO LOG OUT?
           </h2>
-
           <button
             onClick={onLogout}
             className='w-full py-3 bg-zinc-800 border border-gray-700 rounded-lg text-white hover:bg-gray-700 transition-colors'
@@ -92,7 +83,6 @@ const LogoutModal = ({ isOpen, onClose, onLogout }) => {
   );
 };
 
-// Updated Header Component
 const Header = ({ toggleSidebar }) => {
   const styles = {
     header: {
@@ -103,10 +93,14 @@ const Header = ({ toggleSidebar }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    console.log('Logging out...');
-    setShowLogoutModal(false);
+  const handleLogout = async () => {
+    try {
+      await logout(); // Log out the user
+      setShowLogoutModal(false); // Close the modal
+      window.location.href = '/'; // Redirect to login or homepage
+    } catch (error) {
+      console.error('Error during logout:', error.message);
+    }
   };
 
   return (
@@ -134,12 +128,10 @@ const Header = ({ toggleSidebar }) => {
           </button>
         </div>
       </header>
-
       <ProfileModal
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
       />
-
       <LogoutModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}

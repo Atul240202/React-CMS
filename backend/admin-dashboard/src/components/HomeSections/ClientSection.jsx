@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';

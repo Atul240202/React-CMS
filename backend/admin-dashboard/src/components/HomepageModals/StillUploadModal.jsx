@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { X, HelpCircle } from 'lucide-react';
 import Modal from 'react-modal';

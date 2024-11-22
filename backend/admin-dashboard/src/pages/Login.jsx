@@ -1,8 +1,7 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { signIn } from '../firebase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,12 +11,14 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email === 'admin@gmail.com' && password === 'admin') {
-      // Successful login
+    try {
+      await signIn(email, password);
+      // After successful login, redirect to dashboard
       navigate('/dashboard');
-    } else {
+    } catch (error) {
       setError('Invalid email or password');
     }
   };

@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { X, Upload, HelpCircle, Crop } from 'lucide-react';
 import Modal from 'react-modal';
