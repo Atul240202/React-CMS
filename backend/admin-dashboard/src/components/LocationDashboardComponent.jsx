@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Pencil, Plus, X, Save } from 'lucide-react';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import LocationCampaignModal from './LocationCampaignModal';
 import DraggableLocationItem from './Draggable/DraggableLocationItem';
 import {

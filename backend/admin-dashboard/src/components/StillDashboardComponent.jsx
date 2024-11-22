@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import { Pencil, Plus, X, Eye, EyeOff } from 'lucide-react';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import AddCampaignModal from './AddCampaignModal';
 import DraggableStillItem from './Draggable/DraggableStillItem';
 import {

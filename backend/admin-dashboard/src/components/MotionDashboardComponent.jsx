@@ -3,7 +3,7 @@ import { Pencil, Plus, X, Eye, EyeOff } from 'lucide-react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import MotionCampaignModal from './MotionCampaignModal';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import DraggableMotionItem from './Draggable/DraggableMotionItem';
 import {
   getMotions,

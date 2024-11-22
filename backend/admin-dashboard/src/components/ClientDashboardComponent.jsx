@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Plus } from 'lucide-react';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import DraggableClientLogo from './Draggable/DraggableClientLogo';
 import {
   uploadClient,

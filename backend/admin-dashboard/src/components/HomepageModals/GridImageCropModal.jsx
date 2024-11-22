@@ -56,11 +56,15 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
 
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const croppedFile = new File([blob], 'cropped-image.jpg', {
-        type: 'image/jpeg',
-      });
+      const croppedFile = new File(
+        [blob],
+        `locationMainImg-${Date.now()}.png`,
+        {
+          type: 'image/png',
+        }
+      );
       onCropComplete(croppedFile);
-    }, 'image/jpeg');
+    }, 'image/png');
   };
 
   if (!isOpen) return null;
@@ -87,6 +91,7 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
               ref={imgRef}
               src={imageUrl}
               onLoad={onImageLoad}
+              crossOrigin='anonymous'
               className='max-w-full max-h-[60vh] object-contain'
             />
           </ReactCrop>

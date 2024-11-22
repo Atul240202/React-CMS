@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Pencil, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import { uploadMotion, getClientLogo } from '../firebase';
 
 const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {

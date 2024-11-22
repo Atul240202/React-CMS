@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Pencil, Plus, Trash2, ChevronDown } from 'lucide-react';
-import UploadModal from './UploadModal';
+import UploadModal from './HomepageModals/UploadModal';
 import { getClients, addStill, getClientLogo } from '../firebase';
 
 const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {

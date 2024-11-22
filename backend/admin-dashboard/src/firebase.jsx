@@ -567,18 +567,17 @@ export async function addLocation(locationData, mainFile, gridFiles) {
   console.log('firebase location data', locationData, mainFile);
   console.log('grid files in firebase', gridFiles);
   try {
+    // Handle main image upload
     const mainImageUrl = await uploadImage(
-      mainFile[0],
+      mainFile,
       `locations/main_${Date.now()}`
     );
-    const gridImageUrls = {};
 
+    // Handle grid images upload
+    const gridImageUrls = {};
     for (let i = 0; i < gridFiles.length; i++) {
-      console.log('nested grid files', gridFiles[i]);
-      const value = gridFiles[i][0];
-      console.log('nested nested grid value', value);
       const gridImageUrl = await uploadImage(
-        value,
+        gridFiles[i],
         `locations/grid_${Date.now()}_${i}`
       );
       gridImageUrls[`image${i + 1}`] = gridImageUrl;
@@ -600,7 +599,6 @@ export async function addLocation(locationData, mainFile, gridFiles) {
     throw error;
   }
 }
-
 export async function updateLocationSequence(updates) {
   const batch = writeBatch(db);
 

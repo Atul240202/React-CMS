@@ -71,7 +71,7 @@ const DraggableLocationItem = ({
       <img
         src={location.image}
         alt={location.text}
-        className='w-full h-40 object-cover rounded'
+        className='w-full h-40 object-cover'
       />
       <div className='absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
         <span className='bg-white text-black px-2 py-1 rounded text-sm font-bold'>
