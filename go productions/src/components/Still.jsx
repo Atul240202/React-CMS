@@ -35,12 +35,14 @@ const Still = () => {
                   src={image.imgUrl}
                   alt={image.altText}
                   className='main-image'
+                  loading='lazy'
                 />
                 <div className='overlay'>
                   <img
                     src={image.logoUrl}
                     alt={`${image.altText} Logo`}
                     className={`logo ${isLarge ? 'top-center' : 'left-center'}`}
+                    loading='lazy'
                   />
                   <p
                     className={`hover-text ${

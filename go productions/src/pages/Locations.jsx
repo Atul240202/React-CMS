@@ -88,6 +88,7 @@ export default function Locations() {
                   style={styles.motionSwiperVideo}
                   src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/1ad23f85ffce6677e3e4a7975417c597_y5rffi.png'
                   alt='slider-image'
+                  loading='lazy'
                 />
               </div>
               <div style={styles.inBottomSliderContainer}>
@@ -96,6 +97,7 @@ export default function Locations() {
                   style={styles.imageSlider}
                   src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/abd03797bf7fe8d160553bd5d01191bd_gv5vbi.png'
                   alt='slider-image'
+                  loading='lazy'
                 />
                 <div style={styles.bottomTextContainer}>
                   <motion.h1
@@ -123,7 +125,12 @@ export default function Locations() {
                   style={styles.imageContainer}
                   onClick={() => navigateToLocationPage(item.id)}
                 >
-                  <img src={item.image} alt={item.text} style={styles.image} />
+                  <img
+                    src={item.image}
+                    alt={item.text}
+                    style={styles.image}
+                    loading='lazy'
+                  />
                 </div>
                 <motion.div
                   style={styles.blankContainer}

@@ -84,6 +84,7 @@ export default function Clients() {
                   style={styles.logoImage(hoveredLogos[client.id] || false)}
                   onMouseEnter={() => handleMouseEnter(client.id)}
                   onMouseLeave={() => handleMouseLeave(client.id)}
+                  loading='lazy'
                 />
               </div>
             ))}

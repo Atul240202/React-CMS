@@ -276,7 +276,12 @@ const MotionDashboardComponent = () => {
               <div className='space-y-4'>
                 <div className='flex items-center justify-between border border-white p-2 rounded'>
                   <span>LOGO</span>
-                  <img src={selectedMotion.logo} alt='Logo' className='h-8' />
+                  <img
+                    loading='lazy'
+                    src={selectedMotion.logo}
+                    alt='Logo'
+                    className='h-8'
+                  />
                 </div>
                 <div className='border border-white p-2 rounded'>
                   <div className='flex items-center justify-between'>

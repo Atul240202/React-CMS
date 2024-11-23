@@ -72,6 +72,7 @@ const MotionContent = ({ motionData }) => {
               alt='Logo'
               style={styles.motionLogo}
               className='logo'
+              loading='lazy'
             />
             <h2 style={styles.videoText} className='video-text'>
               {motion.text}

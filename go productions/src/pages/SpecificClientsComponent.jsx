@@ -91,6 +91,7 @@ export default function SpecificClientsComponent() {
               src={clientData?.image || '#'}
               alt={clientData?.name || ''}
               style={styles.clientLogo}
+              loading='lazy'
             />
           </div>
           <div style={styles.specificClientContent}>

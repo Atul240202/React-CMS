@@ -96,6 +96,7 @@ export default function SpecificLocationComponent() {
               src={location.image}
               alt={location.text}
               style={styles.headerImage}
+              loading='lazy'
             />
           </div>
           <h2 style={styles.locationTitle}>{location.text.toUpperCase()}</h2>
@@ -115,6 +116,7 @@ export default function SpecificLocationComponent() {
                   src={image.src}
                   alt={`Location view ${index + 1}`}
                   style={styles.locationImage}
+                  loading='lazy'
                 />
               </div>
             ))}

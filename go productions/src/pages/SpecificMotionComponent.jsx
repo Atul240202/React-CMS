@@ -99,6 +99,7 @@ export default function SpecificMotionComponent() {
               src={motion.logo || motion.clientImage}
               alt='Logo'
               style={styles.logo}
+              loading='lazy'
             />
           </div>
           <div style={styles.creditContainer}>

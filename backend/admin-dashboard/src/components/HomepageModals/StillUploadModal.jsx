@@ -170,6 +170,7 @@ export default function StillUploadModal({
                   src={image}
                   alt={`Internal ${index}`}
                   className='w-full h-full object-cover rounded'
+                  loading='lazy'
                 />
               </button>
             ))}

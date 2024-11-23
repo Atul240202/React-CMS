@@ -272,6 +272,7 @@ const LocationDashboardComponent = () => {
             <div className='grid p-8 bg-[#1C1C1C] backdrop-blur-[84px] grid-cols-2 gap-4'>
               <div className='relative'>
                 <img
+                  loading='lazy'
                   src={selectedLocation.image}
                   alt='Location'
                   className='w-full h-64 object-cover'
@@ -384,6 +385,7 @@ const LocationDashboardComponent = () => {
                   ([key, url]) => (
                     <div key={key} className='relative group'>
                       <img
+                        loading='lazy'
                         src={url}
                         alt={`Grid ${key}`}
                         className='w-full h-32 object-cover'

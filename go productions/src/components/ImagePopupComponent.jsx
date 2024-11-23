@@ -27,6 +27,7 @@ function ImagePopupComponent({ images, initialIndex, onClose }) {
         src={images[currentIndex]}
         alt={`Image ${currentIndex + 1}`}
         style={styles.modalImage}
+        loading='lazy'
       />
       <button style={styles.nextButton} onClick={handleNext}>
         &#10095;

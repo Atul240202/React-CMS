@@ -34,6 +34,10 @@ export default function ClientCrop({
       canvas.width = completedCrop.width * scaleX;
       canvas.height = completedCrop.height * scaleY;
 
+      // Configure canvas for maximum quality
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         throw new Error('Could not get canvas context');
@@ -107,6 +111,7 @@ export default function ClientCrop({
               alt='Crop preview'
               className='max-w-full max-h-[70vh] object-contain'
               crossOrigin='anonymous'
+              loading='lazy'
             />
           </ReactCrop>
         </div>

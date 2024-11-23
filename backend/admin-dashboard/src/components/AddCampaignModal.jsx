@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { X, Pencil, Plus, Trash2, ChevronDown } from 'lucide-react';
+import { X, Pencil, Plus, ChevronDown } from 'lucide-react';
+import { getClients, addStill, getClientLogo, storage } from '../firebase';
 import UploadModal from './HomepageModals/UploadModal';
-import { getClients, addStill, getClientLogo } from '../firebase';
+import CampaignGrid from './CampaignGrid';
+import ImageCropper from './ImageCropper';
+import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 
-const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
+function AddCampaignModal({ isOpen, onClose, onAddStill }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [clients, setClients] = useState([]);
   const [campaignData, setCampaignData] = useState({
@@ -18,22 +21,18 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
   });
   const [uploadType, setUploadType] = useState('');
   const [mainFile, setMainFile] = useState(null);
-  const [gridFiles, setGridFiles] = useState([]);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingLogo, setIsFetchingLogo] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const [showCreditDropdown, setShowCreditDropdown] = useState(false);
+  const [croppingImage, setCroppingImage] = useState(null);
 
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
 
   useEffect(() => {
-    fetchClients();
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      resetForm();
+    if (isOpen) {
+      fetchClients();
     }
   }, [isOpen]);
 
@@ -81,8 +80,7 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
     }));
   };
 
-  const handleUpload = (urls, files) => {
-    console.log('Still files & urls', files, urls);
+  const handleUpload = async (urls, files) => {
     if (uploadType === 'main') {
       setMainFile(files[0]);
       setCampaignData((prev) => ({
@@ -91,23 +89,72 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
       }));
       validateField('image', files[0]);
     } else if (uploadType === 'grid') {
-      const newGridFiles = [...gridFiles, ...files];
-      setGridFiles(newGridFiles);
-      const newInternalImages = urls.map((url) => ({ url }));
+      const newImages = await Promise.all(
+        files.map(async (file, index) => {
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          return {
+            id: `${Date.now()}-${index}`,
+            url: urls[index],
+            ratio: img.width / img.height,
+            order: campaignData.internalImages.length + index,
+          };
+        })
+      );
+
       setCampaignData((prev) => ({
         ...prev,
-        internalImages: [...prev.internalImages, ...newInternalImages],
+        internalImages: [...prev.internalImages, ...newImages],
       }));
     }
     setShowUploadModal(false);
   };
 
-  const handleRemoveGridImage = (index) => {
+  const handleGridReorder = (reorderedImages) => {
     setCampaignData((prev) => ({
       ...prev,
-      internalImages: prev.internalImages.filter((_, i) => i !== index),
+      internalImages: reorderedImages,
     }));
-    setGridFiles(gridFiles.filter((_, i) => i !== index));
+  };
+
+  const handleGridCrop = async (id, croppedImage) => {
+    setIsLoading(true);
+    try {
+      console.log('image url', croppedImage, id);
+      // const formData = new FormData();
+      // formData.append('file', croppedImage);
+      // const response = await fetch('/api/upload', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
+      // const { url } = await response.json();
+      const storageRef = ref(storage, `stills/${id}/grid_${Date.now()}`);
+      await uploadBytes(storageRef, croppedImage);
+      const url = await getDownloadURL(storageRef);
+      console.log('cropped image url', url);
+      setCampaignData((prev) => ({
+        ...prev,
+        internalImages: prev.internalImages.map((img) =>
+          img.id === id ? { ...img, url } : img
+        ),
+      }));
+      console.log('cropped campaign data', campaignData);
+    } catch (error) {
+      console.error('Error cropping image:', error);
+      alert('Failed to crop image. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGridDelete = (id) => {
+    setCampaignData((prev) => ({
+      ...prev,
+      internalImages: prev.internalImages.filter((img) => img.id !== id),
+    }));
   };
 
   const handleAddCredit = (creditType) => {
@@ -185,7 +232,9 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
 
     setIsLoading(true);
     try {
-      await addStill(campaignData.clientId, campaignData, mainFile, gridFiles);
+      console.log('handle submit stills', campaignData.internalImages);
+      await addStill(campaignData.clientId, campaignData, mainFile);
+
       onAddStill();
       onClose();
     } catch (error) {
@@ -196,32 +245,10 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
     }
   };
 
-  const resetForm = () => {
-    setCampaignData({
-      logo: '',
-      text: '',
-      image: null,
-      internalImages: [],
-      clientId: '',
-      credits: {
-        'PRODUCT TITLE': '',
-      },
-    });
-    setMainFile(null);
-    setGridFiles([]);
-    setErrors({});
-    setEditingField(null);
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div
-      className='fixed inset-0 bg-[#0C0C0C] z-40 overflow-y-auto'
-      style={{
-        fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
-      }}
-    >
+    <div className='fixed inset-0 bg-[#0C0C0C] z-40 overflow-y-auto'>
       <div className='min-h-screen p-4'>
         <div className='max-w-5xl mx-auto'>
           <div className='flex justify-between items-center p-6 border-b border-gray-800'>
@@ -236,6 +263,7 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
               <div className='aspect-video bg-zinc-800 overflow-hidden w-1/2'>
                 {campaignData.image ? (
                   <img
+                    loading='lazy'
                     src={campaignData.image}
                     alt='Campaign'
                     className='w-full h-full object-cover'
@@ -297,6 +325,7 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
                       <div className='animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent'></div>
                     ) : campaignData.logo ? (
                       <img
+                        loading='lazy'
                         src={campaignData.logo}
                         alt='Client Logo'
                         className='h-8'
@@ -312,7 +341,7 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
 
                 <div className='flex flex-col'>
                   <div className='border border-white p-3 rounded'>
-                    <div className=' flex items-center justify-between'>
+                    <div className='flex items-center justify-between'>
                       <span>
                         TITLE <span className='text-red-500'>*</span>
                       </span>
@@ -347,7 +376,7 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
                     setUploadType('main');
                     setShowUploadModal(true);
                   }}
-                  className='w-full p-3 border border-white  rounded text-left flex items-center justify-between'
+                  className='w-full p-3 border border-white rounded text-left flex items-center justify-between'
                 >
                   <span>CHANGE PICTURE</span>
                   <Pencil className='h-4 w-4' />
@@ -358,31 +387,19 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
             {/* Campaign Grid */}
             <div>
               <h3 className='text-xl font-black mb-4'>CAMPAIGN GRID</h3>
-              <div className='grid grid-cols-6 gap-4 bg-[#1C1C1C] backdrop-blur-[84px] p-6'>
-                {campaignData.internalImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className='aspect-square bg-gray-800 rounded overflow-hidden relative group'
-                  >
-                    <img
-                      src={image.url}
-                      alt={`Grid ${index + 1}`}
-                      className='w-full h-full object-cover'
-                    />
-                    <button
-                      onClick={() => handleRemoveGridImage(index)}
-                      className='absolute top-2 right-2 bg-red-500 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
-                    >
-                      <Trash2 className='h-4 w-4 text-white' />
-                    </button>
-                  </div>
-                ))}
+              <div className='bg-[#1C1C1C] backdrop-blur-[84px] p-6'>
+                <CampaignGrid
+                  images={campaignData.internalImages}
+                  onReorder={handleGridReorder}
+                  onCrop={handleGridCrop}
+                  onDelete={handleGridDelete}
+                />
                 <button
                   onClick={() => {
                     setUploadType('grid');
                     setShowUploadModal(true);
                   }}
-                  className='aspect-square bg-zinc-800 rounded flex items-center justify-center'
+                  className='mt-4 w-full aspect-[3/1] bg-zinc-800 rounded flex items-center justify-center hover:bg-zinc-700 transition-colors'
                 >
                   <Plus className='h-8 w-8' />
                 </button>
@@ -483,12 +500,12 @@ const AddCampaignModal = ({ isOpen, onClose, onAddStill }) => {
         <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
           <div className='bg-white p-4 rounded-lg flex flex-col items-center'>
             <div className='animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent'></div>
-            <p className='text-gray-800 mt-2'>Saving new still...</p>
+            <p className='text-gray-800 mt-2'>Processing...</p>
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default AddCampaignModal;

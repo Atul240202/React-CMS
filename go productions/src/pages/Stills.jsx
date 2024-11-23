@@ -133,6 +133,7 @@ export default function Stills() {
               className='fadeinout'
               src='https://res.cloudinary.com/da3r1iagy/image/upload/v1727814576/9d8d7a1ee3ba214afae49997eaedf852_l6snn2.png'
               alt='slider-image'
+              loading='lazy'
             />
           </div>
           <div style={styles.inBottomSliderContainer} className='fadeinout'>
@@ -140,6 +141,7 @@ export default function Stills() {
               style={styles.imageSlider}
               src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728759721/FEST0088-scaled_uispvw.png'
               alt='slider-image'
+              loading='lazy'
             />
             <div style={styles.bottomTextContainer}>
               <motion.h1

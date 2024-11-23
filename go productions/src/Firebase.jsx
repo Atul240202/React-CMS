@@ -10,6 +10,7 @@ import {
   getDoc,
   query,
   where,
+  orderBy,
 } from 'firebase/firestore';
 import {
   getStorage,

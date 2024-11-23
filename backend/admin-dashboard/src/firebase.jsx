@@ -434,6 +434,7 @@ export async function getStills() {
             ...still,
           })
         );
+        console.log('Still datas from getStills', clientStills);
         stills.push(...clientStills);
       }
     }
@@ -558,6 +559,7 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
       );
       newStillData.image = mainImageUrl;
     }
+    console.log(Date.now().toLocaleString);
 
     if (gridFiles && gridFiles.length > 0) {
       const internalImages = {};

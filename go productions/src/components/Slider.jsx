@@ -51,6 +51,7 @@ const Slider = () => {
           src={sliderImages[currentIndex]}
           alt={`Slide ${currentIndex}`}
           className='image'
+          loading='lazy'
         />
       </div>
       {newIndex !== null && (
@@ -59,6 +60,7 @@ const Slider = () => {
             src={sliderImages[newIndex]}
             alt={`Slide ${newIndex}`}
             className='image'
+            loading='lazy'
           />
         </div>
       )}

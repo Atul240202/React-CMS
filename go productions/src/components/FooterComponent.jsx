@@ -122,7 +122,12 @@ const FooterComponent = () => {
       <footer>
         <div style={styles.footerHeader}>
           <Link to='/' style={styles.logo}>
-            <img src={gopro} alt='logo' style={styles.logoImage} />
+            <img
+              src={gopro}
+              alt='logo'
+              style={styles.logoImage}
+              loading='lazy'
+            />
           </Link>
           <div
             style={{

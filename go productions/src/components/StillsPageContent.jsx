@@ -28,6 +28,7 @@ const StillsPageContent = ({ stillPageData }) => {
               alt={item.text}
               style={styles.image}
               onClick={() => handleClick(item)}
+              loading='lazy'
             />
             <div style={styles.textContainer}>
               <h2 style={styles.text}>{item.text}</h2>
@@ -35,6 +36,7 @@ const StillsPageContent = ({ stillPageData }) => {
                 src={item.logo || item.clientImage}
                 alt='Logo'
                 style={styles.logo}
+                loading='lazy'
               />
             </div>
           </div>

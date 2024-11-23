@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import ImagePopupComponent from '../components/ImagePopupComponent';
 import TransitionEffect from '../components/TransitionEffect';
 import { db } from '../Firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, orderBy } from 'firebase/firestore';
 
 export default function SpecificStillsComponent() {
   const { clientId, stillId } = useParams();
@@ -61,13 +61,16 @@ export default function SpecificStillsComponent() {
 
   useEffect(() => {
     if (still && still.internalImages) {
-      const internalImages = Object.values(still.internalImages).filter(
-        Boolean
-      );
+      // Extract the URLs from internalImages
+      const internalImages = still.internalImages
+        .filter(Boolean)
+        .map((image) => image.url);
+
       let loadedImages = 0;
       const totalImages = internalImages.length + 1; // +1 for the main image
 
-      const layout = internalImages.map((image, index) => {
+      // Create a layout for each image
+      const layout = internalImages.map((url) => {
         return new Promise((resolve) => {
           const img = new Image();
           img.onload = () => {
@@ -76,13 +79,13 @@ export default function SpecificStillsComponent() {
 
             const isLandscape = img.width > img.height;
             resolve({
-              src: image,
+              src: url,
               isLandscape,
               gridColumn: isLandscape ? 'span 2' : 'span 1',
               gridRow: isLandscape ? 'span 1' : 'span 2',
             });
           };
-          img.src = image;
+          img.src = url;
         });
       });
 
@@ -94,6 +97,7 @@ export default function SpecificStillsComponent() {
       };
       mainImg.src = still.image;
 
+      // When all images are loaded, update the layout
       Promise.all(layout).then((resolvedLayout) => {
         setImageLayout(resolvedLayout);
         setIsLoading(false);
@@ -143,6 +147,7 @@ export default function SpecificStillsComponent() {
               src={still.logo || still.clientImage}
               alt='Client Logo'
               style={styles.logo}
+              loading='lazy'
             />
           </div>
           <div style={styles.descriptionContainer}>
@@ -166,6 +171,7 @@ export default function SpecificStillsComponent() {
                 src={image.src}
                 alt={`Internal Image ${index + 1}`}
                 style={styles.gridImage}
+                loading='lazy'
               />
             </div>
           ))}

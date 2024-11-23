@@ -129,6 +129,7 @@ export default function Login() {
           className='h-full w-full object-cover rounded-3xl'
           src='https://res.cloudinary.com/da3r1iagy/image/upload/v1730482611/Frame_1000003530_oncgbk.png'
           alt='Couple on beach'
+          loading='lazy'
         />
       </div>
     </div>

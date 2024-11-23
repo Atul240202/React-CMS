@@ -69,6 +69,7 @@ const DraggableLocationItem = ({
       onClick={() => handleLocationClick(location)}
     >
       <img
+        loading='lazy'
         src={location.image}
         alt={location.text}
         className='w-full h-40 object-cover'

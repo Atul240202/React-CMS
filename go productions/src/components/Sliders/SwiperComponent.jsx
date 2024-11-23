@@ -29,6 +29,7 @@ const SwiperComponent = () => {
               className='imageSlider'
               src={location.url}
               alt={`slide-${index}`}
+              loading='lazy'
             />
             {/* <p className='location-text'>{location.text}</p> */}
           </SwiperSlide>

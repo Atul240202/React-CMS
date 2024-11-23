@@ -192,7 +192,12 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                   {isLoading ? (
                     <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-white'></div>
                   ) : campaignData.logo ? (
-                    <img src={campaignData.logo} alt='Logo' className='h-8' />
+                    <img
+                      src={campaignData.logo}
+                      alt='Logo'
+                      className='h-8'
+                      loading='lazy'
+                    />
                   ) : (
                     <span className='text-gray-500'>No logo available</span>
                   )}

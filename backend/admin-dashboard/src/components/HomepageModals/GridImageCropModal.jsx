@@ -141,6 +141,7 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
                 crossOrigin='anonymous'
                 className='max-w-full max-h-[60vh] object-contain'
                 alt='Image to crop'
+                loading='lazy'
               />
             </ReactCrop>
           </div>

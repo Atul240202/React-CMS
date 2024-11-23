@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-import { Pencil, Plus, X, Eye, EyeOff } from 'lucide-react';
+import { Pencil, Plus, X, Eye, EyeOff, Save } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';
 import AddCampaignModal from './AddCampaignModal';
 import DraggableStillItem from './Draggable/DraggableStillItem';
@@ -11,9 +11,14 @@ import {
   updateStill,
   deleteStill,
   updateStillDashboardSequence,
+  storage,
 } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import CampaignGrid from './CampaignGrid';
+import ImageCropper from './ImageCropper';
 const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -56,6 +61,9 @@ const StillDashboardComponent = () => {
   const [uploadType, setUploadType] = useState('');
   const [hiddenFields, setHiddenFields] = useState({});
   const [visibleFields, setVisibleFields] = useState({});
+  const [croppingImage, setCroppingImage] = useState(null);
+  const [newlyAddedImages, setNewlyAddedImages] = useState([]);
+  const [showSaveButton, setShowSaveButton] = useState(false);
 
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
 
@@ -99,31 +107,38 @@ const StillDashboardComponent = () => {
     setShowAddCampaignModal(true);
   };
 
-  const handleUpload = async (files, urls) => {
+  const handleUpload = async (urls, files) => {
     if (selectedStill) {
       try {
         let updatedStillData = { ...selectedStill };
         if (uploadType === 'main') {
           updatedStillData.image = urls[0];
         } else if (uploadType === 'grid') {
-          const newInternalImages = { ...updatedStillData.internalImages };
-          files.forEach((file, index) => {
-            newInternalImages[
-              `item${Object.keys(newInternalImages).length + 1}`
-            ] = file;
-          });
-          updatedStillData.internalImages = newInternalImages;
-          console.log('Updated still image', updatedStillData.internalImages);
+          console.log('handle upload still dashboard files', files);
+          const newImages = await Promise.all(
+            files.map(async (file, index) => {
+              console.log('handle upload still dashboard', file);
+              const img = new Image();
+              img.src = URL.createObjectURL(file);
+              await new Promise((resolve) => {
+                img.onload = resolve;
+              });
+              return {
+                id: `${Date.now()}-${index}`,
+                url: urls[index],
+                ratio: img.width / img.height,
+                order: updatedStillData.internalImages.length + index,
+              };
+            })
+          );
+          updatedStillData.internalImages = [
+            ...updatedStillData.internalImages,
+            ...newImages,
+          ];
+          setNewlyAddedImages([...newlyAddedImages, ...newImages]);
+          setShowSaveButton(true);
         }
-        const updatedStill = await updateStill(
-          selectedStill.clientId,
-          selectedStill.id,
-          updatedStillData
-        );
-        setStills(
-          stills.map((s) => (s.id === updatedStill.id ? updatedStill : s))
-        );
-        setSelectedStill(updatedStill);
+        setSelectedStill(updatedStillData);
       } catch (error) {
         console.error('Error updating still:', error);
       }
@@ -183,6 +198,70 @@ const StillDashboardComponent = () => {
       setEditingField(null);
     } catch (error) {
       console.error('Error saving still:', error);
+    }
+  };
+
+  const handleGridReorder = (reorderedImages) => {
+    setSelectedStill((prev) => ({
+      ...prev,
+      internalImages: reorderedImages,
+    }));
+    setShowSaveButton(true);
+  };
+
+  const handleGridCrop = (id, croppedImage) => {
+    console.log('handleGrid cropped image', croppedImage);
+    setCroppingImage({ id, image: croppedImage });
+  };
+
+  const handleCropComplete = async (id, croppedFile) => {
+    if (croppingImage) {
+      try {
+        // const formData = new FormData();
+        // formData.append('file', croppedFile);
+        // const response = await fetch('/api/upload', {
+        //   method: 'POST',
+        //   body: formData,
+        // });
+        // const { url } = await response.json();
+        const storageRef = ref(storage, `stills/${id}/grid_${Date.now()}`);
+        await uploadBytes(storageRef, croppedFile);
+        const url = await getDownloadURL(storageRef);
+        console.log('cropped image url', url);
+        setSelectedStill((prev) => ({
+          ...prev,
+          internalImages: prev.internalImages.map((img) =>
+            img.id === croppingImage.id ? { ...img, url } : img
+          ),
+        }));
+        setShowSaveButton(true);
+      } catch (error) {
+        console.error('Error uploading cropped image:', error);
+      } finally {
+        setCroppingImage(null);
+      }
+    }
+  };
+
+  const handleGridDelete = (id) => {
+    setSelectedStill((prev) => ({
+      ...prev,
+      internalImages: prev.internalImages.filter((img) => img.id !== id),
+    }));
+    setShowSaveButton(true);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      await updateStill(selectedStill.clientId, selectedStill.id, {
+        ...selectedStill,
+        visibleFields: visibleFields[selectedStill.id] || {},
+      });
+      setNewlyAddedImages([]);
+      setShowSaveButton(false);
+      fetchStills();
+    } catch (error) {
+      console.error('Error saving changes:', error);
     }
   };
 
@@ -316,13 +395,19 @@ const StillDashboardComponent = () => {
                   src={selectedStill.image}
                   alt='Campaign'
                   className='w-full h-64 object-cover'
+                  loading='lazy'
                 />
               </div>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between border border-white p-2 rounded'>
                   <span>LOGO</span>
                   <div className='flex flex-row'>
-                    <img src={selectedStill.logo} alt='Logo' className='h-8' />
+                    <img
+                      src={selectedStill.logo}
+                      alt='Logo'
+                      className='h-8'
+                      loading='lazy'
+                    />
                   </div>
                 </div>
                 <div className='border border-white p-2 rounded'>
@@ -373,46 +458,23 @@ const StillDashboardComponent = () => {
 
             {/* Campaign Grid */}
             <h3 className='text-xl font-bold my-4'>CAMPAIGN GRID</h3>
-            <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4'>
-              {selectedStill.internalImages &&
-                Object.entries(selectedStill.internalImages).map(
-                  ([key, value]) => (
-                    <div key={key} className='relative group'>
-                      <img
-                        src={value}
-                        alt={`Grid ${key}`}
-                        className='w-full h-32 object-cover'
-                      />
-                      <button
-                        className='absolute top-2 right-2 bg-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity'
-                        onClick={() => {
-                          const updatedInternalImages = {
-                            ...selectedStill.internalImages,
-                          };
-                          delete updatedInternalImages[key];
-                          setSelectedStill((prev) => ({
-                            ...prev,
-                            internalImages: updatedInternalImages,
-                          }));
-                          handleSave();
-                        }}
-                      >
-                        <X className='h-4 w-4 text-white' />
-                      </button>
-                    </div>
-                  )
-                )}
-              <div
-                className='flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 h-32 cursor-pointer'
+            <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px]'>
+              <CampaignGrid
+                images={selectedStill.internalImages}
+                onReorder={handleGridReorder}
+                onCrop={handleCropComplete}
+                onDelete={handleGridDelete}
+              />
+              <button
+                className='mt-4 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 h-32 w-full cursor-pointer'
                 onClick={() => {
                   setUploadType('grid');
                   setShowUploadModal(true);
                 }}
               >
                 <Plus className='h-8 w-8' />
-              </div>
+              </button>
             </div>
-
             {/* Campaign Credits */}
             <h3 className='text-xl font-bold my-4'>CAMPAIGN CREDITS</h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
@@ -511,6 +573,18 @@ const StillDashboardComponent = () => {
           </div>
         )}
 
+        {showSaveButton && (
+          <div className='fixed bottom-4 right-4'>
+            <button
+              onClick={handleSaveChanges}
+              className='flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+            >
+              <Save className='h-4 w-4' />
+              Save Changes
+            </button>
+          </div>
+        )}
+
         <AddCampaignModal
           isOpen={showAddCampaignModal}
           onClose={() => setShowAddCampaignModal(false)}
@@ -534,6 +608,14 @@ const StillDashboardComponent = () => {
           }}
           onConfirm={handleConfirmDelete}
         />
+
+        {/* {croppingImage && (
+          <ImageCropper
+            image={croppingImage.image}
+            onComplete={handleCropComplete}
+            onCancel={() => setCroppingImage(null)}
+          />
+        )} */}
       </div>
     </DndProvider>
   );

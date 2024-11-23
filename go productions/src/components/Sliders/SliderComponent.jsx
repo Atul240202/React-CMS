@@ -35,6 +35,7 @@ const SliderComponent = () => {
                   src={item.logo}
                   alt={`Logo ${index + 1}`}
                   className='slide-logo'
+                  loading='lazy'
                 />
               </div>
               {/* Video */}

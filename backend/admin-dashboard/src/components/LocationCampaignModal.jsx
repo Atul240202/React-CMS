@@ -142,6 +142,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
               <div className='aspect-video bg-zinc-800 overflow-hidden w-6/12 mr-6  hover:bg-zinc-700'>
                 {locationData.image ? (
                   <img
+                    loading='lazy'
                     src={locationData.image}
                     alt='Location'
                     className='w-full h-full object-cover'
@@ -234,6 +235,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
                       className='aspect-square bg-gray-800 overflow-hidden relative group'
                     >
                       <img
+                        loading='lazy'
                         src={url}
                         alt={`Grid ${key}`}
                         className='w-full h-full object-cover'

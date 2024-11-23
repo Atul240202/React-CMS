@@ -70,6 +70,7 @@ const DraggableClientLogo = ({
       onMouseLeave={() => setShowRemove(false)}
     >
       <img
+        loading='lazy'
         src={client.image}
         alt={client.name}
         className='max-w-full max-h-full object-contain'

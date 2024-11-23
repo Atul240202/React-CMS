@@ -24,6 +24,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
         <div className='flex flex-col items-center pt-4'>
           <div className='relative mb-6'>
             <img
+              loading='lazy'
               src='https://res.cloudinary.com/da3r1iagy/image/upload/v1731682579/Profile_1_rhsgml.png'
               alt='Profile'
               className='w-28 h-28 rounded-full object-cover'
@@ -110,7 +111,7 @@ const Header = ({ toggleSidebar }) => {
         className='flex justify-between items-center p-4 text-white'
       >
         <button onClick={toggleSidebar} className='text-white'>
-          <img src={jamMenu} alt='Menu' className='h-10 w-10' />
+          <img loading='lazy' src={jamMenu} alt='Menu' className='h-10 w-10' />
         </button>
         <img src={gopro} alt='' className='w-1/5' />
         <div className='flex items-center space-x-4'>
