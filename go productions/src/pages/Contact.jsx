@@ -16,20 +16,6 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      if (response.ok) {
-        setStatusMessage('Message sent successfully!');
-        setFormData({ name: '', email: '', content: '' });
-      } else {
-        const errorText = await response.text();
-        console.error(`Failed with status ${response.status}: ${errorText}`);
-        setStatusMessage(`Error: ${response.status} - ${response.statusText}`);
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setStatusMessage('An error occurred. Please try again.');
-    }
   };
 
   return (
