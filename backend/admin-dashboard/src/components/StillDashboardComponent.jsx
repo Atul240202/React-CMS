@@ -352,7 +352,7 @@ const StillDashboardComponent = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='p-8 m-8'>
-        <h2 className='text-2xl font-bold mb-4'>STILL CAMPAIGN</h2>
+        <h2 className='text-2xl font-extrabold mb-4'>STILL CAMPAIGN</h2>
 
         <div className='grid grid-cols-1 p-8 bg-[#1C1C1C] backdrop-blur-[84px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8'>
           {stills.map((still, index) => (
@@ -380,7 +380,7 @@ const StillDashboardComponent = () => {
         {selectedStill && (
           <div className='relative'>
             <div className='flex justify-between items-center mb-4'>
-              <h3 className='text-xl font-bold'>CAMPAIGN DETAILS</h3>
+              <h3 className='text-2xl font-extrabold'>CAMPAIGN DETAILS</h3>
               <button
                 onClick={() => setSelectedStill(null)}
                 className='bg-white text-black rounded-full p-1'
@@ -400,7 +400,7 @@ const StillDashboardComponent = () => {
               </div>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between border border-white p-2 rounded'>
-                  <span>LOGO</span>
+                  <span className='font-extrabold text-lg'>LOGO</span>
                   <div className='flex flex-row'>
                     <img
                       src={selectedStill.logo}
@@ -412,7 +412,7 @@ const StillDashboardComponent = () => {
                 </div>
                 <div className='border border-white p-2 rounded'>
                   <div className='flex items-center justify-between'>
-                    <span>TITLE</span>
+                    <span className='font-extrabold text-lg'>TITLE</span>
                     <div>
                       <button
                         onClick={() => setEditingField('text')}
@@ -444,7 +444,7 @@ const StillDashboardComponent = () => {
                   )}
                 </div>
                 <button
-                  className='border border-white p-2 rounded w-full text-left flex items-center justify-between'
+                  className='border border-white font-extrabold text-lg p-2 rounded w-full text-left flex items-center justify-between'
                   onClick={() => {
                     setUploadType('main');
                     setShowUploadModal(true);
@@ -457,7 +457,7 @@ const StillDashboardComponent = () => {
             </div>
 
             {/* Campaign Grid */}
-            <h3 className='text-xl font-bold my-4'>CAMPAIGN GRID</h3>
+            <h3 className='text-2xl font-extrabold mb-4 mt-8'>CAMPAIGN GRID</h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px]'>
               <CampaignGrid
                 images={selectedStill.internalImages}
@@ -476,32 +476,31 @@ const StillDashboardComponent = () => {
               </button>
             </div>
             {/* Campaign Credits */}
-            <h3 className='text-xl font-bold my-4'>CAMPAIGN CREDITS</h3>
+            <h3 className='text-2xl font-extrabold mb-4 mt-8'>
+              CAMPAIGN CREDITS
+            </h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
-              <div className='flex items-center justify-between border border-white p-2 rounded'>
-                <span>CLIENT</span>
-                <select
-                  name='clientId'
-                  value={selectedStill.clientId}
-                  onChange={handleInputChange}
-                  className='bg-transparent text-white text-right'
-                  disabled
-                >
-                  {clients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+              <div className='flex flex-row items-center border border-white p-2 rounded'>
+                <span className='text-white text-xl font-extrabold'>
+                  CLIENT :{' '}
+                </span>
+                <div className='text-lg font-bold ml-4'>
+                  {clients.find(
+                    (client) => client.id === selectedStill.clientId
+                  )?.name || 'Unknown Client'}
+                </div>
               </div>
+
               {Object.entries(selectedStill.credits).map(([key, value]) => (
                 <div
                   key={key}
                   className='flex items-center justify-between border border-white p-3 rounded'
                 >
                   <div className='flex items-center flex-row'>
-                    <span>{key}:</span>
-                    <div className='flex items-center ml-3 space-x-2'>
+                    <span className='text-white text-xl font-extrabold'>
+                      {key} :
+                    </span>
+                    <div className='flex items-center ml-3 text-lg font-medium  space-x-2'>
                       {editingField === `credits.${key}` ? (
                         <input
                           type='text'
@@ -517,7 +516,7 @@ const StillDashboardComponent = () => {
                         />
                       ) : (
                         <span
-                          className={`text-gray-400 ${
+                          className={`text-white font-medium text-xl ${
                             hiddenFields[`credits.${key}`] ? 'opacity-50' : ''
                           }`}
                         >
@@ -552,7 +551,7 @@ const StillDashboardComponent = () => {
                   className='flex items-center space-x-2 w-1/6 border border-white px-4 py-2 rounded justify-between'
                   onClick={() => setShowCreditDropdown(!showCreditDropdown)}
                 >
-                  <span>ADD</span>
+                  <span className='font-extrabold text-xl'>ADD</span>
                   <Plus className='h-4 w-4' />
                 </button>
                 {showCreditDropdown && (
@@ -560,7 +559,7 @@ const StillDashboardComponent = () => {
                     {creditOptions.map((option) => (
                       <button
                         key={option}
-                        className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                        className='block w-full text-left px-4 py-2 font-bold hover:bg-black hover:text-white'
                         onClick={() => handleAddCredit(option)}
                       >
                         {option}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { signIn } from '../firebase';
 
@@ -7,17 +7,15 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       await signIn(email, password);
-      // After successful login, redirect to dashboard
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       setError('Invalid email or password');
     }
@@ -88,28 +86,22 @@ export default function Login() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            <div className='flex items-center'>
-              <input
-                id='keep-logged-in'
-                type='checkbox'
-                checked={keepLoggedIn}
-                onChange={(e) => setKeepLoggedIn(e.target.checked)}
-                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
-              />
-              <label
-                htmlFor='keep-logged-in'
-                className='ml-2 block text-sm text-gray-400'
-              >
-                Keep me logged in
-              </label>
-            </div>
+
             {error && <p className='text-red-500 text-sm'>{error}</p>}
+
             <button
               type='submit'
               className='w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
             >
               Sign in
             </button>
+
+            <Link
+              to='/forgot-password'
+              className='block text-center text-sm text-gray-400 hover:text-white transition-colors'
+            >
+              Forgot Password?
+            </Link>
           </form>
         </div>
         <div className='absolute inset-0 overflow-hidden pointer-events-none'>

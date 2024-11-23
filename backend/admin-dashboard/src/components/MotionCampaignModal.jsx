@@ -137,8 +137,8 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
     <div className='fixed inset-0 bg-black z-50 overflow-y-auto'>
       <div className='min-h-screen p-4'>
         <div className='max-w-5xl mx-auto rounded-lg p-8'>
-          <div className='flex justify-between items-center mb-8'>
-            <h2 className='text-2xl font-bold'>FILL CAMPAIGN DETAILS</h2>
+          <div className='flex justify-between items-center mb-6'>
+            <h2 className='text-2xl font-extrabold'>FILL CAMPAIGN DETAILS</h2>
             <button onClick={onClose}>
               <X className='h-6 w-6' />
             </button>
@@ -164,7 +164,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
               {/* Title */}
               <div className='space-y-4 pl-4 w-1/2'>
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
-                  <span>CLIENT</span>
+                  <span className='font-extrabold text-xl'>CLIENT</span>
                   <select
                     name='clientId'
                     value={campaignData.clientId}
@@ -188,7 +188,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                 </div>
 
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
-                  <span>LOGO</span>
+                  <span className='font-extrabold text-xl'>LOGO</span>
                   {isLoading ? (
                     <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-white'></div>
                   ) : campaignData.logo ? (
@@ -204,7 +204,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                 </div>
                 <div className='border border-white p-3 rounded'>
                   <div className='flex items-center justify-between'>
-                    <span>TITLE</span>
+                    <span className='font-extrabold text-xl'>TITLE</span>
                     <Pencil
                       className='h-4 w-4'
                       onClick={() => setEditingField('text')}
@@ -217,7 +217,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                       value={campaignData.text}
                       onChange={handleInputChange}
                       onBlur={() => setEditingField(null)}
-                      className='w-full bg-transparent mt-2 focus:outline-none animate-pulse'
+                      className='w-full bg-transparent mt-2 focus:outline-none'
                       placeholder='Write Here..'
                       autoFocus
                     />
@@ -228,7 +228,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
 
                 <button
                   onClick={() => setShowUploadModal(true)}
-                  className='w-full border border-white p-3 rounded text-left flex items-center justify-between'
+                  className='w-full border border-white p-3 rounded text-left flex items-center justify-between font-extrabold text-xl'
                 >
                   <span>
                     {videoPreviewUrl ? 'CHANGE VIDEO' : 'UPLOAD VIDEO'}
@@ -240,11 +240,13 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
 
             {/* Campaign Credits */}
             <div>
-              <h3 className='text-xl font-bold mb-4'>CAMPAIGN CREDITS</h3>
+              <h3 className='text-2xl font-extrabold mb-4'>CAMPAIGN CREDITS</h3>
               <div className='space-y-2 bg-[#1C1C1C] p-6'>
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex flex-row'>
-                    <span>PRODUCT TITLE:</span>
+                    <span className='font-extrabold text-xl'>
+                      PRODUCT TITLE:
+                    </span>
                     {editingField === 'productTitle' ? (
                       <input
                         type='text'
@@ -279,7 +281,9 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                     className='flex items-center justify-between border border-white p-3 rounded'
                   >
                     <div className='flex flex-row'>
-                      <span>{key.toUpperCase()}: </span>
+                      <span className='font-extrabold text-xl'>
+                        {key.toUpperCase()}:{' '}
+                      </span>
                       <div className='flex items-center ml-3 space-x-2'>
                         {editingField === `credits.${key}` ? (
                           <input
@@ -287,7 +291,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                             value={value}
                             onChange={(e) => handleCreditChange(e, key)}
                             onBlur={() => setEditingField(null)}
-                            className='bg-transparent text-left focus:outline-none animate-pulse pl-4'
+                            className='bg-transparent text-left focus:outline-none pl-4'
                             placeholder='Write Here..'
                             autoFocus
                           />
@@ -296,8 +300,8 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                             <span
                               className={
                                 visibleFields[`credits.${key}`] === false
-                                  ? 'opacity-50 pl-4'
-                                  : 'text-gray-400'
+                                  ? 'opacity-50 pl-4 text-white'
+                                  : 'text-gray-400 text-white'
                               }
                             >
                               {value || 'Click pencil to edit...'}
@@ -332,7 +336,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                 ))}
                 <div className='relative'>
                   <button
-                    className='flex items-center space-x-2 w-1/5 border border-white px-4 py-2 rounded justify-between'
+                    className='flex items-center space-x-2 w-1/5 border border-white px-4 py-2 rounded justify-between text-xl font-extrabold'
                     onClick={() => setShowCreditDropdown(!showCreditDropdown)}
                   >
                     <span>ADD</span>
@@ -343,7 +347,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                       {creditOptions.map((option) => (
                         <button
                           key={option}
-                          className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                          className='block w-full text-left px-4 py-2 hover:bg-black hover:text-white'
                           onClick={() => handleAddCredit(option)}
                         >
                           {option}

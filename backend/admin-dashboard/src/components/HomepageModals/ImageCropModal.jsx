@@ -94,11 +94,10 @@ export default function ImageCropModal({
       canvas.width = completedCrop.width * scaleX;
       canvas.height = completedCrop.height * scaleY;
 
+      const ctx = canvas.getContext('2d');
       // Configure canvas for maximum quality
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-
-      const ctx = canvas.getContext('2d');
 
       if (!ctx) {
         throw new Error('Could not create image context');

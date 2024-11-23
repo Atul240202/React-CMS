@@ -233,7 +233,7 @@ const LocationDashboardComponent = () => {
           fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
         }}
       >
-        <h2 className='text-2xl font-bold mb-4'>LOCATION</h2>
+        <h2 className='text-2xl font-extrabold mb-4'>LOCATION</h2>
 
         {/* Location Thumbnails */}
         <div className='grid grid-cols-4 p-8 bg-[#1C1C1C] backdrop-blur-[84px] gap-4 mb-8'>
@@ -261,7 +261,7 @@ const LocationDashboardComponent = () => {
         {selectedLocation && (
           <div className='relative'>
             <div className='flex justify-between items-center mb-4'>
-              <h3 className='text-xl font-bold'>LOCATION DETAILS</h3>
+              <h3 className='text-2xl font-extrabold'>LOCATION DETAILS</h3>
               <button
                 className='bg-white rounded-full p-2'
                 onClick={() => setSelectedLocation(null)}
@@ -287,7 +287,7 @@ const LocationDashboardComponent = () => {
               <div className='space-y-4'>
                 <div className='border border-white p-2 flex items-center justify-between relative'>
                   <div className='flex-grow'>
-                    <p className='mb-1'>TITLE</p>
+                    <p className='mb-1 text-xl font-extrabold'>TITLE</p>
                     {editingField === 'text' ? (
                       <input
                         type='text'
@@ -326,7 +326,7 @@ const LocationDashboardComponent = () => {
                 </div>
                 <div className='border border-white p-2 rounded flex items-center justify-between relative'>
                   <div className='flex-grow'>
-                    <p className='mb-1'>ADDRESS</p>
+                    <p className='mb-1 text-xl font-extrabold'>ADDRESS</p>
                     {editingField === 'address' ? (
                       <input
                         type='text'
@@ -337,7 +337,7 @@ const LocationDashboardComponent = () => {
                           handleInputChange('address', e.target.value)
                         }
                         onBlur={handleSaveChanges}
-                        className='w-full bg-transparent focus:outline-none'
+                        className='w-full bg-transparent text-xl font-bold focus:outline-none'
                         placeholder='Enter address'
                       />
                     ) : (
@@ -366,7 +366,7 @@ const LocationDashboardComponent = () => {
                   )}
                 </div>
                 <button
-                  className='border border-white p-2 rounded w-full text-left'
+                  className='border border-white p-2 rounded w-full text-left text-xl font-extrabold'
                   onClick={() => {
                     setUploadType('main');
                     setShowUploadModal(true);
@@ -378,7 +378,7 @@ const LocationDashboardComponent = () => {
             </div>
 
             {/* Location Grid */}
-            <h3 className='text-xl font-bold my-4'>LOCATION GRID</h3>
+            <h3 className='text-2xl font-extrabold mb-4 mt-6'>LOCATION GRID</h3>
             <div className='p-8 bg-[#1C1C1C] grid grid-cols-6 gap-4'>
               {selectedLocation.locationImages &&
                 Object.entries(selectedLocation.locationImages).map(

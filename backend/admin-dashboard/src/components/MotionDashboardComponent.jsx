@@ -227,7 +227,7 @@ const MotionDashboardComponent = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='p-8 m-8'>
-        <h2 className='text-2xl font-bold mb-4'>MOTION CAMPAIGN</h2>
+        <h2 className='text-2xl font-extrabold mb-4'>MOTION CAMPAIGN</h2>
 
         {/* Campaign Thumbnails */}
         <div className='grid grid-cols-1 p-8 bg-[#1C1C1C] backdrop-blur-[84px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8'>
@@ -254,8 +254,8 @@ const MotionDashboardComponent = () => {
         {/* Campaign Details */}
         {selectedMotion && (
           <div className='relative'>
-            <div className='flex justify-between items-center mb-4'>
-              <h3 className='text-xl font-bold'>CAMPAIGN DETAILS</h3>
+            <div className='flex justify-between items-center'>
+              <h3 className='text-2xl font-extrabold mb-4'>CAMPAIGN DETAILS</h3>
               <button
                 onClick={() => setSelectedMotion(null)}
                 className='bg-white text-black rounded-full p-1'
@@ -275,7 +275,7 @@ const MotionDashboardComponent = () => {
               </div>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between border border-white p-2 rounded'>
-                  <span>LOGO</span>
+                  <span className='text-xl font-extrabold'>LOGO</span>
                   <img
                     loading='lazy'
                     src={selectedMotion.logo}
@@ -285,7 +285,7 @@ const MotionDashboardComponent = () => {
                 </div>
                 <div className='border border-white p-2 rounded'>
                   <div className='flex items-center justify-between'>
-                    <span>TITLE</span>
+                    <span className='text-xl font-extrabold'>TITLE</span>
                     <div>
                       <button
                         onClick={() => setEditingField('text')}
@@ -322,14 +322,16 @@ const MotionDashboardComponent = () => {
                   className='border border-white p-2 rounded w-full text-left flex items-center justify-between'
                   onClick={() => setShowUploadModal(true)}
                 >
-                  <span>CHANGE VIDEO</span>
+                  <span className='text-xl font-extrabold'>CHANGE VIDEO</span>
                   <Pencil className='h-4 w-4' />
                 </button>
               </div>
             </div>
 
             {/* Campaign Credits */}
-            <h3 className='text-xl font-bold my-4'>CAMPAIGN CREDITS</h3>
+            <h3 className='text-2xl font-extrabold mb-4 mt-8'>
+              CAMPAIGN CREDITS
+            </h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
               {Object.entries(selectedMotion.credits || {}).map(
                 ([key, value]) => (
@@ -338,7 +340,7 @@ const MotionDashboardComponent = () => {
                     className='flex items-center justify-between border border-white p-3 rounded'
                   >
                     <div className='flex items-center flex-row'>
-                      <span>{key}:</span>
+                      <span className='text-xl font-extrabold'>{key}:</span>
                       <div className='flex items-center ml-3 space-x-2'>
                         {editingField === `credits.${key}` ? (
                           <input
@@ -355,7 +357,7 @@ const MotionDashboardComponent = () => {
                           />
                         ) : (
                           <span
-                            className={`text-gray-400 ${
+                            className={`text-white text-xl font-bold ${
                               visibleFields[selectedMotion.id]?.[
                                 `credits.${key}`
                               ] === false

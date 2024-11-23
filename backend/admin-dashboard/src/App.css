@@ -1,10 +1,3 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -45,11 +38,10 @@
   font-family: 'FONTSPRING DEMO - Chesna Grotesk Black';
   src: url('/fonts/chesnagrotesk-medium.woff2') format('woff2'),
     url('/fonts/Fontspring-DEMO-chesnagrotesk-black.woff') format('woff');
-  font-weight: 900;
   font-style: normal;
 }
 
 body {
   font-family: 'FONTSPRING DEMO - Chesna Grotesk Black', sans-serif;
-  font-weight: 900;
+  font-weight: 600;
 }

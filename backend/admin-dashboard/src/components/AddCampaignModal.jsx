@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Pencil, Plus, ChevronDown } from 'lucide-react';
+import { X, Pencil, Plus, ChevronDown, Trash2 } from 'lucide-react';
 import { getClients, addStill, getClientLogo, storage } from '../firebase';
 import UploadModal from './HomepageModals/UploadModal';
 import CampaignGrid from './CampaignGrid';
@@ -252,7 +252,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
       <div className='min-h-screen p-4'>
         <div className='max-w-5xl mx-auto'>
           <div className='flex justify-between items-center p-6 border-b border-gray-800'>
-            <h2 className='text-2xl font-bold'>FILL CAMPAIGN DETAILS</h2>
+            <h2 className='text-2xl font-extrabold'>FILL CAMPAIGN DETAILS</h2>
             <button onClick={onClose}>
               <X className='h-6 w-6' />
             </button>
@@ -285,22 +285,25 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
               <div className='space-y-4 w-1/2 pl-4'>
                 <div className='flex flex-col'>
                   <div className='flex items-center justify-between border border-white p-3 rounded'>
-                    <span>
+                    <span className='text-xl font-extrabold'>
                       CLIENT <span className='text-red-500'>*</span>
                     </span>
                     <select
                       name='clientId'
                       value={campaignData.clientId}
                       onChange={handleInputChange}
-                      className='bg-transparent focus:outline-none'
+                      className='bg-transparent focus:outline-none '
                       required
                     >
-                      <option className='text-black overflow-hidden' value=''>
+                      <option
+                        className='text-black text-lg font-bold overflow-hidden'
+                        value=''
+                      >
                         Select a client
                       </option>
                       {clients.map((client) => (
                         <option
-                          className='text-black overflow-hidden'
+                          className='text-black font-bold overflow-hidden'
                           key={client.id}
                           value={client.id}
                         >
@@ -318,7 +321,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
 
                 <div className='flex flex-col'>
                   <div className='flex items-center justify-between border border-white p-3 rounded'>
-                    <span>
+                    <span className='text-xl font-extrabold'>
                       LOGO <span className='text-red-500'>*</span>
                     </span>
                     {isFetchingLogo ? (
@@ -342,7 +345,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                 <div className='flex flex-col'>
                   <div className='border border-white p-3 rounded'>
                     <div className='flex items-center justify-between'>
-                      <span>
+                      <span className='text-xl font-extrabold'>
                         TITLE <span className='text-red-500'>*</span>
                       </span>
                       <Pencil
@@ -378,7 +381,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                   }}
                   className='w-full p-3 border border-white rounded text-left flex items-center justify-between'
                 >
-                  <span>CHANGE PICTURE</span>
+                  <span className='text-xl font-extrabold'>CHANGE PICTURE</span>
                   <Pencil className='h-4 w-4' />
                 </button>
               </div>
@@ -386,7 +389,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
 
             {/* Campaign Grid */}
             <div>
-              <h3 className='text-xl font-black mb-4'>CAMPAIGN GRID</h3>
+              <h3 className='text-2xl font-black mb-4'>CAMPAIGN GRID</h3>
               <div className='bg-[#1C1C1C] backdrop-blur-[84px] p-6'>
                 <CampaignGrid
                   images={campaignData.internalImages}
@@ -399,7 +402,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                     setUploadType('grid');
                     setShowUploadModal(true);
                   }}
-                  className='mt-4 w-full aspect-[3/1] bg-zinc-800 rounded flex items-center justify-center hover:bg-zinc-700 transition-colors'
+                  className='mt-4 w-full aspect-[3/1] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
                 >
                   <Plus className='h-8 w-8' />
                 </button>
@@ -408,7 +411,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
 
             {/* Campaign Credits */}
             <div>
-              <h3 className='text-xl font-black mb-4'>CAMPAIGN CREDITS</h3>
+              <h3 className='text-2xl font-black mb-4'>CAMPAIGN CREDITS</h3>
               <div className='space-y-2 bg-[#1C1C1C] backdrop-blur-[84px] p-6'>
                 {Object.entries(campaignData.credits).map(([key, value]) => (
                   <div
@@ -416,7 +419,9 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                     className='flex items-center justify-between border border-white p-3 rounded'
                   >
                     <div className='flex items-center flex-row'>
-                      <span>{key.toUpperCase()}:</span>
+                      <span className='font-extrabold text-xl'>
+                        {key.toUpperCase()} :
+                      </span>
                       <div className='flex items-center ml-3 space-x-2'>
                         {editingField === key ? (
                           <input
@@ -453,18 +458,18 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                 ))}
                 <div className='relative'>
                   <button
-                    className='flex items-center space-x-2 w-1/6 border border-white px-4 py-2 rounded justify-between'
+                    className='flex items-center space-x-2 text-xl font-bold w-1/5 border border-white px-4 py-2 rounded justify-between'
                     onClick={() => setShowCreditDropdown(!showCreditDropdown)}
                   >
                     <span>ADD</span>
                     <Plus className='h-4 w-4' />
                   </button>
                   {showCreditDropdown && (
-                    <div className='absolute top-full left-0 w-1/6 bg-white text-black mt-1 rounded shadow-lg'>
+                    <div className='absolute top-full left-0 w-1/5 bg-white text-black mt-1 rounded shadow-lg '>
                       {creditOptions.map((option) => (
                         <button
                           key={option}
-                          className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                          className='block w-full text-left px-4 py-2 hover:text-white hover:bg-black'
                           onClick={() => handleAddCredit(option)}
                         >
                           {option}

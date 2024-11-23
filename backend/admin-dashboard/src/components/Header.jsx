@@ -1,11 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, User, LogOut, X } from 'lucide-react';
-import { logout } from '../firebase'; // Import the logout function
+import { logout, auth, db } from '../firebase'; // Import the logout function
 import jamMenu from '../assets/jam_menu.png';
 import gopro from '../assets/gopro.png';
+import { doc, getDoc } from 'firebase/firestore';
+import { updatePassword } from 'firebase/auth';
 
 const ProfileModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  const [userData, setUserData] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchUserData = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        // Fetch additional user data if stored in Firestore
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+
+        const additionalData = docSnap.exists() ? docSnap.data() : {};
+        setUserData({
+          name: additionalData.name || 'Default Name',
+          email: user.email,
+          profileImage:
+            additionalData.profileImage ||
+            'https://res.cloudinary.com/da3r1iagy/image/upload/v1731682579/Profile_1_rhsgml.png',
+        });
+      }
+    };
+
+    fetchUserData();
+  }, [isOpen]);
+
+  const handlePasswordChange = async () => {
+    if (!newPassword) {
+      setPasswordError('Please enter a new password.');
+      return;
+    }
+
+    try {
+      await updatePassword(auth.currentUser, newPassword);
+      setPasswordSuccess('Password updated successfully.');
+      setPasswordError('');
+    } catch (error) {
+      setPasswordError(error.message);
+      setPasswordSuccess('');
+    }
+  };
+
+  if (!isOpen || !userData) return null;
 
   return (
     <div
@@ -19,13 +66,13 @@ const ProfileModal = ({ isOpen, onClose }) => {
           onClick={onClose}
           className='absolute right-4 top-4 text-zinc-900 hover:text-zinc-500'
         >
-          <X className='h-6 w-6' />
+          X {/* Replace with your close icon component */}
         </button>
         <div className='flex flex-col items-center pt-4'>
           <div className='relative mb-6'>
             <img
               loading='lazy'
-              src='https://res.cloudinary.com/da3r1iagy/image/upload/v1731682579/Profile_1_rhsgml.png'
+              src={userData.profileImage}
               alt='Profile'
               className='w-28 h-28 rounded-full object-cover'
             />
@@ -33,17 +80,35 @@ const ProfileModal = ({ isOpen, onClose }) => {
           <div className='w-full space-y-4'>
             <div className='flex flex-row border border-gray-700 rounded p-3'>
               <div className='text-lg font-black text-zinc-800 pr-2'>NAME:</div>
-              <div className='text-lg text-zinc-700'>JONAS KAHNWALD</div>
+              <div className='text-lg text-zinc-700'>{userData.name}</div>
             </div>
             <div className='flex flex-row border border-gray-700 rounded p-3'>
               <div className='text-lg font-black text-zinc-800 pr-2'>
                 MAIL ID:
               </div>
-              <div className='text-lg text-zinc-700'>JONAS@GMAIL.COM</div>
+              <div className='text-lg text-zinc-700'>{userData.email}</div>
             </div>
-            <button className='text-blue-500 hover:text-blue-400 font-medium'>
-              CHANGE PASSWORD
-            </button>
+            <div className='space-y-2'>
+              <input
+                type='password'
+                placeholder='Enter new password'
+                className='w-full p-2 border border-gray-300 rounded-md'
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <button
+                onClick={handlePasswordChange}
+                className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600'
+              >
+                Change Password
+              </button>
+              {passwordError && (
+                <p className='text-red-500 text-sm'>{passwordError}</p>
+              )}
+              {passwordSuccess && (
+                <p className='text-green-500 text-sm'>{passwordSuccess}</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

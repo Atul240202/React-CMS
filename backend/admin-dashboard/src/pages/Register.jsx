@@ -1,4 +1,3 @@
-// src/components/SignUpForm.jsx
 import React, { useState } from 'react';
 import { signUp } from '../firebase';
 
@@ -6,6 +5,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -13,12 +13,19 @@ const Register = () => {
     setError(''); // Clear previous errors
 
     try {
-      const user = await signUp(name, email, password);
+      const user = await signUp(name, email, password, profileImage);
       console.log('User registered:', user);
       // Handle successful sign-up (e.g., redirect to login or dashboard)
     } catch (err) {
       console.error('Error signing up:', err.message);
       setError(err.message); // Set error message for display
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
     }
   };
 
@@ -74,6 +81,19 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+            />
+          </div>
+
+          <div className='mb-4'>
+            <label htmlFor='profileImage' className='block text-gray-700'>
+              Profile Image
+            </label>
+            <input
+              type='file'
+              id='profileImage'
+              className='w-full p-2 border border-gray-300 rounded-md'
+              accept='image/*'
+              onChange={handleImageChange}
             />
           </div>
 

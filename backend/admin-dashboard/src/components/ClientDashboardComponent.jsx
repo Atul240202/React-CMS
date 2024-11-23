@@ -122,7 +122,7 @@ export default function ClientDashboardComponent() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='min-h-screen m-8 p-8'>
-        <h1 className='text-white text-2xl font-bold mb-4'>CLIENT</h1>
+        <h1 className='text-white text-2xl font-extrabold mb-4'>CLIENT</h1>
 
         <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
           {clients.map((client, index) => (

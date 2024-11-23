@@ -26,6 +26,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
+  updateProfile,
 } from 'firebase/auth';
 
 // Your web app's Firebase configuration
@@ -46,15 +50,41 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
 
-//signup
-export const signUp = async (name, email, password) => {
+export { auth };
+
+export const uploadProfileImage = async (userId, file) => {
+  try {
+    const imageRef = ref(storage, `profileImages/${userId}`);
+    await uploadBytes(imageRef, file);
+    const photoURL = await getDownloadURL(imageRef);
+    return photoURL;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const signUp = async (name, email, password, profileImage) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    return userCredential.user;
+    const user = userCredential.user;
+
+    // Upload profile image if provided
+    let photoURL = null;
+    if (profileImage) {
+      photoURL = await uploadProfileImage(user.uid, profileImage);
+    }
+
+    // Update user's profile with name and photo URL
+    await updateProfile(user, {
+      displayName: name,
+      photoURL,
+    });
+
+    return user;
   } catch (error) {
     throw error;
   }
@@ -83,6 +113,35 @@ export const logout = async () => {
   }
 };
 
+// Send password reset email
+export const sendPasswordReset = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Verify password reset code
+export const verifyResetCode = async (code) => {
+  try {
+    await verifyPasswordResetCode(auth, code);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Complete password reset
+export const confirmReset = async (code, newPassword) => {
+  try {
+    await confirmPasswordReset(auth, code, newPassword);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
 // Utility function to upload a client
 export async function uploadClient(name, clientKey, file, fileType) {
   try {
@@ -973,22 +1032,26 @@ export async function getInternalImagesByProduct(clientId, productTitle) {
   try {
     const clientRef = doc(db, 'clients', clientId);
     const clientDoc = await getDoc(clientRef);
+
     if (clientDoc.exists()) {
       const stills = clientDoc.data().stills || {};
       const selectedStill = Object.values(stills).find(
         (still) => still.credits?.['PRODUCT TITLE'] === productTitle
       );
+
       if (selectedStill) {
-        const internalImages = selectedStill.internalImages || {};
-        console.log('Internal images:', internalImages);
-        return internalImages;
+        const internalImages = selectedStill.internalImages || [];
+        const imageUrls = internalImages.map((image) => image.url);
+
+        console.log('Internal image URLs:', imageUrls);
+        return imageUrls;
       } else {
         console.log('No such product!');
-        return {};
+        return [];
       }
     } else {
       console.log('No such client!');
-      return {};
+      return [];
     }
   } catch (error) {
     console.error('Error fetching internal images:', error);

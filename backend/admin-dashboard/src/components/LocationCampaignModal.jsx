@@ -129,8 +129,8 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
     >
       <div className='min-h-screen p-4'>
         <div className='max-w-5xl mx-auto '>
-          <div className='flex justify-between items-center p-6 border-b border-gray-800'>
-            <h2 className='text-2xl font-bold'>FILL LOCATION DETAILS</h2>
+          <div className='flex justify-between items-center p-4 border-b border-gray-800'>
+            <h2 className='text-2xl font-extrabold'>FILL LOCATION DETAILS</h2>
             <button onClick={onClose}>
               <X className='h-6 w-6' />
             </button>
@@ -168,7 +168,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
                 <div className='flex flex-col'>
                   <div className='border border-white p-3 rounded'>
                     <div className='flex items-center justify-between'>
-                      <span>
+                      <span className='text-xl font-extrabold'>
                         TITLE <span className='text-red-500'>*</span>
                       </span>
                       <Pencil className='h-4 w-4' />
@@ -180,6 +180,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
                       onChange={handleInputChange}
                       placeholder='Write Here..'
                       className='w-full bg-transparent mt-2 focus:outline-none'
+                      autoFocus
                     />
                   </div>
                   {errors.text && (
@@ -190,7 +191,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
                 <div className='flex flex-col'>
                   <div className='border border-white p-3 rounded'>
                     <div className='flex items-center justify-between'>
-                      <span>
+                      <span className='text-xl font-extrabold'>
                         ADDRESS <span className='text-red-500'>*</span>
                       </span>
                       <Pencil className='h-4 w-4' />
@@ -218,7 +219,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
                   }}
                   className='w-full border border-white p-3 rounded text-left flex items-center justify-between'
                 >
-                  <span>CHANGE IMAGE</span>
+                  <span className='text-xl font-extrabold'>CHANGE IMAGE</span>
                   <Pencil className='h-4 w-4' />
                 </button>
               </div>
@@ -226,7 +227,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
 
             {/* Location Grid */}
             <div>
-              <h3 className='text-xl font-bold mb-4'>LOCATION GRID</h3>
+              <h3 className='text-2xl font-extrabold mb-4'>LOCATION GRID</h3>
               <div className='grid grid-cols-6 gap-4 bg-[#1C1C1C] p-6'>
                 {Object.entries(locationData.locationImages).map(
                   ([key, url]) => (
