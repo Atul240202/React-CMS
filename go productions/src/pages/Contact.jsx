@@ -1,32 +1,76 @@
-import React from 'react';
-import { RxFontStyle } from 'react-icons/rx';
+import React, { useState } from 'react';
 
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    content: '',
+  });
+
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (response.ok) {
+        setStatusMessage('Message sent successfully!');
+        setFormData({ name: '', email: '', content: '' });
+      } else {
+        const errorText = await response.text();
+        console.error(`Failed with status ${response.status}: ${errorText}`);
+        setStatusMessage(`Error: ${response.status} - ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatusMessage('An error occurred. Please try again.');
+    }
+  };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>CONTACT US</h1>
       <hr style={styles.styleLine} />
 
       <h2 style={styles.subtitle}>LETS CREATE MAGIC TOGETHER</h2>
-      <form style={styles.form}>
+      <form style={styles.form} onSubmit={handleSubmit}>
         <input
           type='text'
+          name='name'
+          value={formData.name}
+          onChange={handleInputChange}
           placeholder='WRITE YOUR NAME HERE,'
           style={styles.input}
+          required
         />
         <input
           type='email'
+          name='email'
+          value={formData.email}
+          onChange={handleInputChange}
           placeholder='WRITE YOUR EMAIL ID HERE,'
           style={styles.input}
+          required
         />
         <textarea
+          name='content'
+          value={formData.content}
+          onChange={handleInputChange}
           placeholder='WRITE YOUR CONTENT HERE,'
           style={styles.textarea}
+          required
         ></textarea>
         <button type='submit' style={styles.button}>
           SEND
         </button>
       </form>
+      {statusMessage && <p style={styles.status}>{statusMessage}</p>}
+
       {/* New section for Address and Map */}
       <div style={styles.infoSection}>
         <div style={styles.contactDetails}>
@@ -49,24 +93,12 @@ function Contact() {
           <div style={styles.contactBox}>
             <h3 style={{ margin: '0', fontSize: '1.5rem' }}>SEND MAIL</h3>
             <p style={{ margin: '0' }}>
-              <a style={{ color: 'white' }} href='help@gostudio.in'>
+              <a style={{ color: 'white' }} href='mailto:help@gostudio.in'>
                 help@gostudio.in
               </a>
             </p>
           </div>
         </div>
-      </div>
-      <div style={styles.mapContainer}>
-        <h1 style={styles.overlayText}>LOCATION</h1>
-        <iframe
-          title='Go Productions Location'
-          src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
-          style={styles.mapFrame}
-          allowFullScreen=''
-          loading='lazy'
-          referrerpolicy='no-referrer-when-downgrade'
-        ></iframe>
-        <h1 style={styles.overlayTextBottom}>GO PRODUCTION</h1>
       </div>
     </div>
   );
