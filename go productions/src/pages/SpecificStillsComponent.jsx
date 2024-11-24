@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import ImagePopupComponent from '../components/ImagePopupComponent';
 import TransitionEffect from '../components/TransitionEffect';
 import { db } from '../Firebase';
-import { doc, getDoc, orderBy } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function SpecificStillsComponent() {
   const { clientId, stillId } = useParams();
@@ -61,15 +61,21 @@ export default function SpecificStillsComponent() {
 
   useEffect(() => {
     if (still && still.internalImages) {
-      // Extract the URLs from internalImages
       const internalImages = still.internalImages
         .filter(Boolean)
         .map((image) => image.url);
 
-      let loadedImages = 0;
-      const totalImages = internalImages.length + 1; // +1 for the main image
+      const getGridSpan = (ratio) => {
+        if (ratio > 1.3) return { gridColumn: 'span 3', gridRow: 'span 2' };
+        if (ratio < 0.7) return { gridColumn: 'span 1', gridRow: 'span 2' };
+        if (ratio >= 0.8 && ratio <= 1.1)
+          return { gridColumn: 'span 2', gridRow: 'span 2' }; // Square condition
+        return { gridColumn: 'span 2', gridRow: 'span 2' }; // Default for other ratios
+      };
 
-      // Create a layout for each image
+      let loadedImages = 0;
+      const totalImages = internalImages.length + 1;
+
       const layout = internalImages.map((url) => {
         return new Promise((resolve) => {
           const img = new Image();
@@ -77,19 +83,17 @@ export default function SpecificStillsComponent() {
             loadedImages++;
             setProgress(50 + (loadedImages / totalImages) * 50);
 
-            const isLandscape = img.width > img.height;
+            const ratio = img.width / img.height;
             resolve({
               src: url,
-              isLandscape,
-              gridColumn: isLandscape ? 'span 2' : 'span 1',
-              gridRow: isLandscape ? 'span 1' : 'span 2',
+              ratio,
+              ...getGridSpan(ratio),
             });
           };
           img.src = url;
         });
       });
 
-      // Load main image
       const mainImg = new Image();
       mainImg.onload = () => {
         loadedImages++;
@@ -97,7 +101,6 @@ export default function SpecificStillsComponent() {
       };
       mainImg.src = still.image;
 
-      // When all images are loaded, update the layout
       Promise.all(layout).then((resolvedLayout) => {
         setImageLayout(resolvedLayout);
         setIsLoading(false);
@@ -164,6 +167,7 @@ export default function SpecificStillsComponent() {
                 ...styles.gridItem,
                 gridColumn: image.gridColumn,
                 gridRow: image.gridRow,
+                aspectRatio: styles.gridItem.aspectRatio(image),
               }}
               onClick={() => openGridImagePopup(index)}
             >
@@ -247,14 +251,20 @@ const styles = {
   },
   gridContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 4fr)',
-    gap: '30px',
+    gridTemplateColumns: 'repeat(6, 1fr)',
+    gap: '16px',
     width: '90%',
     margin: '20px auto',
   },
   gridItem: {
     overflow: 'hidden',
     cursor: 'pointer',
+    position: 'relative',
+    aspectRatio: (image) => {
+      if (image.ratio > 1.3) return '16/9';
+      if (image.ratio < 0.7) return '9/16';
+      return '10/8.5'; // Square or near-square
+    },
   },
   gridImage: {
     width: '100%',

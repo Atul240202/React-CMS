@@ -292,7 +292,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                       name='clientId'
                       value={campaignData.clientId}
                       onChange={handleInputChange}
-                      className='bg-transparent focus:outline-none '
+                      className='bg-transparent focus:outline-none text-center'
                       required
                     >
                       <option
@@ -303,7 +303,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                       </option>
                       {clients.map((client) => (
                         <option
-                          className='text-black font-bold overflow-hidden'
+                          className='text-black font-bold text-lg overflow-hidden'
                           key={client.id}
                           value={client.id}
                         >
@@ -499,6 +499,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
         multiple={uploadType === 'grid'}
+        requireCrop={uploadType === 'main'}
       />
 
       {isLoading && (

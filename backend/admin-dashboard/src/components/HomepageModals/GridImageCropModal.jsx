@@ -112,7 +112,7 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
 
   return (
     <div className='fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center'>
-      <div className='bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-4xl'>
+      <div className='bg-white dark:bg-gray-900 p-6 w-full max-w-4xl'>
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-xl font-bold dark:text-white'>
             Crop Image (16:9)
@@ -126,7 +126,7 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
         </div>
 
         <div className='flex flex-col items-center'>
-          <div className='relative w-full max-h-[60vh] overflow-hidden rounded-lg'>
+          <div className='relative w-full max-h-[60vh] overflow-hidden'>
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}

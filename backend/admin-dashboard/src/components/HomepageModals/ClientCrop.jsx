@@ -86,7 +86,7 @@ export default function ClientCrop({
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50'>
-      <div className='bg-zinc-900 rounded-lg p-6 w-full max-w-4xl'>
+      <div className='bg-zinc-900 p-6 w-full max-w-4xl'>
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-xl font-bold text-white'>Crop Client Logo</h2>
           <button
@@ -118,14 +118,14 @@ export default function ClientCrop({
         <div className='flex justify-end mt-6 space-x-2'>
           <button
             onClick={onClose}
-            className='px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 transition-colors text-white'
+            className='px-4 py-2 bg-zinc-800 hover:bg-zinc-700 transition-colors text-white'
             disabled={isProcessing}
           >
             Cancel
           </button>
           <button
             onClick={createCroppedImage}
-            className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 transition-colors text-white flex items-center'
+            className='px-4 py-2 bg-blue-600 hover:bg-blue-700 transition-colors text-white flex items-center'
             disabled={isProcessing}
           >
             {isProcessing ? (

@@ -89,13 +89,11 @@ const DraggableStillItem = ({
       >
         <X className='h-4 w-4 text-white' />
       </button>
-      {still.id === still.hoveredStill && (
-        <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-          <span className='bg-white text-black px-2 py-1 rounded flex items-center'>
-            <Pencil className='h-4 w-4 mr-1' /> EDIT DETAILS
-          </span>
-        </div>
-      )}
+      <div className='absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
+        <span className='bg-white text-black px-2 py-1 rounded text-sm font-bold'>
+          EDIT DETAILS
+        </span>
+      </div>
       <div className='absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2'>
         <p className='text-sm'>{still.text}</p>
       </div>

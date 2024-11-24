@@ -27,31 +27,21 @@ export default function SpecificLocationComponent() {
           setLocation(locationData);
           setProgress(75);
 
-          const images = [
-            locationData.image,
-            ...Object.values(locationData.locationImages),
+          // Prepare layout for images
+          const layout = [
+            {
+              src: locationData.image,
+              gridColumn: 'span 2',
+              gridRow: 'span 2', // Assuming main image takes larger space
+            },
+            ...(locationData.internalImages || []).map((img) => ({
+              src: img.url,
+              gridColumn: img.ratio > 1 ? 'span 2' : 'span 1',
+              gridRow: img.ratio > 1 ? 'span 1' : 'span 2',
+            })),
           ];
-          const layout = await Promise.all(
-            images.map(
-              (imgSrc, index) =>
-                new Promise((resolve) => {
-                  const img = new Image();
-                  img.onload = () => {
-                    const isLandscape = img.width > img.height;
-                    resolve({
-                      src: imgSrc,
-                      isLandscape,
-                      gridColumn: isLandscape ? 'span 2' : 'span 1',
-                      gridRow: isLandscape ? 'span 1' : 'span 2',
-                    });
-                  };
-                  img.onerror = () => resolve(null);
-                  img.src = imgSrc;
-                })
-            )
-          );
 
-          setImageLayout(layout.filter(Boolean));
+          setImageLayout(layout);
           setProgress(100);
         } else {
           setError('Location not found');
@@ -67,7 +57,6 @@ export default function SpecificLocationComponent() {
     fetchLocation();
     window.scrollTo(0, 0);
   }, [locationKey]);
-
   const handleTransitionComplete = () => {
     setShowContent(true);
   };
@@ -138,7 +127,7 @@ export default function SpecificLocationComponent() {
 
 const styles = {
   specLocationContainer: {
-    width: '90%',
+    width: '100%',
     margin: 'auto',
     textAlign: 'center',
     color: '#fff',

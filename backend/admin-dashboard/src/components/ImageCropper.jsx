@@ -5,10 +5,10 @@ import 'react-image-crop/dist/ReactCrop.css';
 function ImageCropper({ image, onComplete, onCancel }) {
   const [crop, setCrop] = useState({
     unit: '%',
-    width: 90,
-    height: 90,
-    x: 5,
-    y: 5,
+    width: 100,
+    height: 100,
+    x: 0,
+    y: 0,
   });
   const imgRef = useRef(null);
 
@@ -19,37 +19,42 @@ function ImageCropper({ image, onComplete, onCancel }) {
   };
 
   const onCropComplete = async () => {
-    if (!imgRef.current) return;
+    if (!imgRef.current || !crop.width || !crop.height) return;
 
     const canvas = document.createElement('canvas');
     const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
     const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
 
-    const pixelRatio = window.devicePixelRatio;
-    canvas.width = crop.width * scaleX;
-    canvas.height = crop.height * scaleY;
+    // Calculate crop dimensions in natural image size
+    const cropWidth = crop.width * scaleX;
+    const cropHeight = crop.height * scaleY;
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+
+    // Set canvas dimensions based on cropped size
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    // Configure canvas for maximum quality
 
+    // Draw the cropped area on the canvas
     ctx.drawImage(
       imgRef.current,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width * scaleX,
-      crop.height * scaleY
+      cropX, // source x
+      cropY, // source y
+      cropWidth, // source width
+      cropHeight, // source height
+      0, // destination x
+      0, // destination y
+      cropWidth, // destination width
+      cropHeight // destination height
     );
 
-    // Convert canvas to blob
+    // Convert the canvas to a blob
     canvas.toBlob(
       (blob) => {
         if (!blob) return;
@@ -63,21 +68,21 @@ function ImageCropper({ image, onComplete, onCancel }) {
         );
         onComplete(croppedFile);
       },
-      'image/jpeg',
-      1 // max quality
+      'image/png',
+      1 // maximum quality
     );
   };
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4'>
-      <div className='bg-[#1C1C1C] rounded-lg max-w-4xl w-full p-6'>
+      <div className='bg-[#1C1C1C] max-w-4xl w-full p-6'>
         <h3 className='text-xl font-bold mb-4'>Crop Image</h3>
         <div className='relative'>
           <ReactCrop
             crop={crop}
             onChange={(c) => setCrop(c)}
             aspect={getCropRatio()}
-            className='max-h-[60vh]'
+            className='max-w-full max-h-[70vh]'
           >
             <img
               loading='lazy'
@@ -92,13 +97,13 @@ function ImageCropper({ image, onComplete, onCancel }) {
         <div className='flex justify-end gap-4 mt-4'>
           <button
             onClick={onCancel}
-            className='px-4 py-2 text-white hover:bg-gray-700 rounded transition-colors'
+            className='px-4 py-2 text-white hover:bg-gray-700 transition-colors'
           >
             Cancel
           </button>
           <button
             onClick={onCropComplete}
-            className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+            className='px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-colors'
           >
             Apply Crop
           </button>

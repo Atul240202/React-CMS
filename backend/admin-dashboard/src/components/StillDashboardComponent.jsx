@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+// import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import { Pencil, Plus, X, Eye, EyeOff, Save } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';
@@ -576,7 +576,7 @@ const StillDashboardComponent = () => {
           <div className='fixed bottom-4 right-4'>
             <button
               onClick={handleSaveChanges}
-              className='flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+              className='flex items-center gap-2 px-4 py-2 mr-6 bg-black border border-white text-white rounded hover:bg-zinc-800 transition-colors'
             >
               <Save className='h-4 w-4' />
               Save Changes

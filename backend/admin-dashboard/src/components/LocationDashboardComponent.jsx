@@ -13,6 +13,7 @@ import {
   addLocationGridImage,
   updateLocationSequence,
 } from '../firebase';
+import CampaignGrid from './CampaignGrid';
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, message }) => {
   if (!isOpen) return null;
@@ -62,6 +63,7 @@ const LocationDashboardComponent = () => {
   const fetchLocations = async () => {
     try {
       const fetchedLocations = await getLocations();
+      console.log('fetched location', fetchedLocations);
       setLocations(
         fetchedLocations.sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
       );
@@ -225,6 +227,40 @@ const LocationDashboardComponent = () => {
     }
   }, [locations]);
 
+  const handleGridReorder = (reorderedImages) => {
+    if (selectedLocation) {
+      const updatedLocation = {
+        ...selectedLocation,
+        internalImages: reorderedImages,
+      };
+      setSelectedLocation(updatedLocation);
+      updateLocation(selectedLocation.id, updatedLocation);
+    }
+  };
+
+  const handleGridCrop = async (id, croppedImage) => {
+    if (selectedLocation) {
+      try {
+        const url = await uploadImage(
+          croppedImage,
+          `locations/${selectedLocation.id}/grid_${Date.now()}`
+        );
+        const updatedInternalImages = selectedLocation.internalImages.map(
+          (img) => (img.id === id ? { ...img, url } : img)
+        );
+        const updatedLocation = {
+          ...selectedLocation,
+          internalImages: updatedInternalImages,
+        };
+        setSelectedLocation(updatedLocation);
+        updateLocation(selectedLocation.id, updatedLocation);
+      } catch (error) {
+        console.error('Error cropping image:', error);
+        alert('Failed to crop image. Please try again.');
+      }
+    }
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div
@@ -379,35 +415,22 @@ const LocationDashboardComponent = () => {
 
             {/* Location Grid */}
             <h3 className='text-2xl font-extrabold mb-4 mt-6'>LOCATION GRID</h3>
-            <div className='p-8 bg-[#1C1C1C] grid grid-cols-6 gap-4'>
-              {selectedLocation.locationImages &&
-                Object.entries(selectedLocation.locationImages).map(
-                  ([key, url]) => (
-                    <div key={key} className='relative group'>
-                      <img
-                        loading='lazy'
-                        src={url}
-                        alt={`Grid ${key}`}
-                        className='w-full h-32 object-cover'
-                      />
-                      <button
-                        className='absolute top-2 right-2 bg-red-500 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
-                        onClick={() => handleDeleteGridImage(key)}
-                      >
-                        <X className='h-4 w-4 text-white' />
-                      </button>
-                    </div>
-                  )
-                )}
-              <div
-                className='flex items-center justify-center bg-zinc-800 h-32 cursor-pointer hover:bg-zinc-700'
+            <div className='p-8 bg-[#1C1C1C]'>
+              <CampaignGrid
+                images={selectedLocation.internalImages}
+                onReorder={handleGridReorder}
+                onCrop={handleGridCrop}
+                onDelete={handleDeleteGridImage}
+              />
+              <button
                 onClick={() => {
                   setUploadType('grid');
                   setShowUploadModal(true);
                 }}
+                className='mt-4 w-full aspect-[3/1] bg-zinc-800 rounded flex items-center justify-center hover:bg-zinc-700 transition-colors'
               >
                 <Plus className='h-8 w-8' />
-              </div>
+              </button>
             </div>
           </div>
         )}

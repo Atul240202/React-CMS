@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { X, Pencil, Plus, LoaderCircle, Trash2 } from 'lucide-react';
+import { X, Pencil, Plus, LoaderCircle } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';
+import CampaignGrid from './CampaignGrid';
 import { addLocation } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../firebase';
 
 const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -9,13 +12,13 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
     text: '',
     address: '',
     image: null,
-    locationImages: {},
+    internalImages: [],
   });
   const [uploadType, setUploadType] = useState('');
   const [mainFile, setMainFile] = useState(null);
-  const [gridFiles, setGridFiles] = useState([]);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [gridFiles, setGridFiles] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +29,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
     validateField(name, value);
   };
 
-  const handleUpload = (urls, files) => {
+  const handleUpload = async (urls, files) => {
     if (uploadType === 'main') {
       setMainFile(files[0]);
       setLocationData((prev) => ({
@@ -35,17 +38,32 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
       }));
       validateField('image', files[0]);
     } else if (uploadType === 'grid') {
-      const newGridFiles = [...gridFiles, ...files];
-      setGridFiles(newGridFiles);
-      const newLocationImages = { ...locationData.locationImages };
-      urls.forEach((url, index) => {
-        const newImageKey = `image${Object.keys(newLocationImages).length + 1}`;
-        newLocationImages[newImageKey] = url;
-      });
+      const newInternalImages = await Promise.all(
+        files.map(async (file, index) => {
+          const storageRef = ref(
+            storage,
+            `locations/${Date.now()}_${file.name}`
+          );
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          return {
+            id: `${Date.now()}-${index}`,
+            url,
+            ratio: img.width / img.height,
+            order: locationData.internalImages.length + index,
+          };
+        })
+      );
       setLocationData((prev) => ({
         ...prev,
-        locationImages: newLocationImages,
+        internalImages: [...prev.internalImages, ...newInternalImages],
       }));
+      setGridFiles((prev) => [...prev, ...files]);
     }
     setShowUploadModal(false);
   };
@@ -69,7 +87,7 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
         break;
       case 'image':
         if (!value) {
-          newErrors.image = '*';
+          newErrors.image = 'Location Image is required';
         } else {
           delete newErrors.image;
         }
@@ -80,15 +98,36 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
     setErrors(newErrors);
   };
 
-  const handleRemoveGridImage = (keyToRemove) => {
-    setLocationData((prev) => {
-      const newLocationImages = { ...prev.locationImages };
-      delete newLocationImages[keyToRemove];
-      return { ...prev, locationImages: newLocationImages };
-    });
-    setGridFiles((prev) =>
-      prev.filter((_, index) => `image${index + 1}` !== keyToRemove)
-    );
+  const handleGridReorder = (reorderedImages) => {
+    setLocationData((prev) => ({
+      ...prev,
+      internalImages: reorderedImages,
+    }));
+  };
+
+  const handleGridCrop = async (id, croppedImage) => {
+    try {
+      const storageRef = ref(storage, `locations/${Date.now()}_cropped.jpg`);
+      await uploadBytes(storageRef, croppedImage);
+      const url = await getDownloadURL(storageRef);
+
+      setLocationData((prev) => ({
+        ...prev,
+        internalImages: prev.internalImages.map((img) =>
+          img.id === id ? { ...img, url } : img
+        ),
+      }));
+    } catch (error) {
+      console.error('Error cropping image:', error);
+      alert('Failed to crop image. Please try again.');
+    }
+  };
+
+  const handleGridDelete = (id) => {
+    setLocationData((prev) => ({
+      ...prev,
+      internalImages: prev.internalImages.filter((img) => img.id !== id),
+    }));
   };
 
   const validateForm = () => {
@@ -121,14 +160,9 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
   if (!isOpen) return null;
 
   return (
-    <div
-      className='fixed inset-0 bg-[#0C0C0C] z-40 overflow-y-auto'
-      style={{
-        fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
-      }}
-    >
+    <div className='fixed inset-0 bg-[#0C0C0C] z-40 overflow-y-auto'>
       <div className='min-h-screen p-4'>
-        <div className='max-w-5xl mx-auto '>
+        <div className='max-w-5xl mx-auto'>
           <div className='flex justify-between items-center p-4 border-b border-gray-800'>
             <h2 className='text-2xl font-extrabold'>FILL LOCATION DETAILS</h2>
             <button onClick={onClose}>
@@ -137,12 +171,11 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
           </div>
 
           <div className='p-6 space-y-8'>
-            <div className='flex bg-[#1C1C1C] p-6  justify-between'>
+            <div className='flex bg-[#1C1C1C] p-6 justify-between'>
               {/* Main Image */}
-              <div className='aspect-video bg-zinc-800 overflow-hidden w-6/12 mr-6  hover:bg-zinc-700'>
+              <div className='aspect-video bg-zinc-800 overflow-hidden w-6/12 mr-6 hover:bg-zinc-700'>
                 {locationData.image ? (
                   <img
-                    loading='lazy'
                     src={locationData.image}
                     alt='Location'
                     className='w-full h-full object-cover'
@@ -228,34 +261,19 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
             {/* Location Grid */}
             <div>
               <h3 className='text-2xl font-extrabold mb-4'>LOCATION GRID</h3>
-              <div className='grid grid-cols-6 gap-4 bg-[#1C1C1C] p-6'>
-                {Object.entries(locationData.locationImages).map(
-                  ([key, url]) => (
-                    <div
-                      key={key}
-                      className='aspect-square bg-gray-800 overflow-hidden relative group'
-                    >
-                      <img
-                        loading='lazy'
-                        src={url}
-                        alt={`Grid ${key}`}
-                        className='w-full h-full object-cover'
-                      />
-                      <button
-                        onClick={() => handleRemoveGridImage(key)}
-                        className='absolute top-2 right-2 bg-red-500 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
-                      >
-                        <Trash2 className='h-4 w-4 text-white' />
-                      </button>
-                    </div>
-                  )
-                )}
+              <div className='bg-[#1C1C1C] p-6'>
+                <CampaignGrid
+                  images={locationData.internalImages}
+                  onReorder={handleGridReorder}
+                  onCrop={handleGridCrop}
+                  onDelete={handleGridDelete}
+                />
                 <button
                   onClick={() => {
                     setUploadType('grid');
                     setShowUploadModal(true);
                   }}
-                  className='aspect-square bg-zinc-800 flex items-center justify-center hover:bg-zinc-700'
+                  className='mt-4 w-full aspect-[3/1] bg-zinc-800 rounded flex items-center justify-center hover:bg-zinc-700 transition-colors'
                 >
                   <Plus className='h-8 w-8' />
                 </button>

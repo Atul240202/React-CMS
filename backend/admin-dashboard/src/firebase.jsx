@@ -654,13 +654,201 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
   }
 }
 
+// export async function getLocations() {
+//   try {
+//     const locationsSnapshot = await getDocs(collection(db, 'locations'));
+//     return locationsSnapshot.docs.map((doc) => ({
+//       id: doc.id,
+//       ...doc.data(),
+//       sequence: doc.data().sequence || 0, // Assign 0 if sequence is not available
+//     }));
+//   } catch (error) {
+//     console.error('Error getting locations:', error);
+//     throw error;
+//   }
+// }
+
+// export async function addLocation(locationData, mainFile, gridFiles) {
+//   console.log('firebase location data', locationData, mainFile);
+//   console.log('grid files in firebase', gridFiles);
+//   try {
+//     // Handle main image upload
+//     const mainImageUrl = await uploadImage(
+//       mainFile,
+//       `locations/main_${Date.now()}`
+//     );
+
+//     // Handle grid images upload
+//     const gridImageUrls = {};
+//     for (let i = 0; i < gridFiles.length; i++) {
+//       const gridImageUrl = await uploadImage(
+//         gridFiles[i],
+//         `locations/grid_${Date.now()}_${i}`
+//       );
+//       gridImageUrls[`image${i + 1}`] = gridImageUrl;
+//     }
+
+//     const newLocationData = {
+//       ...locationData,
+//       image: mainImageUrl,
+//       locationImages: gridImageUrls,
+//       sequence: Date.now(), // Add a default sequence value
+//     };
+
+//     console.log('Firebase new location data', newLocationData);
+
+//     const docRef = await addDoc(collection(db, 'locations'), newLocationData);
+//     return { id: docRef.id, ...newLocationData };
+//   } catch (error) {
+//     console.error('Error adding location:', error);
+//     throw error;
+//   }
+// }
+// export async function updateLocationSequence(updates) {
+//   const batch = writeBatch(db);
+
+//   updates.forEach(({ id, sequence }) => {
+//     const locationRef = doc(db, 'locations', id);
+//     batch.update(locationRef, { sequence });
+//   });
+
+//   try {
+//     await batch.commit();
+//   } catch (error) {
+//     console.error('Error updating location sequences:', error);
+//     throw error;
+//   }
+// }
+
+// export async function updateLocation(
+//   locationId,
+//   locationData,
+//   mainFile,
+//   gridFiles
+// ) {
+//   try {
+//     const locationRef = doc(db, 'locations', locationId);
+//     let updatedLocationData = { ...locationData };
+
+//     if (mainFile) {
+//       const mainImageUrl = await uploadImage(
+//         mainFile[0],
+//         `locations/main_${locationId}_${Date.now()}`
+//       );
+//       updatedLocationData.image = mainImageUrl;
+//     }
+
+//     if (gridFiles && gridFiles.length > 0) {
+//       const gridImageUrls = {};
+//       for (let i = 0; i < gridFiles.length; i++) {
+//         const gridImageUrl = await uploadImage(
+//           gridFiles[i],
+//           `locations/grid_${locationId}_${Date.now()}_${i}`
+//         );
+//         console.log('Update location grid image file', gridImageUrl);
+//         gridImageUrls[`image${i + 1}`] = gridImageUrl;
+//       }
+//       updatedLocationData.locationImages = {
+//         ...updatedLocationData.locationImages,
+//         ...gridImageUrls,
+//       };
+//     }
+
+//     await updateDoc(locationRef, updatedLocationData);
+//     return { id: locationId, ...updatedLocationData };
+//   } catch (error) {
+//     console.error('Error updating location:', error);
+//     throw error;
+//   }
+// }
+
+// export async function deleteLocation(locationId) {
+//   try {
+//     await deleteDoc(doc(db, 'locations', locationId));
+//     // You may want to delete associated images from storage here
+//   } catch (error) {
+//     console.error('Error deleting location:', error);
+//     throw error;
+//   }
+// }
+
+// export async function deleteLocationImage(locationId, imageKey) {
+//   try {
+//     const locationRef = doc(db, 'locations', locationId);
+//     const locationDoc = await getDoc(locationRef);
+
+//     if (!locationDoc.exists()) {
+//       throw new Error('Location not found');
+//     }
+
+//     const updatedImages = { ...locationDoc.data().locationImages };
+//     delete updatedImages[imageKey];
+
+//     await updateDoc(locationRef, { locationImages: updatedImages });
+
+//     // Delete the image from storage
+//     const storageRef = ref(storage, `locations/${locationId}/${imageKey}`);
+//     await deleteObject(storageRef);
+//   } catch (error) {
+//     console.error('Error deleting location image:', error);
+//     throw error;
+//   }
+// }
+
+// export async function addLocationGridImage(locationId, file, url) {
+//   console.log('Updated location file', file, locationId);
+//   try {
+//     const locationRef = doc(db, 'locations', locationId);
+//     const locationDoc = await getDoc(locationRef);
+
+//     if (!locationDoc.exists()) {
+//       throw new Error('Location not found');
+//     }
+
+//     const locationData = locationDoc.data();
+
+//     console.log('Location data:', locationData);
+//     const existingImages = locationData.locationImages || {};
+
+//     // Find the next available image number
+//     let nextImageNumber = 1;
+//     while (existingImages[`image${nextImageNumber}`]) {
+//       nextImageNumber++;
+//     }
+
+//     const newImageKey = `image${nextImageNumber}`;
+//     const imageUrl = await uploadImage(
+//       file[0],
+//       `locations/${locationId}/grid_${newImageKey}_${Date.now()}`
+//     );
+
+//     console.log('firebase image url', imageUrl);
+
+//     const updatedLocationImages = {
+//       ...existingImages,
+//       [newImageKey]: url[0],
+//     };
+
+//     console.log('Updated location image data', updatedLocationImages);
+
+//     await updateDoc(locationRef, { locationImages: updatedLocationImages });
+
+//     return { [newImageKey]: imageUrl };
+//   } catch (error) {
+//     console.error('Error adding location grid image:', error);
+//     throw error;
+//   }
+// }
+
+// Hero Banner Functions
+
 export async function getLocations() {
   try {
     const locationsSnapshot = await getDocs(collection(db, 'locations'));
     return locationsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-      sequence: doc.data().sequence || 0, // Assign 0 if sequence is not available
+      sequence: doc.data().sequence || 0,
     }));
   } catch (error) {
     console.error('Error getting locations:', error);
@@ -669,33 +857,38 @@ export async function getLocations() {
 }
 
 export async function addLocation(locationData, mainFile, gridFiles) {
-  console.log('firebase location data', locationData, mainFile);
-  console.log('grid files in firebase', gridFiles);
   try {
-    // Handle main image upload
     const mainImageUrl = await uploadImage(
       mainFile,
       `locations/main_${Date.now()}`
     );
 
-    // Handle grid images upload
-    const gridImageUrls = {};
-    for (let i = 0; i < gridFiles.length; i++) {
-      const gridImageUrl = await uploadImage(
-        gridFiles[i],
-        `locations/grid_${Date.now()}_${i}`
-      );
-      gridImageUrls[`image${i + 1}`] = gridImageUrl;
-    }
+    const internalImages = await Promise.all(
+      gridFiles.map(async (file, index) => {
+        const url = await uploadImage(
+          file,
+          `locations/grid_${Date.now()}_${index}`
+        );
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+        return {
+          id: `${Date.now()}-${index}`,
+          url,
+          ratio: img.width / img.height,
+          order: index,
+        };
+      })
+    );
 
     const newLocationData = {
       ...locationData,
       image: mainImageUrl,
-      locationImages: gridImageUrls,
-      sequence: Date.now(), // Add a default sequence value
+      internalImages,
+      sequence: Date.now(),
     };
-
-    console.log('Firebase new location data', newLocationData);
 
     const docRef = await addDoc(collection(db, 'locations'), newLocationData);
     return { id: docRef.id, ...newLocationData };
@@ -704,6 +897,7 @@ export async function addLocation(locationData, mainFile, gridFiles) {
     throw error;
   }
 }
+
 export async function updateLocationSequence(updates) {
   const batch = writeBatch(db);
 
@@ -732,26 +926,36 @@ export async function updateLocation(
 
     if (mainFile) {
       const mainImageUrl = await uploadImage(
-        mainFile[0],
+        mainFile,
         `locations/main_${locationId}_${Date.now()}`
       );
       updatedLocationData.image = mainImageUrl;
     }
 
     if (gridFiles && gridFiles.length > 0) {
-      const gridImageUrls = {};
-      for (let i = 0; i < gridFiles.length; i++) {
-        const gridImageUrl = await uploadImage(
-          gridFiles[i],
-          `locations/grid_${locationId}_${Date.now()}_${i}`
-        );
-        console.log('Update location grid image file', gridImageUrl);
-        gridImageUrls[`image${i + 1}`] = gridImageUrl;
-      }
-      updatedLocationData.locationImages = {
-        ...updatedLocationData.locationImages,
-        ...gridImageUrls,
-      };
+      const newInternalImages = await Promise.all(
+        gridFiles.map(async (file, index) => {
+          const url = await uploadImage(
+            file,
+            `locations/grid_${locationId}_${Date.now()}_${index}`
+          );
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          return {
+            id: `${Date.now()}-${index}`,
+            url,
+            ratio: img.width / img.height,
+            order: updatedLocationData.internalImages.length + index,
+          };
+        })
+      );
+      updatedLocationData.internalImages = [
+        ...updatedLocationData.internalImages,
+        ...newInternalImages,
+      ];
     }
 
     await updateDoc(locationRef, updatedLocationData);
@@ -772,31 +976,7 @@ export async function deleteLocation(locationId) {
   }
 }
 
-export async function deleteLocationImage(locationId, imageKey) {
-  try {
-    const locationRef = doc(db, 'locations', locationId);
-    const locationDoc = await getDoc(locationRef);
-
-    if (!locationDoc.exists()) {
-      throw new Error('Location not found');
-    }
-
-    const updatedImages = { ...locationDoc.data().locationImages };
-    delete updatedImages[imageKey];
-
-    await updateDoc(locationRef, { locationImages: updatedImages });
-
-    // Delete the image from storage
-    const storageRef = ref(storage, `locations/${locationId}/${imageKey}`);
-    await deleteObject(storageRef);
-  } catch (error) {
-    console.error('Error deleting location image:', error);
-    throw error;
-  }
-}
-
-export async function addLocationGridImage(locationId, file, url) {
-  console.log('Updated location file', file, locationId);
+export async function deleteLocationImage(locationId, imageId) {
   try {
     const locationRef = doc(db, 'locations', locationId);
     const locationDoc = await getDoc(locationRef);
@@ -806,41 +986,59 @@ export async function addLocationGridImage(locationId, file, url) {
     }
 
     const locationData = locationDoc.data();
-
-    console.log('Location data:', locationData);
-    const existingImages = locationData.locationImages || {};
-
-    // Find the next available image number
-    let nextImageNumber = 1;
-    while (existingImages[`image${nextImageNumber}`]) {
-      nextImageNumber++;
-    }
-
-    const newImageKey = `image${nextImageNumber}`;
-    const imageUrl = await uploadImage(
-      file[0],
-      `locations/${locationId}/grid_${newImageKey}_${Date.now()}`
+    const updatedInternalImages = locationData.internalImages.filter(
+      (img) => img.id !== imageId
     );
 
-    console.log('firebase image url', imageUrl);
+    await updateDoc(locationRef, { internalImages: updatedInternalImages });
 
-    const updatedLocationImages = {
-      ...existingImages,
-      [newImageKey]: url[0],
+    // Delete the image from storage
+    const storageRef = ref(storage, `locations/${locationId}/${imageId}`);
+    await deleteObject(storageRef);
+  } catch (error) {
+    console.error('Error deleting location image:', error);
+    throw error;
+  }
+}
+
+export async function addLocationGridImage(locationId, file) {
+  try {
+    const locationRef = doc(db, 'locations', locationId);
+    const locationDoc = await getDoc(locationRef);
+
+    if (!locationDoc.exists()) {
+      throw new Error('Location not found');
+    }
+
+    const locationData = locationDoc.data();
+    const url = await uploadImage(
+      file,
+      `locations/${locationId}/grid_${Date.now()}`
+    );
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await new Promise((resolve) => {
+      img.onload = resolve;
+    });
+
+    const newImage = {
+      id: `${Date.now()}`,
+      url,
+      ratio: img.width / img.height,
+      order: locationData.internalImages.length,
     };
 
-    console.log('Updated location image data', updatedLocationImages);
+    const updatedInternalImages = [...locationData.internalImages, newImage];
 
-    await updateDoc(locationRef, { locationImages: updatedLocationImages });
+    await updateDoc(locationRef, { internalImages: updatedInternalImages });
 
-    return { [newImageKey]: imageUrl };
+    return newImage;
   } catch (error) {
     console.error('Error adding location grid image:', error);
     throw error;
   }
 }
-
-// Hero Banner Functions
 
 /**
  * Upload a hero banner image and add it to Firestore
