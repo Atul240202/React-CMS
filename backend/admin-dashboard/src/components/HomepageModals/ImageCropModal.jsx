@@ -43,34 +43,36 @@ export default function ImageCropModal({
       const width = img.width;
       const height = img.height;
       const imageAspect = width / height;
+      const cropAspect = aspectRatio;
 
       let newCrop;
-      if (imageAspect > aspectRatio) {
+      if (imageAspect > cropAspect) {
         // Image is wider than desired ratio
         const cropHeight = height;
-        const cropWidth = height * aspectRatio;
+        const cropWidth = height * cropAspect;
         newCrop = {
           unit: 'px',
           width: cropWidth,
           height: cropHeight,
           x: (width - cropWidth) / 2,
           y: 0,
-          aspect: aspectRatio,
+          aspect: cropAspect,
         };
       } else {
         // Image is taller than desired ratio
         const cropWidth = width;
-        const cropHeight = width / aspectRatio;
+        const cropHeight = width / cropAspect;
         newCrop = {
           unit: 'px',
           width: cropWidth,
           height: cropHeight,
           x: 0,
           y: (height - cropHeight) / 2,
-          aspect: aspectRatio,
+          aspect: cropAspect,
         };
       }
       setCrop(newCrop);
+      setCompletedCrop(newCrop);
     },
     [aspectRatio]
   );
@@ -83,7 +85,7 @@ export default function ImageCropModal({
 
     setIsUploading(true);
     const loadingToast = toast.loading(
-      editBannerId ? 'Updating banner...' : 'Uploading banner...'
+      editBannerId ? 'Updating image...' : 'Processing image...'
     );
 
     try {
@@ -91,18 +93,20 @@ export default function ImageCropModal({
       const scaleX = imageRef.naturalWidth / imageRef.width;
       const scaleY = imageRef.naturalHeight / imageRef.height;
 
+      // Set canvas dimensions based on crop aspect ratio
       canvas.width = completedCrop.width * scaleX;
       canvas.height = completedCrop.height * scaleY;
 
       const ctx = canvas.getContext('2d');
-      // Configure canvas for maximum quality
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-
       if (!ctx) {
         throw new Error('Could not create image context');
       }
 
+      // Configure canvas for maximum quality
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // Draw the cropped image
       ctx.drawImage(
         imageRef,
         completedCrop.x * scaleX,
@@ -111,10 +115,11 @@ export default function ImageCropModal({
         completedCrop.height * scaleY,
         0,
         0,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY
+        canvas.width,
+        canvas.height
       );
-      console.log('Canvas for still ', canvas, ctx);
+
+      // Create a blob with the cropped image
       const blob = await new Promise((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
@@ -129,36 +134,27 @@ export default function ImageCropModal({
         );
       });
 
-      console.log('Still & hero blob:', blob);
-
       // Create a File object from the blob
-      const file = new File([blob], `hero-banner-${Date.now()}.jpg`, {
+      const fileName = `${component}-${Date.now()}.jpg`;
+      const file = new File([blob], fileName, {
         type: 'image/jpeg',
       });
 
-      console.log('Still file data', file);
-      console.log('Still component data', component);
-      if (editBannerId) {
-        await updateHeroBanner(editBannerId, { imageFile: file });
-      } else {
-        if (component === 'hero') {
+      // Process the file based on component type
+      if (component === 'hero') {
+        if (editBannerId) {
+          await updateHeroBanner(editBannerId, { imageFile: file });
+        } else {
           await addHeroBanner(file, sequence);
         }
       }
 
-      toast.success(
-        editBannerId ? 'Updated successfully' : 'Uploaded successfully',
-        { id: loadingToast }
-      );
-
+      toast.success('Image processed successfully', { id: loadingToast });
       onCropComplete(editBannerId, file);
       onClose();
     } catch (error) {
       console.error('Error processing image:', error);
-      toast.error(
-        editBannerId ? 'Failed to update banner' : 'Failed to upload banner',
-        { id: loadingToast }
-      );
+      toast.error('Failed to process image', { id: loadingToast });
     } finally {
       setIsUploading(false);
     }
@@ -167,6 +163,7 @@ export default function ImageCropModal({
     completedCrop,
     editBannerId,
     sequence,
+    component,
     onCropComplete,
     onClose,
   ]);

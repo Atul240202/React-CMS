@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { X, Pencil, Plus, ChevronDown, Trash2 } from 'lucide-react';
-import { getClients, addStill, getClientLogo, storage } from '../firebase';
+import {
+  getClients,
+  addStill,
+  getClientLogo,
+  storage,
+  uploadClient,
+} from '../firebase';
 import UploadModal from './HomepageModals/UploadModal';
 import CampaignGrid from './CampaignGrid';
 import ImageCropper from './ImageCropper';
@@ -8,6 +14,7 @@ import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 
 function AddCampaignModal({ isOpen, onClose, onAddStill }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
   const [clients, setClients] = useState([]);
   const [campaignData, setCampaignData] = useState({
     logo: '',
@@ -47,27 +54,31 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
 
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-    setCampaignData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === 'clientId' && value === 'add_new') {
+      setShowClientModal(true);
+    } else {
+      setCampaignData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
 
-    if (name === 'clientId') {
-      setIsFetchingLogo(true);
-      try {
-        const logo = await getClientLogo(value);
-        setCampaignData((prev) => ({
-          ...prev,
-          logo: logo,
-        }));
-      } catch (error) {
-        console.error('Error fetching client logo:', error);
-      } finally {
-        setIsFetchingLogo(false);
+      if (name === 'clientId') {
+        setIsFetchingLogo(true);
+        try {
+          const logo = await getClientLogo(value);
+          setCampaignData((prev) => ({
+            ...prev,
+            logo: logo,
+          }));
+        } catch (error) {
+          console.error('Error fetching client logo:', error);
+        } finally {
+          setIsFetchingLogo(false);
+        }
       }
-    }
 
-    validateField(name, value);
+      validateField(name, value);
+    }
   };
 
   const handleCreditChange = (key, value) => {
@@ -245,6 +256,30 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
     }
   };
 
+  const handleClientUpload = useCallback(
+    async (clientName, downloadURL, file, fileType) => {
+      try {
+        const clientKey = clientName.toLowerCase().replace(/\s+/g, '');
+        const newClient = await uploadClient(
+          clientName,
+          clientKey,
+          file,
+          fileType
+        );
+        setClients((prevClients) => [...prevClients, newClient]);
+        setCampaignData((prev) => ({
+          ...prev,
+          clientId: newClient.id,
+          logo: downloadURL,
+        }));
+        setShowClientModal(false);
+      } catch (error) {
+        console.error('Error uploading client:', error);
+      }
+    },
+    []
+  );
+
   if (!isOpen) return null;
 
   return (
@@ -324,6 +359,12 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                           {client.name}
                         </option>
                       ))}
+                      <option
+                        className='text-black font-bold text-lg overflow-hidden'
+                        value='add_new'
+                      >
+                        + Add New Client
+                      </option>
                     </select>
                   </div>
                   {errors.clientId && (
@@ -514,6 +555,14 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
         onUpload={handleUpload}
         multiple={uploadType === 'grid'}
         requireCrop={uploadType === 'main'}
+      />
+
+      <UploadModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        onUpload={handleClientUpload}
+        acceptVideo={false}
+        isClientDashboard={true}
       />
 
       {isLoading && (
