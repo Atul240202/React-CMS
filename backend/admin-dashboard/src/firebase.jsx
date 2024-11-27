@@ -1187,139 +1187,73 @@ export const updateHeroBannerSequences = async (updates) => {
 };
 
 // 1. Get client names and logos
-export async function getClientsInfo() {
-  try {
-    const clientsRef = collection(db, 'clients');
-    const clientsSnapshot = await getDocs(clientsRef);
-    const clientsInfo = clientsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      name: doc.data().clientKey,
-      logo: doc.data().image,
-    }));
-    console.log('Clients info:', clientsInfo);
-    return clientsInfo;
-  } catch (error) {
-    console.error('Error fetching clients info:', error);
-    throw error;
-  }
-}
 
 // 2. Fetch product titles based on selected client
-export async function getProductTitlesByClient(clientId) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    const clientDoc = await getDoc(clientRef);
-    if (clientDoc.exists()) {
-      const stills = clientDoc.data().stills || {};
-      const productTitles = Object.values(stills).map(
-        (still) => still.credits?.['PRODUCT TITLE'] || 'Untitled Product'
-      );
-      console.log('Product titles:', productTitles);
-      return productTitles;
-    } else {
-      console.log('No such client!');
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching product titles:', error);
-    throw error;
-  }
-}
 
 // 3. Fetch internal images based on selected product title
-export async function getInternalImagesByProduct(clientId, productTitle) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    const clientDoc = await getDoc(clientRef);
-
-    if (clientDoc.exists()) {
-      const stills = clientDoc.data().stills || {};
-      const selectedStill = Object.values(stills).find(
-        (still) => still.credits?.['PRODUCT TITLE'] === productTitle
-      );
-
-      if (selectedStill) {
-        const internalImages = selectedStill.internalImages || [];
-        const imageUrls = internalImages.map((image) => image.url);
-
-        console.log('Internal image URLs:', imageUrls);
-        return imageUrls;
-      } else {
-        console.log('No such product!');
-        return [];
-      }
-    } else {
-      console.log('No such client!');
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching internal images:', error);
-    throw error;
-  }
-}
 
 // 4. Create nested 'homepage' schema under still
-export async function createHomepageSchema(
-  clientId,
-  stillId,
-  selectedImageUrl,
-  sequence,
-  productTitle
-) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    const clientDoc = await getDoc(clientRef);
-    if (clientDoc.exists()) {
-      const clientData = clientDoc.data();
-      const homepageData = {
-        image: selectedImageUrl,
-        sequence: sequence,
-        clientName: clientData.clientKey,
-        logo: clientData.image,
-        productTitle: productTitle,
-      };
-      await updateDoc(clientRef, {
-        [`stills.${stillId}.homepage`]: homepageData,
-      });
-      console.log('Homepage schema created successfully');
-      return homepageData;
-    } else {
-      console.log('No such client!');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error creating homepage schema:', error);
-    throw error;
-  }
-}
+// export async function createHomepageSchema(
+//   clientId,
+//   stillId,
+//   selectedImageUrl,
+//   sequence,
+//   productTitle
+// ) {
+//   try {
+//     const clientRef = doc(db, 'clients', clientId);
+//     const clientDoc = await getDoc(clientRef);
+//     if (clientDoc.exists()) {
+//       const clientData = clientDoc.data();
+//       const homepageData = {
+//         image: selectedImageUrl,
+//         sequence: sequence,
+//         clientName: clientData.clientKey,
+//         logo: clientData.image,
+//         productTitle: productTitle,
+//       };
+//       await updateDoc(clientRef, {
+//         [`stills.${stillId}.homepage`]: homepageData,
+//       });
+//       console.log('Homepage schema created successfully');
+//       return homepageData;
+//     } else {
+//       console.log('No such client!');
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error('Error creating homepage schema:', error);
+//     throw error;
+//   }
+// }
 
 // 5. Update sequence of stills on homepage
-export async function updateStillSequence(clientId, stillId, newSequence) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    await updateDoc(clientRef, {
-      [`stills.${stillId}.homepage.sequence`]: newSequence,
-    });
-    console.log('Still sequence updated successfully');
-  } catch (error) {
-    console.error('Error updating still sequence:', error);
-    throw error;
-  }
-}
+// export async function updateStillSequence(clientId, stillId, newSequence) {
+//   try {
+//     const clientRef = doc(db, 'clients', clientId);
+//     await updateDoc(clientRef, {
+//       [`stills.${stillId}.homepage.sequence`]: newSequence,
+//     });
+//     console.log('Still sequence updated successfully');
+//   } catch (error) {
+//     console.error('Error updating still sequence:', error);
+//     throw error;
+//   }
+// }
 
 // 6. Update all values under homepage schema
-export async function updateHomepageSchema(clientId, stillId, updatedData) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    await updateDoc(clientRef, {
-      [`stills.${stillId}.homepage`]: updatedData,
-    });
-    console.log('Homepage schema updated successfully');
-  } catch (error) {
-    console.error('Error updating homepage schema:', error);
-    throw error;
-  }
-}
+// export async function updateHomepageSchema(clientId, stillId, updatedData) {
+//   try {
+//     const clientRef = doc(db, 'clients', clientId);
+//     await updateDoc(clientRef, {
+//       [`stills.${stillId}.homepage`]: updatedData,
+//     });
+//     console.log('Homepage schema updated successfully');
+//   } catch (error) {
+//     console.error('Error updating homepage schema:', error);
+//     throw error;
+//   }
+// }
 
 // 7. Add a new still grid item
 export async function addStillGridItem(
@@ -1374,53 +1308,39 @@ export async function addStillGridItem(
   }
 }
 
-// 8. Update an existing still grid item
-export async function updateStillGridItem(clientId, stillId, updatedData) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    await updateDoc(clientRef, {
-      [`stills.${stillId}.homepage`]: updatedData,
-    });
-    console.log('Still grid item updated successfully');
-  } catch (error) {
-    console.error('Error updating still grid item:', error);
-    throw error;
-  }
-}
-
 // 9. Delete a still grid item
-export async function deleteStillGridItem(clientId, stillId) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    await updateDoc(clientRef, {
-      [`stills.${stillId}.homepage`]: deleteField(),
-    });
-    console.log('Still grid item deleted successfully');
-  } catch (error) {
-    console.error('Error deleting still grid item:', error);
-    throw error;
-  }
-}
+// export async function deleteStillGridItem(clientId, stillId) {
+//   try {
+//     const clientRef = doc(db, 'clients', clientId);
+//     await updateDoc(clientRef, {
+//       [`stills.${stillId}.homepage`]: deleteField(),
+//     });
+//     console.log('Still grid item deleted successfully');
+//   } catch (error) {
+//     console.error('Error deleting still grid item:', error);
+//     throw error;
+//   }
+// }
 
 // 10. Update still grid item order
-export async function updateStillGridItemOrder(items) {
-  try {
-    const batch = writeBatch(db);
+// export async function updateStillGridItemOrder(items) {
+//   try {
+//     const batch = writeBatch(db);
 
-    for (const item of items) {
-      const clientRef = doc(db, 'clients', item.clientId);
-      batch.update(clientRef, {
-        [`stills.${item.id}.homepage.rowOrder`]: item.rowOrder,
-      });
-    }
+//     for (const item of items) {
+//       const clientRef = doc(db, 'clients', item.clientId);
+//       batch.update(clientRef, {
+//         [`stills.${item.id}.homepage.rowOrder`]: item.rowOrder,
+//       });
+//     }
 
-    await batch.commit();
-    console.log('Still grid item order updated successfully');
-  } catch (error) {
-    console.error('Error updating still grid item order:', error);
-    throw error;
-  }
-}
+//     await batch.commit();
+//     console.log('Still grid item order updated successfully');
+//   } catch (error) {
+//     console.error('Error updating still grid item order:', error);
+//     throw error;
+//   }
+// }
 
 /// New still logic (May remove previous one)
 
@@ -1486,6 +1406,24 @@ export async function addHomeStill(clientId, productTitle, file, isPortrait) {
 }
 
 // Update an existing home still
+
+export async function getClientsInfo() {
+  try {
+    const clientsRef = collection(db, 'clients');
+    const clientsSnapshot = await getDocs(clientsRef);
+    const clientsInfo = clientsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().clientKey,
+      logo: doc.data().image,
+    }));
+    console.log('Clients info:', clientsInfo);
+    return clientsInfo;
+  } catch (error) {
+    console.error('Error fetching clients info:', error);
+    throw error;
+  }
+}
+
 export async function updateHomeStill(stillId, updatedData) {
   try {
     const stillRef = doc(db, 'homeStills', stillId);
@@ -1493,6 +1431,27 @@ export async function updateHomeStill(stillId, updatedData) {
     console.log('Home still updated successfully');
   } catch (error) {
     console.error('Error updating home still:', error);
+    throw error;
+  }
+}
+
+export async function getProductTitlesByClient(clientId) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+    if (clientDoc.exists()) {
+      const stills = clientDoc.data().stills || {};
+      const productTitles = Object.values(stills).map(
+        (still) => still.credits?.['PRODUCT TITLE'] || 'Untitled Product'
+      );
+      console.log('Product titles:', productTitles);
+      return productTitles;
+    } else {
+      console.log('No such client!');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching product titles:', error);
     throw error;
   }
 }
@@ -1505,6 +1464,37 @@ export async function deleteHomeStill(stillId) {
     console.log('Home still deleted successfully');
   } catch (error) {
     console.error('Error deleting home still:', error);
+    throw error;
+  }
+}
+
+export async function getInternalImagesByProduct(clientId, productTitle) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (clientDoc.exists()) {
+      const stills = clientDoc.data().stills || {};
+      const selectedStill = Object.values(stills).find(
+        (still) => still.credits?.['PRODUCT TITLE'] === productTitle
+      );
+
+      if (selectedStill) {
+        const internalImages = selectedStill.internalImages || [];
+        const imageUrls = internalImages.map((image) => image.url);
+
+        console.log('Internal image URLs:', imageUrls);
+        return imageUrls;
+      } else {
+        console.log('No such product!');
+        return [];
+      }
+    } else {
+      console.log('No such client!');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching internal images:', error);
     throw error;
   }
 }
@@ -1557,6 +1547,19 @@ export async function updateHomeStillGridSize(size) {
     console.log('Home still grid size updated successfully');
   } catch (error) {
     console.error('Error updating home still grid size:', error);
+    throw error;
+  }
+}
+
+export async function updateStillGridItem(clientId, stillId, updatedData) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    await updateDoc(clientRef, {
+      [`stills.${stillId}.homepage`]: updatedData,
+    });
+    console.log('Still grid item updated successfully');
+  } catch (error) {
+    console.error('Error updating still grid item:', error);
     throw error;
   }
 }

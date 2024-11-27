@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { X, Pencil, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';
-import { uploadMotion, getClientLogo } from '../firebase';
+import { uploadMotion, getClientLogo, uploadClient } from '../firebase';
 
 const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -18,7 +18,8 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
   const [showCreditDropdown, setShowCreditDropdown] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const [visibleFields, setVisibleFields] = useState({});
-
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [updatedClients, setUpdateClients] = useState(clients);
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
 
   const handleInputChange = (e) => {
@@ -72,16 +73,20 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
 
   const handleClientChange = async (e) => {
     const clientId = e.target.value;
-    setCampaignData((prev) => ({ ...prev, clientId }));
-    if (clientId) {
-      setIsLoading(true);
-      try {
-        const logoUrl = await getClientLogo(clientId);
-        setCampaignData((prev) => ({ ...prev, logo: logoUrl }));
-      } catch (error) {
-        console.error('Error fetching client logo:', error);
-      } finally {
-        setIsLoading(false);
+    if (clientId === 'add_new') {
+      setShowClientModal(true);
+    } else {
+      setCampaignData((prev) => ({ ...prev, clientId }));
+      if (clientId) {
+        setIsLoading(true);
+        try {
+          const logoUrl = await getClientLogo(clientId);
+          setCampaignData((prev) => ({ ...prev, logo: logoUrl }));
+        } catch (error) {
+          console.error('Error fetching client logo:', error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
@@ -122,6 +127,30 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
       [field]: !prev[field],
     }));
   };
+
+  const handleClientUpload = useCallback(
+    async (clientName, downloadURL, file, fileType) => {
+      try {
+        const clientKey = clientName.toLowerCase().replace(/\s+/g, '');
+        const newClient = await uploadClient(
+          clientName,
+          clientKey,
+          file,
+          fileType
+        );
+        setUpdateClients((prevClients) => [...prevClients, newClient]);
+        setCampaignData((prev) => ({
+          ...prev,
+          clientId: newClient.id,
+          logo: downloadURL,
+        }));
+        setShowClientModal(false);
+      } catch (error) {
+        console.error('Error uploading client:', error);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     return () => {
@@ -184,6 +213,12 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                         {client.name}
                       </option>
                     ))}
+                    <option
+                      className='text-black focus:outline-none'
+                      value='add_new'
+                    >
+                      + Add New Client
+                    </option>
                   </select>
                 </div>
 
@@ -382,6 +417,14 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
         acceptVideo={true}
+      />
+
+      <UploadModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        onUpload={handleClientUpload}
+        acceptVideo={false}
+        isClientDashboard={true}
       />
 
       {isLoading && (

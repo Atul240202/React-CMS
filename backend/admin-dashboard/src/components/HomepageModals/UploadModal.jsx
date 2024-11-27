@@ -34,7 +34,7 @@ const UploadModal = ({
         const imageUrl = URL.createObjectURL(file);
         setCurrentFileUrl(imageUrl);
         setShowClientCropModal(true);
-        onClose(); // Close the UploadModal when opening ClientCrop
+        // onClose(); // Close the UploadModal when opening ClientCrop
       } else if (requireCrop) {
         const file = acceptedFiles[0];
         setCurrentFile(file);

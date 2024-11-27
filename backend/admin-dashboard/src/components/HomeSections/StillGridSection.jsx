@@ -13,6 +13,9 @@ import {
 } from '../../firebase';
 import toast from 'react-hot-toast';
 
+const TOTAL_FRAMES = 8;
+const FRAMES_PER_ROW = 4;
+
 export default function StillGridSection() {
   const [stills, setStills] = useState([]);
   const [stillGridSize, setStillGridSize] = useState(2);
@@ -24,6 +27,7 @@ export default function StillGridSection() {
   const [isPortrait, setIsPortrait] = useState(true);
   const [editingItemId, setEditingItemId] = useState(null);
   const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [frameIndex, setFrameIndex] = useState(null);
 
   useEffect(() => {
     fetchStills();
@@ -51,13 +55,14 @@ export default function StillGridSection() {
   };
 
   const moveStillGridPair = async (dragIndex, hoverIndex) => {
+    if (dragIndex === hoverIndex) return;
+
     const newStills = [...stills];
-    const draggedItems = newStills.slice(dragIndex * 2, dragIndex * 2 + 2);
-    newStills.splice(dragIndex * 2, 2);
-    newStills.splice(hoverIndex * 2, 0, ...draggedItems);
+    const [draggedItem] = newStills.splice(dragIndex, 1);
+    newStills.splice(hoverIndex, 0, draggedItem);
 
     newStills.forEach((item, index) => {
-      item.rowOrder = Math.floor(index / 2);
+      item.rowOrder = Math.floor(index / FRAMES_PER_ROW);
     });
 
     setStills(newStills);
@@ -70,11 +75,18 @@ export default function StillGridSection() {
     }
   };
 
-  const handleUpload = (imageUrl, clientId, productTitle, isPortrait) => {
+  const handleUpload = (
+    imageUrl,
+    clientId,
+    productTitle,
+    isPortrait,
+    index
+  ) => {
     setSelectedImage(imageUrl);
     setSelectedClientId(clientId);
     setSelectedProductTitle(productTitle);
     setIsPortrait(isPortrait);
+    setFrameIndex(index);
     setShowUploadModal(false);
     setShowCropModal(true);
   };
@@ -96,14 +108,15 @@ export default function StillGridSection() {
           selectedClientId,
           selectedProductTitle,
           file,
-          isPortrait
+          isPortrait,
+          frameIndex
         );
         setStills([...stills, newStill]);
       }
       setShowCropModal(false);
     } catch (error) {
-      console.error('Error adding/updating home still:', error);
-      toast.error('Failed to add/update still');
+      console.error('Error processing still:', error);
+      toast.error('Failed to process still');
     }
   };
 
@@ -125,12 +138,109 @@ export default function StillGridSection() {
       setStills(stills.filter((item) => item.id !== itemId));
       toast.success('Still deleted successfully');
     } catch (error) {
-      console.error('Error deleting home still:', error);
+      console.error('Error deleting still:', error);
       toast.error('Failed to delete still');
     }
   };
 
-  const rows = Math.ceil(stillGridSize / 2);
+  const isPortraitFrame = (index) => {
+    const position = index % FRAMES_PER_ROW;
+    return position === 1 || position === 2;
+  };
+
+  const renderFrame = (index) => {
+    const still = stills[index];
+    const isPortrait = isPortraitFrame(index);
+    const canUpload = index < stillGridSize;
+
+    if (still) {
+      return (
+        <Draggable key={still.id} draggableId={still.id} index={index}>
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              className={`relative group ${
+                isPortrait
+                  ? 'aspect-[9/16] w-[calc(50%-0.5rem)]'
+                  : 'aspect-[16/9] w-full'
+              } ${snapshot.isDragging ? 'opacity-50' : ''}`}
+              onMouseEnter={() => setHoveredItemId(still.id)}
+              onMouseLeave={() => setHoveredItemId(null)}
+            >
+              <LazyLoadImage
+                src={still.image}
+                alt={still.productTitle}
+                effect='blur'
+                className='w-full h-full object-cover'
+              />
+              {hoveredItemId === still.id && (
+                <div className='absolute top-2 right-2 flex space-x-2'>
+                  <button
+                    onClick={() => handleEdit(still.id)}
+                    className='bg-black border border-white p-1 rounded-full hover:bg-zinc-800 '
+                  >
+                    <Pencil className='h-4 w-4 text-white' />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(still.id)}
+                    className='bg-black border border-white p-1 rounded-full hover:bg-zinc-800'
+                  >
+                    <X className='h-4 w-4 text-white' />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </Draggable>
+      );
+    }
+
+    return canUpload ? (
+      <button
+        onClick={() => {
+          setIsPortrait(isPortrait);
+          setFrameIndex(index);
+          setShowUploadModal(true);
+        }}
+        className={`${
+          isPortrait
+            ? 'aspect-[9/16] w-[calc(50%-0.5rem)]'
+            : 'aspect-[16/9] w-full'
+        } bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors`}
+        disabled={!canUpload}
+      >
+        <Plus className='h-8 w-8 text-white' />
+      </button>
+    ) : (
+      <div
+        className={`${
+          isPortrait
+            ? 'aspect-[9/16] w-[calc(50%-0.5rem)]'
+            : 'aspect-[16/9] w-full'
+        } bg-zinc-900 flex items-center justify-center`}
+      />
+    );
+  };
+
+  const renderRow = (rowIndex) => {
+    const startIndex = rowIndex * FRAMES_PER_ROW;
+    return (
+      <div key={rowIndex} className='flex gap-4 mb-4'>
+        <div className='w-1/3'>
+          {renderFrame(startIndex)} {/* Landscape */}
+        </div>
+        <div className='w-1/3 flex gap-4'>
+          {renderFrame(startIndex + 1)} {/* Portrait */}
+          {renderFrame(startIndex + 2)} {/* Portrait */}
+        </div>
+        <div className='w-1/3'>
+          {renderFrame(startIndex + 3)} {/* Landscape */}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className='space-y-8 py-8 bg-black'>
@@ -150,6 +260,7 @@ export default function StillGridSection() {
           ))}
         </select>
       </div>
+
       <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
         <DragDropContext
           onDragEnd={(result) => {
@@ -159,92 +270,8 @@ export default function StillGridSection() {
         >
           <Droppable droppableId='stillGrid'>
             {(provided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className='grid grid-cols-2 gap-4'
-              >
-                {Array.from({ length: rows }).map((_, rowIndex) => {
-                  const startIndex = rowIndex * 2;
-                  const rowStills = stills.slice(startIndex, startIndex + 2);
-                  const showEmptyFrames =
-                    rowStills.length < 2 && stills.length < stillGridSize;
-
-                  return (
-                    <div key={rowIndex} className='flex gap-4'>
-                      {rowStills.map((still, index) => (
-                        <Draggable
-                          key={still.id}
-                          draggableId={still.id}
-                          index={startIndex + index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={`relative group ${
-                                index === 0
-                                  ? 'aspect-w-9 aspect-h-16 '
-                                  : 'aspect-w-16 aspect-h-9'
-                              } ${snapshot.isDragging ? 'opacity-50' : ''}`}
-                              onMouseEnter={() => setHoveredItemId(still.id)}
-                              onMouseLeave={() => setHoveredItemId(null)}
-                            >
-                              <LazyLoadImage
-                                src={still.image}
-                                alt={still.productTitle}
-                                effect='blur'
-                                className='w-full h-full object-cover'
-                              />
-                              {hoveredItemId === still.id && (
-                                <>
-                                  <button
-                                    onClick={() => handleEdit(still.id)}
-                                    className='absolute top-2 right-12 bg-blue-500 p-1 rounded-full'
-                                  >
-                                    <Pencil className='h-4 w-4 text-white' />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDelete(still.id)}
-                                    className='absolute top-2 right-2 bg-red-500 p-1 rounded-full'
-                                  >
-                                    <X className='h-4 w-4 text-white' />
-                                  </button>
-                                </>
-                              )}
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-
-                      {showEmptyFrames && (
-                        <>
-                          {rowStills.length === 0 && (
-                            <button
-                              onClick={() => {
-                                setIsPortrait(true);
-                                setShowUploadModal(true);
-                              }}
-                              className='aspect-w-9 aspect-h-16 max-h-[70%] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
-                            >
-                              <Plus className='h-8 w-8 text-white' />
-                            </button>
-                          )}
-                          <button
-                            onClick={() => {
-                              setIsPortrait(false);
-                              setShowUploadModal(true);
-                            }}
-                            className='aspect-w-16 aspect-h-9 max-w-[30%] bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors'
-                          >
-                            <Plus className='h-8 w-8 text-white' />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  );
-                })}
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {[0, 1].map((rowIndex) => renderRow(rowIndex))}
                 {provided.placeholder}
               </div>
             )}
@@ -257,6 +284,7 @@ export default function StillGridSection() {
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
         isPortrait={isPortrait}
+        frameIndex={frameIndex}
       />
 
       <ImageCropModal
