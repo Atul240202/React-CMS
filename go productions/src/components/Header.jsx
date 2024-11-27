@@ -113,7 +113,7 @@ const Header = () => {
                   : 'translate-x-full opacity-0 bg-transparent'
               }`}
             >
-              {['MOTIONS', 'STILLS', 'LOCATIONS', 'CLIENTS', 'CONTACT US'].map(
+              {['MOTIONS', 'STILLS', 'LOCATIONS', 'CLIENTS', 'CONTACT'].map(
                 (item) => (
                   <Link
                     key={item}
@@ -130,7 +130,7 @@ const Header = () => {
           </>
         ) : (
           <nav className='hidden md:flex items-center gap-5 mr-[3%]'>
-            {['MOTIONS', 'STILLS', 'LOCATIONS', 'CLIENTS', 'CONTACT US'].map(
+            {['MOTIONS', 'STILLS', 'LOCATIONS', 'CLIENTS', 'CONTACT'].map(
               (item) => (
                 <Link
                   key={item}
