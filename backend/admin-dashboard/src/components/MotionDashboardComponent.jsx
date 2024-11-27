@@ -302,7 +302,7 @@ const MotionDashboardComponent = () => {
                       value={selectedMotion.text}
                       onChange={handleInputChange}
                       onBlur={handleSave}
-                      className='w-full bg-transparent mt-2 focus:outline-none animate-pulse'
+                      className='w-full bg-transparent mt-2 focus:outline-none'
                       placeholder='Enter title'
                       autoFocus
                     />
@@ -333,8 +333,65 @@ const MotionDashboardComponent = () => {
               CAMPAIGN CREDITS
             </h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
-              {Object.entries(selectedMotion.credits || {}).map(
-                ([key, value]) => (
+              {/* Display the 'productTitle' field explicitly first */}
+              {selectedMotion.productTitle && (
+                <div className='flex items-center justify-between border border-white p-3 rounded'>
+                  <div className='flex items-center flex-row'>
+                    <span className='text-xl font-extrabold'>
+                      Product Title:
+                    </span>
+                    <div className='flex items-center ml-3 space-x-2'>
+                      {editingField === 'productTitle' ? (
+                        <input
+                          type='text'
+                          name='productTitle'
+                          value={selectedMotion.productTitle}
+                          onChange={handleInputChange}
+                          onBlur={() => {
+                            handleSave();
+                            setEditingField(null);
+                          }}
+                          className='bg-transparent text-left focus:outline-none'
+                          autoFocus
+                        />
+                      ) : (
+                        <span
+                          className={`text-white text-xl font-bold ${
+                            visibleFields[selectedMotion.id]?.productTitle ===
+                            false
+                              ? 'opacity-50'
+                              : ''
+                          }`}
+                        >
+                          {selectedMotion.productTitle ||
+                            'Click pencil to edit...'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex items-center flex-row gap-2'>
+                    <Pencil
+                      className='h-4 w-4 cursor-pointer'
+                      onClick={() => setEditingField('productTitle')}
+                    />
+                    <button
+                      onClick={() => toggleFieldVisibility('productTitle')}
+                    >
+                      {visibleFields[selectedMotion.id]?.productTitle ===
+                      false ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Render the remaining credits except 'productTitle' */}
+              {Object.entries(selectedMotion.credits || {})
+                .filter(([key]) => key !== 'productTitle') // Exclude 'productTitle'
+                .map(([key, value]) => (
                   <div
                     key={key}
                     className='flex items-center justify-between border border-white p-3 rounded'
@@ -352,7 +409,7 @@ const MotionDashboardComponent = () => {
                               handleSave();
                               setEditingField(null);
                             }}
-                            className='bg-transparent text-left focus:outline-none animate-pulse'
+                            className='bg-transparent text-left focus:outline-none'
                             autoFocus
                           />
                         ) : (
@@ -388,8 +445,7 @@ const MotionDashboardComponent = () => {
                       </button>
                     </div>
                   </div>
-                )
-              )}
+                ))}
             </div>
           </div>
         )}

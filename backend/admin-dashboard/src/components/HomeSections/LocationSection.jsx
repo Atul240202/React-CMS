@@ -56,7 +56,7 @@ export default function LocationSection() {
 
   return (
     <section className='mb-12'>
-      <h2 className='text-2xl font-bold mb-4'>LOCATION</h2>
+      <h2 className='text-2xl font-extrabold mb-4'>LOCATION</h2>
       <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
         <div className='grid grid-cols-4 gap-4'>
           {locations.map((location) => (

@@ -154,6 +154,12 @@ const LocationCampaignModal = ({ isOpen, onClose, onAddLocation }) => {
       alert('Failed to add new location. Please try again.');
     } finally {
       setIsLoading(false);
+      setLocationData({
+        text: '',
+        address: '',
+        image: null,
+        internalImages: [],
+      });
     }
   };
 

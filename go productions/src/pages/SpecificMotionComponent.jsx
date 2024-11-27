@@ -13,6 +13,7 @@ export default function SpecificMotionComponent() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const fetchMotionData = async () => {
@@ -61,6 +62,15 @@ export default function SpecificMotionComponent() {
     window.scrollTo(0, 0);
   }, [text, location.state]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleVideoClick = () => {
     setIsPopupOpen(true);
   };
@@ -90,46 +100,95 @@ export default function SpecificMotionComponent() {
               muted
               loop
               style={styles.video}
+              className={`${isMobile ? 'w-[90%] mt-[5vh]' : 'w-[100%]'}`}
               onClick={handleVideoClick}
             />
           </div>
-          <div style={styles.textContainer}>
-            <h1 style={styles.text}>{motion.text}</h1>
+          <div
+            style={styles.textContainer}
+            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mt-5'}`}
+          >
+            <h1
+              style={styles.text}
+              className={`${isMobile ? 'text-sm' : 'text-4xl'}`}
+            >
+              {motion.text}
+            </h1>
             <img
               src={motion.logo || motion.clientImage}
               alt='Logo'
               style={styles.logo}
               loading='lazy'
+              className={`${isMobile ? 'w-[100px]' : 'w-[250px]'}`}
             />
           </div>
           <div style={styles.creditContainer}>
-            <h3 style={styles.creditHeader}>CREDITS</h3>
+            <h3
+              style={styles.creditHeader}
+              className={`${isMobile ? 'text-md' : 'text-4xl'}`}
+            >
+              CREDITS
+            </h3>
           </div>
           <hr style={styles.styleLine1} />
           <div style={styles.creditData}>
-            <div style={styles.creditBlanks}></div>
-            <h3 style={styles.creditContent}>CLIENT: {motion.clientName}</h3>
+            <div
+              style={styles.creditBlanks}
+              className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+            ></div>
+            <h3
+              style={styles.creditContent}
+              className={`${isMobile ? 'text-sm flex-7' : 'text-xl flex-1'}`}
+            >
+              CLIENT: {motion.clientName}
+            </h3>
           </div>
           <hr style={styles.styleLine1} />
           <div style={styles.creditData}>
-            <div style={styles.creditBlanks}></div>
-            <div style={styles.creditContent}>
+            <div
+              style={styles.creditBlanks}
+              className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+            ></div>
+            <div
+              style={styles.creditContent}
+              className={`${isMobile ? 'text-sm flex-7' : 'text-xl flex-1'}`}
+            >
               PRODUCTION TITLE: {motion.productTitle || 'N/A'}
             </div>
           </div>
           {motion.credits &&
             Object.entries(motion.credits).map(([key, value]) => (
               <React.Fragment key={key}>
-                <hr style={styles.styleLine2} />
+                <hr
+                  style={styles.styleLine2}
+                  className={` ${
+                    isMobile
+                      ? 'w-[73%] ml-[25%] mr-[2%]'
+                      : 'w-[50%] ml-[48%] mr-[2%]'
+                  }`}
+                />
                 <div style={styles.creditData}>
-                  <div style={styles.creditBlanks}></div>
-                  <div style={styles.creditContent}>
+                  <div
+                    style={styles.creditBlanks}
+                    className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+                  ></div>
+                  <div
+                    style={styles.creditContent}
+                    className={`${
+                      isMobile ? 'text-sm flex-7' : 'text-xl flex-1'
+                    }`}
+                  >
                     {key.toUpperCase()}: {value}
                   </div>
                 </div>
               </React.Fragment>
             ))}
-          <hr style={styles.styleLine2} />
+          <hr
+            style={styles.styleLine2}
+            className={`${
+              isMobile ? 'w-[73%] ml-[25%] mr-[2%]' : 'w-[50%] ml-[48%] mr-[2%]'
+            }`}
+          />
 
           {isPopupOpen && (
             <div style={styles.popupOverlay}>
@@ -151,53 +210,48 @@ export default function SpecificMotionComponent() {
 const styles = {
   container: {
     paddingTop: '5vh',
-    paddingBottom: '15vh',
+    paddingBottom: '5vh',
     position: 'relative',
     textAlign: 'center',
     color: '#fff',
     margin: 'auto',
-    width: '90%',
   },
   videoContainer: {
     position: 'relative',
   },
   video: {
-    width: '100%',
-    maxWidth: '1200px',
     cursor: 'pointer',
   },
   textContainer: {
-    marginTop: '20px',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   creditContainer: {
     marginTop: '5vh',
+    marginLeft: '2vw',
+    marginRight: '2vw',
+    textAlign: 'left',
   },
   creditData: {
     display: 'flex',
   },
   text: {
-    fontSize: '2rem',
     fontWeight: 'bold',
+    marginTop: 0,
+    marginBottom: 0,
   },
   creditHeader: {
-    fontSize: '2rem',
-    display: 'flex',
-    marginBottom: '0',
+    marginBottom: '1rem',
+    fontWeight: 800,
+    marginLeft: '3vw',
   },
+
   creditContent: {
-    flex: '1',
     display: 'flex',
   },
-  creditBlanks: {
-    flex: '1',
-  },
-  logo: {
-    marginTop: '10px',
-    width: '250px',
-  },
+  creditBlanks: {},
+  logo: {},
   popupOverlay: {
     position: 'fixed',
     top: 0,
@@ -235,13 +289,12 @@ const styles = {
     height: '1px',
     border: 'none',
     background: 'white',
+    margin: '10px 20px',
   },
   styleLine2: {
     height: '1px',
     border: 'none',
     background: 'white',
-    width: '52%',
-    marginLeft: '48%',
   },
   loadingError: {
     color: '#fff',

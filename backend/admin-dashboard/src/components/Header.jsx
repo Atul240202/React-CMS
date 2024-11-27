@@ -173,13 +173,13 @@ const Header = ({ toggleSidebar }) => {
     <>
       <header
         style={styles.header}
-        className='flex justify-between items-center p-4 text-white'
+        className='flex justify-between items-center p-2 text-white'
       >
-        <button onClick={toggleSidebar} className='text-white'>
+        <button onClick={toggleSidebar} className='text-white pl-2'>
           <img loading='lazy' src={jamMenu} alt='Menu' className='h-10 w-10' />
         </button>
-        <img src={gopro} alt='' className='w-1/5' />
-        <div className='flex items-center space-x-4'>
+        <img src={gopro} alt='' className='w-1/4' />
+        <div className='flex items-center space-x-4 pr-4'>
           <button
             onClick={() => setShowProfileModal(true)}
             className='text-white hover:text-gray-300 transition-colors'
@@ -194,6 +194,7 @@ const Header = ({ toggleSidebar }) => {
           </button>
         </div>
       </header>
+      <hr className='h-px bg-gradient-to-l from-white to-transparent border-none' />
       <ProfileModal
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}

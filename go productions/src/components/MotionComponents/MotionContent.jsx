@@ -4,8 +4,18 @@ import { useNavigate } from 'react-router-dom';
 const MotionContent = ({ motionData }) => {
   const navigate = useNavigate();
   const [visibleItems, setVisibleItems] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const itemsRef = useRef([]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleClick = (motion) => {
     navigate(`/motions/${motion.id}`, { state: { motion } });
@@ -39,22 +49,33 @@ const MotionContent = ({ motionData }) => {
   }, []);
 
   if (!motionData || motionData.length === 0) {
-    return <div style={styles.noData}>No motion data available</div>;
+    return (
+      <div className='text-white text-xl text-center mt-8'>
+        No motion data available
+      </div>
+    );
   }
 
   return (
-    <div style={styles.motionContentContainer}>
+    <div className='flex flex-col items-center justify-center max-w-[85rem] mx-auto p-4 md:p-8 bg-black'>
       {motionData.map((motion, index) => (
         <div
           key={motion.id}
-          style={styles.motionContentItem}
+          className={`w-full flex ${
+            isMobile ? 'flex-col items-center' : 'items-center justify-between'
+          } mb-8 md:mb-12 text-white relative ${
+            visibleItems[motion.id] ? 'animate' : ''
+          }`}
           data-id={motion.id}
-          className={visibleItems[motion.id] ? 'animate' : ''}
           ref={(el) => (itemsRef.current[index] = el)}
         >
-          <div style={styles.videoContainer} className='video-container'>
+          <div
+            className={`video-container ${
+              isMobile ? 'w-full mb-4' : 'w-[40%]'
+            }`}
+          >
             <video
-              style={styles.motionVideo}
+              className='w-full h-auto object-cover -mt-[1px] cursor-pointer'
               src={motion.video}
               muted
               loop
@@ -64,20 +85,30 @@ const MotionContent = ({ motionData }) => {
             />
           </div>
           <div
-            style={styles.textAndLogoContainer}
-            onClick={() => handleClick(motion)}
+            className={`flex ${
+              isMobile ? 'flex-row items-center' : 'flex-col items-start h-full'
+            } justify-between relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
           >
             <img
               src={motion.logo || motion.clientImage}
               alt='Logo'
-              style={styles.motionLogo}
-              className='logo'
+              className={`logo ${
+                isMobile ? 'w-32 md:w-40 mb-4 ml-0' : 'w-56'
+              } h-auto self-end mb-auto`}
               loading='lazy'
             />
-            <h2 style={styles.videoText} className='video-text'>
+            <h2
+              className={`video-text mt-40 text-2xl md:text-4xl lg:text-5xl font-bold ${
+                isMobile ? 'text-center mt-0 text-xl mr-4' : 'text-left '
+              } `}
+            >
               {motion.text}
             </h2>
-            <div className='border-top'></div>
+            <div
+              className={`border-top w-0 h-[1px] bg-white absolute top-0 left-0 ${
+                isMobile ? 'h-[0px]' : 'h-[1px]'
+              }`}
+            />
           </div>
         </div>
       ))}
@@ -140,15 +171,6 @@ const MotionContent = ({ motionData }) => {
           }
         }
 
-        .border-top {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 1px;
-          background-color: #fff;
-          width: 0;
-        }
-
         .video-container,
         .video-text,
         .logo {
@@ -160,116 +182,9 @@ const MotionContent = ({ motionData }) => {
         .animate .logo {
           opacity: 1;
         }
-
-        /* Responsive styles */
-        @media (max-width: 1024px) {
-          .video-text {
-            font-size: 2.5rem;
-          }
-          .logo {
-            max-width: 180px;
-          }
-          .motionContentItem {
-            padding-bottom: 1.5rem;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .video-text {
-            font-size: 2rem;
-          }
-          .logo {
-            max-width: 140px;
-          }
-          .motionContentItem {
-            padding-bottom: 1rem;
-            flex-direction: column;
-            align-items: center;
-          }
-          .video-container {
-            max-width: 100%;
-            padding-right: 0;
-            margin-bottom: 1rem;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .video-text {
-            font-size: 1.5rem;
-          }
-          .logo {
-            max-width: 100px;
-          }
-          .motionContentContainer {
-            padding: 1rem;
-          }
-        }
       `}</style>
     </div>
   );
-};
-
-const styles = {
-  motionContentContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    maxWidth: '85rem',
-    margin: '0 auto',
-    padding: '2rem',
-    backgroundColor: '#000',
-  },
-  motionContentItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingBottom: '2rem',
-    color: '#fff',
-    position: 'relative',
-    marginBottom: '2rem',
-  },
-  videoContainer: {
-    flex: 1,
-    maxWidth: '40%',
-  },
-  motionVideo: {
-    width: '100%',
-    height: 'auto',
-    objectFit: 'cover',
-    marginTop: '-1px',
-  },
-  textAndLogoContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    maxWidth: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  motionLogo: {
-    alignSelf: 'flex-end',
-    marginBottom: 'auto',
-    maxWidth: '220px',
-    height: 'auto',
-  },
-  videoText: {
-    fontSize: '3rem',
-    fontWeight: 'bold',
-    color: '#fff',
-    alignSelf: 'flex-start',
-    paddingTop: '21%',
-    margin: 0,
-  },
-  noData: {
-    color: '#fff',
-    fontSize: '1.2rem',
-    textAlign: 'center',
-    marginTop: '2rem',
-  },
 };
 
 export default MotionContent;

@@ -253,7 +253,21 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
         <div className='max-w-5xl mx-auto'>
           <div className='flex justify-between items-center p-6 border-b border-gray-800'>
             <h2 className='text-2xl font-extrabold'>FILL CAMPAIGN DETAILS</h2>
-            <button onClick={onClose}>
+            <button
+              onClick={() => {
+                setCampaignData({
+                  logo: '',
+                  text: '',
+                  image: null,
+                  internalImages: [],
+                  clientId: '',
+                  credits: {
+                    'PRODUCT TITLE': '',
+                  },
+                });
+                onClose();
+              }}
+            >
               <X className='h-6 w-6' />
             </button>
           </div>

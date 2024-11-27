@@ -1,10 +1,9 @@
 .motion-section {
   color: white;
   text-align: center;
-  height: 105vh;
-  max-height: 100%;
-  width: 90%;
-  margin-inline: 5%;
+  height: 120vh;
+  width: 94vw;
+  margin-inline: auto;
 }
 
 .motion-header {
@@ -13,8 +12,9 @@
 
 .motion-header h2 {
   font-size: 48px;
-  margin: 10px;
+  margin-top: 15px;
   font-weight: 800;
+  margin-bottom: 15px;
 }
 
 .motion-header p {

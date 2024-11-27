@@ -12,6 +12,7 @@ import {
   deleteLocationImage,
   addLocationGridImage,
   updateLocationSequence,
+  uploadImage,
 } from '../firebase';
 import CampaignGrid from './CampaignGrid';
 

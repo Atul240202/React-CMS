@@ -3,6 +3,10 @@ import { stillImages } from '../data/data';
 import '../styles/Still.css';
 
 const Still = () => {
+  // useEffect(() => {
+  //   onLoad();
+  // }, [onLoad]);
+
   const imagePairs = [];
   for (let i = 0; i < stillImages.length; i += 2) {
     imagePairs.push(stillImages.slice(i, i + 2));
@@ -12,9 +16,9 @@ const Still = () => {
     <section className='still-section'>
       <div className='still-header'>
         <h2>STILL</h2>
-        <p>Your Vision, Our Expertise</p>
+        <p>YOUR VISION, OUR EXPERTISE</p>
         <a href='/stills' className='see-more'>
-          See More
+          SEE MORE
         </a>
       </div>
 

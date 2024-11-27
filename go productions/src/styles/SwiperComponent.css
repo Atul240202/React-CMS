@@ -1,4 +1,6 @@
 .imageSlider {
+  aspect-ratio: 16 / 9;
+  object-fit: cover; /* Ensures no stretching or distortion */
   max-width: 100%;
   filter: grayscale(100%); /* Makes the image black & white initially */
   transition: filter 0.3s ease; /* Smooth transition effect */
@@ -8,6 +10,9 @@
   filter: grayscale(0%); /* Restores the image color on hover */
 }
 
+.location-text {
+  z-index: 101;
+}
 :root {
   --body-color: #000;
 }
@@ -16,6 +21,7 @@
   max-width: 100vw;
   margin-inline: auto;
   display: flex;
+  height: 80vh;
   align-items: center;
   justify-content: center;
   background: var(--body-color);
@@ -30,7 +36,7 @@
 .curved-swiper::before {
   content: '';
   position: absolute;
-  top: -40px;
+  top: -50px;
   left: -10%;
   width: 120%;
   height: 100px;
@@ -42,13 +48,13 @@
 .curved-swiper::after {
   content: '';
   position: absolute;
-  bottom: -60px;
+  bottom: -50px;
   left: -10%;
   width: 120%;
   height: 100px;
   background: var(--body-color);
   border-radius: 100%;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .swiper-button-prev,

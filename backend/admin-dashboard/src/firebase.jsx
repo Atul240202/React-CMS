@@ -146,8 +146,8 @@ export const confirmReset = async (code, newPassword) => {
 export async function uploadClient(name, clientKey, file, fileType) {
   try {
     // Get file extension and generate a unique filename
-    console.log('file type', fileType, file[0].name);
-    const fileExtension = file[0].name.split('.').pop();
+    console.log('file type', fileType, file.name);
+    const fileExtension = file.name.split('.').pop();
     console.log('file extension', fileExtension);
     const uniqueFileName = `${clientKey}_${Date.now()}.${fileExtension}`;
     console.log('client uniqieFileName', uniqueFileName);
@@ -156,7 +156,7 @@ export async function uploadClient(name, clientKey, file, fileType) {
     const metadata = {
       contentType: fileType,
     };
-    await uploadBytes(storageRef, file[0], metadata);
+    await uploadBytes(storageRef, file, metadata);
     const imageUrl = await getDownloadURL(storageRef);
     console.log('client imageUrl', imageUrl);
 
@@ -505,7 +505,7 @@ export async function getStills() {
   }
 }
 
-async function uploadImage(file, path) {
+export async function uploadImage(file, path) {
   const storageRef = ref(storage, path);
   await uploadBytes(storageRef, file);
   return await getDownloadURL(storageRef);

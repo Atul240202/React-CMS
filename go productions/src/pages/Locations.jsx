@@ -13,6 +13,16 @@ export default function Locations() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -46,6 +56,7 @@ export default function Locations() {
   const navigateToLocationPage = (locationId) => {
     navigate(`/locations/${locationId}`);
   };
+
   const handleTransitionComplete = () => {
     setShowContent(true);
   };
@@ -72,78 +83,126 @@ export default function Locations() {
       />
       {showContent && (
         <>
-          <div style={styles.motionContainer}>
-            <div style={styles.sliderContainer}>
-              <div style={styles.inTopSliderContainer}>
+          <div
+            className={`w-full ${
+              isMobile ? 'h-[20vh] pt-[10vh]' : 'h-[85vh] pt-[15vh]'
+            }  relative overflow-hidden`}
+          >
+            <div className='flex flex-col'>
+              <div
+                className={`flex ${
+                  isMobile
+                    ? 'flex-row justify-center items-center'
+                    : 'justify-between'
+                } w-[90vw] md:w-[80vw] mx-auto  gap-2.5 ${
+                  isMobile ? 'h-auto mb-[3vh]' : 'h-[35vh] mb-[5vh]'
+                }`}
+              >
                 <motion.h1
                   initial={{ x: '-150%' }}
                   animate={{ x: 0 }}
                   transition={{ duration: 0.7, delay: 0.5 }}
-                  style={styles.sliderHeadings}
+                  className={`font-extrabold text-center ${
+                    isMobile
+                      ? 'text-4xl md:text-5xl lg:text-6xl mb-0'
+                      : 'text-[150px] -mb-[30px] self-end'
+                  }`}
                 >
                   FEATURE
                 </motion.h1>
-                <img
-                  className='fadeinout'
-                  style={styles.motionSwiperVideo}
-                  src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/1ad23f85ffce6677e3e4a7975417c597_y5rffi.png'
-                  alt='slider-image'
-                  loading='lazy'
-                />
+                {!isMobile && (
+                  <img
+                    className='fadeinout w-[30%] max-h-[30vh] self-center'
+                    src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/1ad23f85ffce6677e3e4a7975417c597_y5rffi.png'
+                    alt='slider-image'
+                    loading='lazy'
+                  />
+                )}
               </div>
-              <div style={styles.inBottomSliderContainer}>
-                <img
-                  className='fadeinout'
-                  style={styles.imageSlider}
-                  src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/abd03797bf7fe8d160553bd5d01191bd_gv5vbi.png'
-                  alt='slider-image'
-                  loading='lazy'
-                />
-                <div style={styles.bottomTextContainer}>
+
+              {!isMobile && (
+                <div className='flex justify-between w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 h-[35vh]'>
+                  <img
+                    className='fadeinout w-[30%]'
+                    src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/abd03797bf7fe8d160553bd5d01191bd_gv5vbi.png'
+                    alt='slider-image'
+                    loading='lazy'
+                  />
                   <motion.h1
                     initial={{ x: '150%' }}
                     animate={{ x: 0 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
-                    style={styles.sliderHeadings2}
+                    className='font-extrabold leading-none text-[150px] -mt-[27px]'
                   >
                     LOCATION
                   </motion.h1>
                 </div>
-              </div>
+              )}
+
+              {isMobile && (
+                <motion.h1
+                  initial={{ x: '150%' }}
+                  animate={{ x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.5 }}
+                  className='font-extrabold text-4xl md:text-5xl lg:text-6xl text-center mt-2'
+                >
+                  LOCATION
+                </motion.h1>
+              )}
             </div>
           </div>
-          <div style={styles.container}>
+
+          <div className='flex flex-col items-center p-4 md:p-8 bg-black'>
             {locations.map((item, index) => (
               <div
                 key={item.id}
-                style={{
-                  ...styles.itemContainer,
-                  flexDirection: index % 2 === 0 ? 'row' : 'row-reverse',
-                }}
+                className={`flex ${
+                  isMobile
+                    ? 'flex-col items-center'
+                    : index % 2 === 0
+                    ? 'flex-row'
+                    : 'flex-row-reverse'
+                } 
+                  justify-between w-full max-w-[85rem] ${
+                    isMobile ? 'h-auto mb-12' : 'h-[60vh] mb-8'
+                  }`}
               >
                 <div
-                  style={styles.imageContainer}
+                  className={`${
+                    isMobile ? 'w-full mb-6' : 'w-1/2'
+                  } cursor-pointer`}
                   onClick={() => navigateToLocationPage(item.id)}
                 >
                   <img
                     src={item.image}
                     alt={item.text}
-                    style={styles.image}
+                    className={`w-full ${
+                      isMobile ? 'h-[40vh]' : 'h-[60vh]'
+                    } object-cover`}
                     loading='lazy'
                   />
                 </div>
                 <motion.div
-                  style={styles.blankContainer}
+                  className={`flex flex-col items-center justify-center ${
+                    isMobile ? 'w-full text-center' : 'w-1/2'
+                  }`}
                   initial='hidden'
                   whileInView='visible'
                   viewport={{ once: true, margin: '-100px' }}
                 >
-                  <motion.h2 variants={textVariants} style={styles.text}>
+                  <motion.h2
+                    variants={textVariants}
+                    className={`text-white font-extrabold ${
+                      isMobile ? 'text-2xl md:text-3xl mb-4' : 'text-4xl mb-6'
+                    }`}
+                  >
                     {item.text}
                   </motion.h2>
                   <motion.h2
                     variants={textVariants}
-                    style={styles.text}
+                    className={`text-white font-extrabold ${
+                      isMobile ? 'text-xl md:text-2xl' : 'text-4xl'
+                    }`}
                     transition={{ delay: 0.2 }}
                   >
                     {item.address}
@@ -154,137 +213,9 @@ export default function Locations() {
           </div>
         </>
       )}
-      {error && <div style={styles.loadingError}>{error}</div>}
+      {error && (
+        <div className='text-white text-xl text-center mt-8'>{error}</div>
+      )}
     </>
   );
 }
-
-const styles = {
-  motionContainer: {
-    paddingTop: '15vh',
-    width: '100%',
-    height: '85vh',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  sliderHeadings: {
-    fontSize: '150px',
-    alignSelf: 'end',
-    marginTop: 'auto',
-    fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black',
-    fontWeight: '800',
-    letterSpacing: '-0.015em',
-    textAlign: 'center',
-    marginBlockStart: '0',
-    marginBlockEnd: '0',
-    marginBottom: '-30px',
-  },
-  sliderHeadings2: {
-    position: 'relative',
-    alignSelf: 'flex-start',
-    marginBottom: '0',
-    lineHeight: '1',
-    fontSize: '150px',
-    fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black',
-    fontWeight: '800',
-    letterSpacing: '-0.015em',
-    textAlign: 'center',
-    marginTop: '-27px',
-  },
-  sliderContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  inTopSliderContainer: {
-    marginBottom: '5vh',
-    position: 'relative',
-    display: 'flex',
-    gap: '10px',
-    height: '35vh',
-    justifyContent: 'space-between',
-    width: '80vw',
-    marginRight: 'auto',
-    marginLeft: 'auto',
-  },
-  motionSwiperVideo: {
-    width: '30%',
-    maxHeight: '30vh',
-    alignSelf: 'center',
-  },
-  inBottomSliderContainer: {
-    marginBottom: '5vh',
-    position: 'relative',
-    display: 'flex',
-    gap: '10px',
-    height: '35vh',
-    justifyContent: 'space-between',
-    width: '80vw',
-    marginRight: 'auto',
-    marginLeft: 'auto',
-  },
-  imageSlider: {
-    width: '30%',
-  },
-  bottomTextContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  bottomTextAnimation: {
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  },
-  sliderText: {
-    position: 'relative',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: '25px',
-    marginTop: '0',
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '2rem',
-    backgroundColor: '#000',
-  },
-  itemContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '85rem',
-    height: '60vh',
-  },
-  imageContainer: {
-    flex: '1',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '60vh',
-  },
-
-  blankContainer: {
-    flex: '1',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  text: {
-    fontSize: '40px',
-    fontWeight: 800,
-    color: '#fff',
-    margin: '0',
-  },
-  loadingError: {
-    color: '#fff',
-    fontSize: '1.2rem',
-    textAlign: 'center',
-    marginTop: '2rem',
-  },
-};

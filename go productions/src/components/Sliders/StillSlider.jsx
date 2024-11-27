@@ -4,7 +4,7 @@ import '../../styles/FadeInOut.css';
 
 const words = ['FEATURE', 'MOTION', 'MOTIONS', 'MOVIES', 'FLICKS', 'PICTURES'];
 
-function MotionSlider() {
+function StillSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -33,37 +33,36 @@ function MotionSlider() {
 
   return (
     <div
-      className={`w-full  pt-[15vh] relative overflow-hidden ${
-        isMobile ? 'h-[30vh]' : 'h-[85vh]'
-      }`}
+      className={`w-full ${
+        isMobile ? 'h-[25vh]' : 'h-[90vh]'
+      } pt-[15vh] relative overflow-hidden`}
     >
       <div className='flex flex-col'>
         <div
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
-          } w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 ${
-            isMobile ? 'h-auto' : 'h-[30vh]'
+          } w-[90vw] md:w-[80vw] mx-auto  gap-2.5 ${
+            isMobile ? 'h-auto mb-[2vh]' : 'h-[38vh] mb-[5vh]'
           }`}
         >
           <motion.h1
-            initial={{ x: '-150%' }}
+            initial={{ x: '-120%' }}
             animate={{ x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className={`font-extrabold m-0 ${
+            className={`font-extrabold text-center m-0 ${
               isMobile
                 ? 'text-5xl md:text-7xl lg:text-8xl mb-4'
-                : 'text-[150px] mb-[-75px]'
+                : 'text-[150px] -mb-[90px]'
             }`}
           >
             FEATURE
           </motion.h1>
           {!isMobile && (
-            <video
-              className='fadeinout object-cover w-[30%] max-h-[30vh] self-center'
-              src='https://res.cloudinary.com/da3r1iagy/video/upload/v1727868661/-ceaf-47ec-8e60-9468da999b3f_gemyqj.mp4'
-              muted
-              autoPlay
-              loop
+            <img
+              className='fadeinout w-[30%] max-h-[30vh] self-center'
+              src='https://res.cloudinary.com/da3r1iagy/image/upload/v1727814576/9d8d7a1ee3ba214afae49997eaedf852_l6snn2.png'
+              alt='slider-image'
+              loading='lazy'
             />
           )}
         </div>
@@ -72,16 +71,15 @@ function MotionSlider() {
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
           } w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 ${
-            isMobile ? 'h-auto' : 'h-[40vh]'
+            isMobile ? 'h-auto' : 'h-[43vh]'
           }`}
         >
           {!isMobile && (
-            <video
-              className='fadeinout object-cover w-[40%]'
-              src='https://res.cloudinary.com/da3r1iagy/video/upload/v1727868655/-f4de-4cd6-8720-860efd6c272b_ac1fhk.mp4'
-              muted
-              autoPlay
-              loop
+            <img
+              className='fadeinout w-[45%] max-h-[40vh] ml-[10px]'
+              src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728759721/FEST0088-scaled_uispvw.png'
+              alt='slider-image'
+              loading='lazy'
             />
           )}
           <div className='flex flex-col'>
@@ -89,30 +87,28 @@ function MotionSlider() {
               initial={{ x: '150%' }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className={`font-extrabold leading-none m-0 ${
+              className={`font-extrabold leading-none ${
                 isMobile
-                  ? 'text-5xl md:text-7xl lg:text-8xl text-center'
-                  : 'text-[150px]'
-              }`}
+                  ? 'text-5xl md:text-7xl lg:text-8xl text-center mt-0'
+                  : 'text-[170px] -mt-[27px]'
+              } mb-0`}
             >
-              MOTION
+              STILL
             </motion.h1>
-            <div className='relative h-[150px] flex flex-row text-center overflow-hidden'>
+            <div className='relative h-[150px] overflow-hidden'>
               <AnimatePresence mode='wait'>
-                <motion.h1
+                <motion.p
                   key={words[currentIndex]}
                   variants={containerVariants}
                   initial='initial'
                   animate='animate'
                   exit='exit'
-                  className={`leading-none m-0 place-items-center mt-3 w-full ${
-                    isMobile
-                      ? 'text-xl md:text-6xl lg:text-7xl text-center'
-                      : 'text-[40px]'
-                  }`}
+                  className={`text-center font-bold ${
+                    isMobile ? 'text-2xl' : 'text-[25px]'
+                  } mt-5`}
                 >
                   {words[currentIndex]}
-                </motion.h1>
+                </motion.p>
               </AnimatePresence>
             </div>
           </div>
@@ -122,4 +118,4 @@ function MotionSlider() {
   );
 }
 
-export default MotionSlider;
+export default StillSlider;
