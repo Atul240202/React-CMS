@@ -63,7 +63,7 @@ function AppContent() {
               path='/clients/:clientKey'
               element={<SpecificClientsComponent />}
             />
-            <Route path='/contactsus' element={<Contact />} />
+            <Route path='/contact' element={<Contact />} />
           </Route>
         </Routes>
       </Suspense>

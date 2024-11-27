@@ -95,6 +95,28 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:3001/send-whatsapp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include', // Include this if your server is configured to accept credentials
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setStatusMessage('Message sent to WhatsApp!');
+        setFormData({ name: '', email: '', content: '', number: '' }); // Clear form after successful submission
+      } else {
+        setStatusMessage('Failed to send the message.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setStatusMessage('An error occurred while sending the message.');
+    }
   };
 
   return (
@@ -129,7 +151,7 @@ function Contact() {
         />
         <input
           type='tel'
-          name='Phone'
+          name='number'
           value={formData.number}
           onChange={handleInputChange}
           placeholder='ENTER YOUR MOBILE NO.'
