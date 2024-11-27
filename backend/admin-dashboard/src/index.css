@@ -6,11 +6,9 @@
   font-family: 'FONTSPRING DEMO - Chesna Grotesk Black';
   src: url('/fonts/chesnagrotesk-medium.woff2') format('woff2'),
     url('/fonts/Fontspring-DEMO-chesnagrotesk-black.woff') format('woff');
-  font-weight: 800;
   font-style: normal;
 }
 
 * {
   font-family: 'Chesna Grotesk', sans-serif;
-  font-weight: 600;
 }
