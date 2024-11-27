@@ -925,11 +925,12 @@ export async function updateLocation(
     let updatedLocationData = { ...locationData };
 
     if (mainFile) {
-      const mainImageUrl = await uploadImage(
-        mainFile,
-        `locations/main_${locationId}_${Date.now()}`
-      );
-      updatedLocationData.image = mainImageUrl;
+      // const mainImageUrl = await uploadImage(
+      //   mainFile,
+      //   `locations/main_${locationId}_${Date.now()}`
+      // );
+      // console.log('Firebase main location image', mainImageUrl);
+      updatedLocationData.image = mainFile;
     }
 
     if (gridFiles && gridFiles.length > 0) {

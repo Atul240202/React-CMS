@@ -247,11 +247,11 @@ export default function SpecificStillsComponent() {
 
 const styles = {
   container: {
-    paddingTop: '10vh',
     paddingBottom: '5vh',
     textAlign: 'center',
     backgroundColor: '#000',
     color: '#fff',
+    marginTop: '10vh',
   },
   imgTextContainer: {
     position: 'relative',
@@ -264,7 +264,6 @@ const styles = {
   mainImageContainer: {
     position: 'relative',
     marginBottom: '20px',
-
     overflow: 'hidden',
     cursor: 'pointer',
   },
