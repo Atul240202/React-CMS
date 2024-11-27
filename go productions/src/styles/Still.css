@@ -13,8 +13,10 @@
 
 .still-header h2 {
   font-size: 48px;
-  font-weight: 800;
+  font-weight: 900;
   margin-block: 0;
+  src: url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
+    format('woff');
 }
 
 .still-header p {

@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'Chesna Grotesk Black';
   src: url('/fonts/ChesnaGroteskBlack.woff2') format('woff2');
   font-weight: 900;
@@ -8,7 +8,7 @@
   font-family: 'Chesna Grotesk';
   src: url('/fonts/ChesnaGrotesk.woff2') format('woff2');
   font-weight: 500;
-}
+} */
 
 .transition {
   position: fixed;
@@ -67,7 +67,7 @@
   transition: clip-path 0.3s ease;
 }
 
-.go {
+/* .go {
   font-family: 'Chesna Grotesk Black', sans-serif;
   font-weight: 900;
 }
@@ -75,10 +75,11 @@
 .productions {
   font-family: 'Chesna Grotesk', sans-serif;
   font-weight: 500;
-}
+} */
 
 .quote-wrapper {
   text-align: center;
+  justify-content: center;
   color: white;
   max-width: 800px;
   padding: 0 2rem;

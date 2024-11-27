@@ -129,7 +129,7 @@ const Header = () => {
             </nav>
           </>
         ) : (
-          <nav className='hidden md:flex items-center gap-5 mr-[3%]'>
+          <nav className='hidden md:flex items-center gap-5 mr-[5%]'>
             {['MOTIONS', 'STILLS', 'LOCATIONS', 'CLIENTS', 'CONTACT'].map(
               (item) => (
                 <Link

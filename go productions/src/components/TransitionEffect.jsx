@@ -105,6 +105,7 @@ export default function TransitionEffect({
           >
             <div className='text-container'>
               <span
+                style={{ fontFamily: 'Chesna Bold' }}
                 className={`go ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
@@ -125,6 +126,7 @@ export default function TransitionEffect({
             </div>
             <div className='text-overlay'>
               <span
+                style={{ fontFamily: 'Chesna Bold' }}
                 className={`go ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
