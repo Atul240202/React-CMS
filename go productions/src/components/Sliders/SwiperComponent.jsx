@@ -1,17 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import 'swiper/css';
+import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../../Firebase'; // Ensure this path is correct
 import '../../styles/SwiperComponent.css';
-import { shootLocationData } from '../../data/data.jsx'; // Importing shootLocationData
 
 const SwiperComponent = () => {
+  const [locations, setLocations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const locationsRef = collection(db, 'homeLocations');
+        const q = query(locationsRef, orderBy('order'));
+        const querySnapshot = await getDocs(q);
+        const fetchedLocations = [];
+        querySnapshot.forEach((doc) => {
+          fetchedLocations.push({ id: doc.id, ...doc.data() });
+        });
+        setLocations(fetchedLocations);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error fetching locations:', err);
+        setError('Failed to load locations. Please try again later.');
+        setIsLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  const handleImageClick = (url) => {
+    navigate(url);
+  };
+
+  if (isLoading) {
+    return <div className='loading'>Loading locations...</div>;
+  }
+
+  if (error) {
+    return <div className='error'>{error}</div>;
+  }
+
   return (
     <div className='swiper-container'>
       <Swiper
         modules={[Navigation]}
         loop={true}
-        slidesPerView={2}
+        slidesPerView={window.innerWidth < 768 ? 1 : 2}
         spaceBetween={20}
         centeredSlides={true}
         navigation={{
@@ -19,19 +59,21 @@ const SwiperComponent = () => {
           prevEl: '.swiper-button-prev',
         }}
         className='curved-swiper'
+        grid={3}
       >
         <div className='swiper-button-prev'></div>
         <div className='swiper-button-next'></div>
 
-        {shootLocationData.map((location, index) => (
-          <SwiperSlide key={index}>
+        {locations.map((location) => (
+          <SwiperSlide key={location.id}>
             <img
               className='imageSlider'
-              src={location.url}
-              alt={`slide-${index}`}
+              src={location.image}
+              alt={location.name}
               loading='lazy'
+              onClick={() => handleImageClick(location.url)}
             />
-            {/* <p className='location-text'>{location.text}</p> */}
+            <p className='location-text'>{location.name}</p>
           </SwiperSlide>
         ))}
       </Swiper>

@@ -94,15 +94,6 @@ const AuthWrapper = () => {
     };
   }, [navigate, location]);
 
-  // Show loading state while checking authentication
-  if (auth.currentUser === undefined) {
-    return (
-      <div className='flex h-screen items-center justify-center bg-black'>
-        <div className='text-white'>Loading...</div>
-      </div>
-    );
-  }
-
   return (
     <Routes>
       <Route path='/login' element={<Login />} />

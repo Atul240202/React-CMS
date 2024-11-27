@@ -64,6 +64,14 @@ export default function SpecificClientsComponent() {
 
     fetchClientData();
     window.scrollTo(0, 0);
+
+    // Set a timeout to ensure the transition screen disappears after 6 seconds
+    const timeout = setTimeout(() => {
+      setLoading(false);
+      setProgress(100);
+    }, 6000);
+
+    return () => clearTimeout(timeout);
   }, [clientKey]);
 
   const setStillPage = () => setIsStill(true);

@@ -38,7 +38,7 @@ function AppContent() {
 
   return (
     <>
-      <CustomCursor />
+      {/* <CustomCursor /> */}
       <Suspense fallback={<div>Loading...</div>}>
         <Routes location={location}>
           <Route element={<Layout />}>
@@ -63,7 +63,7 @@ function AppContent() {
               path='/clients/:clientKey'
               element={<SpecificClientsComponent />}
             />
-            <Route path='/contacts' element={<Contact />} />
+            <Route path='/contactsus' element={<Contact />} />
           </Route>
         </Routes>
       </Suspense>

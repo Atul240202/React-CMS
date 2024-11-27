@@ -66,40 +66,76 @@ const UploadModal = ({
   };
 
   const compressImage = (file) => {
-    console.log('Before compression', file);
     return new Promise((resolve, reject) => {
-      new Compressor(file, {
-        quality: 0.8, // Increased quality
-        maxWidth: 4000, // Increased max width
-        maxHeight: 4000, // Increased max height
-        success(result) {
-          // If the compressed file is smaller than 2MB, increase quality until it's at least 2MB
-          if (result.size < 2 * 1024 * 1024) {
-            new Compressor(file, {
-              quality: 0.95, // Higher quality
-              maxWidth: 5000, // Even larger max width
-              maxHeight: 5000, // Even larger max height
-              success(finalResult) {
-                resolve(finalResult);
-              },
-              error(err) {
-                console.error('Second compression error:', err);
-                resolve(file); // If compression fails, use the original file
-              },
-            });
-            console.log('After compression', file);
-          } else {
-            resolve(result);
-          }
-        },
+      const options = getCompressionOptions(file.size);
 
+      new Compressor(file, {
+        ...options,
+        success(result) {
+          console.log('Compression result:', result);
+          resolve(result);
+        },
         error(err) {
           console.error('Compression error:', err);
           resolve(file); // If compression fails, use the original file
         },
       });
-      console.log('After compression1', file);
     });
+  };
+
+  const getCompressionOptions = (fileSize) => {
+    const MB = 1024 * 1024;
+    let quality, maxWidth, maxHeight;
+
+    switch (true) {
+      case fileSize > 20 * MB:
+        quality = 0.6;
+        maxWidth = 3000;
+        maxHeight = 3000;
+        break;
+      case fileSize > 10 * MB:
+        quality = 0.7;
+        maxWidth = 3500;
+        maxHeight = 3500;
+        break;
+      case fileSize > 5 * MB:
+        quality = 0.8;
+        maxWidth = 4000;
+        maxHeight = 4000;
+        break;
+      default:
+        quality = 0.9;
+        maxWidth = 4500;
+        maxHeight = 4500;
+    }
+
+    return {
+      quality,
+      maxWidth,
+      maxHeight,
+      convertSize: 3 * MB, // Target size of 3MB
+      success(result) {
+        if (result.size > 3 * MB) {
+          // If the result is still larger than 3MB, compress again with lower quality
+          new Compressor(result, {
+            quality: quality * 0.8,
+            maxWidth,
+            maxHeight,
+            convertSize: 3 * MB,
+            success(finalResult) {
+              console.log('Final compression result:', finalResult);
+              resolve(finalResult);
+            },
+            error(err) {
+              console.error('Final compression error:', err);
+              resolve(result); // If final compression fails, use the previous result
+            },
+          });
+        } else {
+          resolve(result);
+        }
+      },
+    };
   };
 
   const handleUpload = async (filesToUpload) => {

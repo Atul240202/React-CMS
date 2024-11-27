@@ -12,6 +12,7 @@ import {
   deleteLocationImage,
   addLocationGridImage,
   updateLocationSequence,
+  uploadImage,
 } from '../firebase';
 import CampaignGrid from './CampaignGrid';
 
@@ -86,12 +87,14 @@ const LocationDashboardComponent = () => {
   const handleUpload = async (url, file) => {
     if (uploadType === 'main' && selectedLocation) {
       try {
+        console.log('image url', url);
         const updatedLocation = await updateLocation(
           selectedLocation.id,
           { ...selectedLocation },
-          file,
+          url,
           []
         );
+        console.log('Updated location', updatedLocation);
         setSelectedLocation(updatedLocation);
         setLocations(
           locations.map((loc) =>
@@ -445,6 +448,9 @@ const LocationDashboardComponent = () => {
           isOpen={showUploadModal}
           onClose={() => setShowUploadModal(false)}
           onUpload={handleUpload}
+          acceptVideo={false}
+          multiple={uploadType === 'grid'}
+          requireCrop={true}
         />
 
         <ConfirmationModal

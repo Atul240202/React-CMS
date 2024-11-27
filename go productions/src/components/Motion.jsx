@@ -1,16 +1,17 @@
-import { useState } from 'react';
-import { motionData } from '../data/data';
 import '../styles/Motion.css';
 import SliderComponent from './Sliders/SliderComponent';
 
 const Motion = () => {
+  // useEffect(() => {
+  //   onLoad();
+  // }, [onLoad]);
   return (
     <div className='motion-section'>
       <div className='motion-header'>
         <h2>MOTION</h2>
-        <p>Your Vision, Our Expertise</p>
+        <p>YOUR VISION, OUR EXPERTISE</p>
         <a href='motions' className='see-more'>
-          See More
+          SEE MORE
         </a>
       </div>
       <SliderComponent />

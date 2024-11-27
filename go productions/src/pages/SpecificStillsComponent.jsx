@@ -17,6 +17,7 @@ export default function SpecificStillsComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [transitionComplete, setTransitionComplete] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +59,15 @@ export default function SpecificStillsComponent() {
     fetchData();
     window.scrollTo(0, 0);
   }, [clientId, stillId, location.state]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (still && still.internalImages) {
@@ -143,7 +153,14 @@ export default function SpecificStillsComponent() {
   return (
     <div style={styles.container}>
       <div style={styles.mainImageContainer} onClick={openMainImagePopup}>
-        <img src={still.image} alt={still.text} style={styles.mainImage} />
+        <img
+          src={still.image}
+          alt={still.text}
+          style={styles.mainImage}
+          className={`${
+            isMobile ? 'h-[30vh] w-[90%] m-auto' : 'h-[90vh] w-[100%]'
+          }`}
+        />
         <div style={styles.imgTextContainer}>
           <div style={styles.logoContainer}>
             <img
@@ -182,19 +199,37 @@ export default function SpecificStillsComponent() {
         </div>
       )}
       <div style={styles.creditsContainer}>
-        <h3 style={styles.creditHeader}>CREDITS</h3>
+        <h3
+          style={styles.creditHeader}
+          className={`${isMobile ? 'text-md' : 'text-4xl'}`}
+        >
+          CREDITS
+        </h3>
         <hr style={styles.styleLine1} />
 
         {still.credits &&
           Object.entries(still.credits).map(([key, value]) => (
             <React.Fragment key={key}>
               <div style={styles.creditData}>
-                <div style={styles.creditBlanks}></div>
-                <div style={styles.creditContent}>
+                <div
+                  style={styles.creditBlanks}
+                  className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+                ></div>
+                <div
+                  style={styles.creditContent}
+                  className={`${
+                    isMobile ? 'text-sm flex-7' : 'text-xl flex-1'
+                  }`}
+                >
                   {key.toUpperCase()}: {value}
                 </div>
               </div>
-              <hr style={styles.styleLine2} />
+              <hr
+                style={styles.styleLine2}
+                className={`${
+                  isMobile ? 'w-[75%] ml-[25%]' : 'w-[52%] ml-[48%]'
+                }`}
+              />
             </React.Fragment>
           ))}
       </div>
@@ -212,11 +247,11 @@ export default function SpecificStillsComponent() {
 
 const styles = {
   container: {
-    paddingTop: '10vh',
-    paddingBottom: '15vh',
+    paddingBottom: '5vh',
     textAlign: 'center',
     backgroundColor: '#000',
     color: '#fff',
+    marginTop: '10vh',
   },
   imgTextContainer: {
     position: 'relative',
@@ -229,13 +264,10 @@ const styles = {
   mainImageContainer: {
     position: 'relative',
     marginBottom: '20px',
-    height: '105vh',
     overflow: 'hidden',
     cursor: 'pointer',
   },
   mainImage: {
-    width: '100%',
-    height: '90vh',
     objectFit: 'cover',
   },
   logoContainer: {},
@@ -274,13 +306,16 @@ const styles = {
   creditsContainer: {
     marginTop: '30px',
     paddingTop: '20px',
+    marginLeft: '2vw',
+    marginRight: '2vw',
     color: '#fff',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   creditHeader: {
-    fontSize: '2rem',
+    marginLeft: '2vw',
     marginBottom: '1rem',
     fontWeight: 800,
+    marginLeft: '3vw',
   },
   styleLine1: {
     height: '1px',
@@ -293,8 +328,6 @@ const styles = {
     border: 'none',
     background: 'white',
     margin: '10px 0',
-    width: '52%',
-    marginLeft: '48%',
   },
   creditData: {
     display: 'flex',
@@ -302,15 +335,11 @@ const styles = {
     margin: '10px 0',
   },
   creditContent: {
-    flex: '1',
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: '1rem',
     fontWeight: 'bold',
   },
-  creditBlanks: {
-    flex: '1',
-  },
+  creditBlanks: {},
   creditLabel: {
     fontSize: '1rem',
     fontWeight: 'bold',

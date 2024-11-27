@@ -1,23 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/ClientLogo.css';
-
-const logos = [
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449806/Client%20logos/ownpfuyjk69jo4x8nqmm.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449806/Client%20logos/k9nbercqswumpied5jst.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449806/Client%20logos/mpfvca6st0d3eaovfhuc.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449805/Client%20logos/bkwpnh01vf2u0jxemfv1.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449805/Client%20logos/sl3inzkam4uypuogdddg.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449805/Client%20logos/shvgh2edjbrayzcemcxw.png',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1729449805/Client%20logos/qhfoq41whojppofpltas.png',
-];
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../Firebase';
 
 const ClientLogo = () => {
+  const [clientLogos, setClientLogos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchClientLogos = async () => {
+      try {
+        const clientLogosRef = collection(db, 'homeClients');
+        const q = query(clientLogosRef, orderBy('sequence'));
+        const querySnapshot = await getDocs(q);
+        const fetchedLogos = [];
+        querySnapshot.forEach((doc) => {
+          fetchedLogos.push({ id: doc.id, ...doc.data() });
+        });
+        setClientLogos(fetchedLogos);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error fetching client logos:', err);
+        setError('Failed to load client logos. Please try again later.');
+        setIsLoading(false);
+      }
+    };
+
+    fetchClientLogos();
+  }, []);
+
+  if (isLoading) {
+    return <div className='loading'>Loading client logos...</div>;
+  }
+
+  if (error) {
+    return <div className='error'>{error}</div>;
+  }
+
+  if (clientLogos.length === 0) {
+    return <div className='no-logos'>No client logos available</div>;
+  }
+
+  // Duplicate the logos array to create a seamless loop
+  const displayLogos = [...clientLogos, ...clientLogos];
+
   return (
     <div className='slider'>
       <div className='slide-track'>
-        {logos.concat(logos).map((logo, index) => (
-          <div key={index} className='slide'>
-            <img src={logo} height='100' width='250' alt={`Logo ${index}`} />
+        {displayLogos.map((logo, index) => (
+          <div key={`${logo.id}-${index}`} className='slide'>
+            <img
+              src={logo.image}
+              height='100'
+              width='300'
+              alt={`${logo.name} Logo`}
+              loading='lazy'
+            />
           </div>
         ))}
       </div>

@@ -254,7 +254,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                         value={campaignData.productTitle}
                         onChange={handleInputChange}
                         onBlur={() => setEditingField(null)}
-                        className='bg-transparent text-left focus:outline-none animate-pulse pl-4'
+                        className='bg-transparent text-left focus:outline-none pl-4'
                         placeholder='Write Here..'
                         autoFocus
                       />
@@ -301,7 +301,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                               className={
                                 visibleFields[`credits.${key}`] === false
                                   ? 'opacity-50 pl-4 text-white'
-                                  : 'text-gray-400 text-white'
+                                  : ' text-white'
                               }
                             >
                               {value || 'Click pencil to edit...'}

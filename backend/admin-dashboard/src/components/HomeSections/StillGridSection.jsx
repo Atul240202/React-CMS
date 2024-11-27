@@ -134,8 +134,8 @@ export default function StillGridSection() {
 
   return (
     <section className='space-y-8 py-8 bg-black'>
-      <div className='flex justify-between items-center mb-8'>
-        <h2 className='text-2xl font-bold tracking-wider text-white'>
+      <div className='flex justify-between items-center mb-4'>
+        <h2 className='text-2xl font-extrabold tracking-wider text-white'>
           STILL GRID
         </h2>
         <select

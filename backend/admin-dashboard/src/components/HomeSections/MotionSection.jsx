@@ -91,7 +91,7 @@ export default function MotionSection() {
 
   return (
     <section className='mb-12'>
-      <h2 className='text-2xl font-bold mb-4'>MOTION</h2>
+      <h2 className='text-2xl font-extrabold mb-4'>MOTION</h2>
       <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId='motions' direction='horizontal'>

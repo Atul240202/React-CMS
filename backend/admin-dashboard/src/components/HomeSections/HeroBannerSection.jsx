@@ -104,10 +104,7 @@ export default function HeroBannerSection() {
         <h2 className='text-2xl font-bold mb-4'>HERO BANNER</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-60'>
           {[...Array(4)].map((_, index) => (
-            <div
-              key={index}
-              className='w-full h-60 bg-zinc-800 animate-pulse '
-            />
+            <div key={index} className='w-full h-60 bg-zinc-800 ' />
           ))}
         </div>
       </section>
@@ -117,7 +114,7 @@ export default function HeroBannerSection() {
   return (
     <DndProvider backend={HTML5Backend}>
       <section className='mb-12'>
-        <h2 className='text-2xl font-bold mb-4'>HERO BANNER</h2>
+        <h2 className='text-2xl font-extrabold mb-4'>HERO BANNER</h2>
         <div className='p-8 bg-[#1C1C1C] backdrop-blur-[84px] mb-8'>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-60'>
             {banners.map((banner, index) => (

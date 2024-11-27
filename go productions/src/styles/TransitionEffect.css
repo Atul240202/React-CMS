@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Chesna Grotesk Black';
+  src: url('/fonts/ChesnaGroteskBlack.woff2') format('woff2');
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Chesna Grotesk';
+  src: url('/fonts/ChesnaGrotesk.woff2') format('woff2');
+  font-weight: 500;
+}
+
 .transition {
   position: fixed;
   top: 0;
@@ -14,39 +26,74 @@
   width: 100vw;
   bottom: 0;
   left: -100vw;
-  background-color: black;
+  background-color: #000000;
   z-index: 1001;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 20px;
-  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
 
-.page-name {
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rem;
+}
+
+.logo-wrapper {
+  position: relative;
+  --progress: 0%;
+}
+
+.text-container,
+.text-overlay {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.text-container {
+  color: rgba(128, 128, 128, 0.5);
+}
+
+.text-overlay {
   position: absolute;
-  top: 10vh;
-  right: 3vw;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   color: white;
-  font-size: 70px;
-  font-weight: bold;
+  clip-path: inset(calc(100% - var(--progress)) 0 0 0);
+  transition: clip-path 0.3s ease;
 }
 
-.progress-counter {
+.go {
+  font-family: 'Chesna Grotesk Black', sans-serif;
+  font-weight: 900;
+}
+
+.productions {
+  font-family: 'Chesna Grotesk', sans-serif;
+  font-weight: 500;
+}
+
+.quote-wrapper {
+  text-align: center;
   color: white;
-  font-size: 60px;
-  font-weight: bold;
-  align-self: flex-end;
-  margin-bottom: 5vh;
-  margin-left: 3vw;
+  max-width: 800px;
+  padding: 0 2rem;
 }
 
-.transition.active .cover {
-  animation: slideIn 0.5s ease-in-out forwards;
+.quote-text {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-weight: 300;
 }
 
-.transition.exit .cover {
-  animation: slideOut 0.5s ease-in-out forwards;
+.quote-author {
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 
 @keyframes slideIn {
@@ -57,3 +104,20 @@
     left: 0;
   }
 }
+
+@keyframes slideOut {
+  from {
+    left: 0;
+  }
+  to {
+    left: 100vw;
+  }
+}
+
+.transition.active .cover {
+  animation: slideIn 0.5s ease-in-out forwards;
+}
+
+/* .transition.exit .cover {
+  animation: slideOut 0.5s ease-in-out forwards;
+} */

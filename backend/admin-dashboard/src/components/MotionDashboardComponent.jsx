@@ -51,6 +51,8 @@ const MotionDashboardComponent = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [motionToDelete, setMotionToDelete] = useState(null);
   const [visibleFields, setVisibleFields] = useState({});
+  const [showCreditDropdown, setShowCreditDropdown] = useState(false);
+  const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
 
   useEffect(() => {
     fetchMotions();
@@ -224,6 +226,39 @@ const MotionDashboardComponent = () => {
     }
   }, [motions]);
 
+  const handleAddCredit = (creditType) => {
+    if (selectedMotion) {
+      let newCredits = { ...selectedMotion.credits };
+      if (creditType === 'CREW MEMBERS') {
+        const newKey = `CREW MEMBER ${
+          Object.keys(newCredits).filter((k) => k.startsWith('CREW MEMBER'))
+            .length + 1
+        }`;
+        newCredits[newKey] = '';
+      } else {
+        newCredits[creditType] = '';
+      }
+      setSelectedMotion((prev) => ({
+        ...prev,
+        credits: newCredits,
+      }));
+      handleSave();
+    }
+    setShowCreditDropdown(false);
+  };
+
+  const handleRemoveCredit = (creditKey) => {
+    if (selectedMotion) {
+      const newCredits = { ...selectedMotion.credits };
+      delete newCredits[creditKey];
+      setSelectedMotion((prev) => ({
+        ...prev,
+        credits: newCredits,
+      }));
+      handleSave();
+    }
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='p-8 m-8'>
@@ -233,7 +268,7 @@ const MotionDashboardComponent = () => {
         <div className='grid grid-cols-1 p-8 bg-[#1C1C1C] backdrop-blur-[84px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8'>
           {motions.map((motion, index) => (
             <DraggableMotionItem
-              key={motion.id}
+              key={`${motion.id}-${index}`}
               id={motion.id}
               index={index}
               motion={motion}
@@ -302,7 +337,7 @@ const MotionDashboardComponent = () => {
                       value={selectedMotion.text}
                       onChange={handleInputChange}
                       onBlur={handleSave}
-                      className='w-full bg-transparent mt-2 focus:outline-none animate-pulse'
+                      className='w-full bg-transparent mt-2 focus:outline-none'
                       placeholder='Enter title'
                       autoFocus
                     />
@@ -333,8 +368,65 @@ const MotionDashboardComponent = () => {
               CAMPAIGN CREDITS
             </h3>
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
-              {Object.entries(selectedMotion.credits || {}).map(
-                ([key, value]) => (
+              {/* Display the 'productTitle' field explicitly first */}
+              {selectedMotion.productTitle && (
+                <div className='flex items-center justify-between border border-white p-3 rounded'>
+                  <div className='flex items-center flex-row'>
+                    <span className='text-xl font-extrabold'>
+                      Product Title:
+                    </span>
+                    <div className='flex items-center ml-3 space-x-2'>
+                      {editingField === 'productTitle' ? (
+                        <input
+                          type='text'
+                          name='productTitle'
+                          value={selectedMotion.productTitle}
+                          onChange={handleInputChange}
+                          onBlur={() => {
+                            handleSave();
+                            setEditingField(null);
+                          }}
+                          className='bg-transparent text-left focus:outline-none'
+                          autoFocus
+                        />
+                      ) : (
+                        <span
+                          className={`text-white text-xl font-bold ${
+                            visibleFields[selectedMotion.id]?.productTitle ===
+                            false
+                              ? 'opacity-50'
+                              : ''
+                          }`}
+                        >
+                          {selectedMotion.productTitle ||
+                            'Click pencil to edit...'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex items-center flex-row gap-2'>
+                    <Pencil
+                      className='h-4 w-4 cursor-pointer'
+                      onClick={() => setEditingField('productTitle')}
+                    />
+                    <button
+                      onClick={() => toggleFieldVisibility('productTitle')}
+                    >
+                      {visibleFields[selectedMotion.id]?.productTitle ===
+                      false ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Render the remaining credits except 'productTitle' */}
+              {Object.entries(selectedMotion.credits || {})
+                .filter(([key]) => key !== 'productTitle') // Exclude 'productTitle'
+                .map(([key, value]) => (
                   <div
                     key={key}
                     className='flex items-center justify-between border border-white p-3 rounded'
@@ -352,7 +444,7 @@ const MotionDashboardComponent = () => {
                               handleSave();
                               setEditingField(null);
                             }}
-                            className='bg-transparent text-left focus:outline-none animate-pulse'
+                            className='bg-transparent text-left focus:outline-none'
                             autoFocus
                           />
                         ) : (
@@ -388,8 +480,31 @@ const MotionDashboardComponent = () => {
                       </button>
                     </div>
                   </div>
-                )
-              )}
+                ))}
+
+              {/* Add button for new credits */}
+              <div className='relative'>
+                <button
+                  className='flex items-center space-x-2 w-2/5 border border-white px-4 py-2 rounded justify-between text-xl font-extrabold'
+                  onClick={() => setShowCreditDropdown(!showCreditDropdown)}
+                >
+                  <span>ADD</span>
+                  <Plus className='h-4 w-4' />
+                </button>
+                {showCreditDropdown && (
+                  <div className='absolute top-full left-0 w-2/5 bg-white text-black mt-1 rounded shadow-lg'>
+                    {creditOptions.map((option) => (
+                      <button
+                        key={option}
+                        className='block w-full text-left px-4 py-2 hover:bg-black hover:text-white'
+                        onClick={() => handleAddCredit(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

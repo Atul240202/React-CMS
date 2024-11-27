@@ -1,5 +1,5 @@
 .App {
-  font-family: sans-serif;
+  font-family: 'Chesna Grotesk', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,15 +7,16 @@
 
 @font-face {
   font-family: 'FONTSPRING DEMO - Chesna Grotesk Black';
-  src: url('/fonts/chesnagrotesk-medium.woff2') format('woff2'),
-    url('/fonts/Fontspring-DEMO-chesnagrotesk-black.woff') format('woff');
+  src: url('../public/fonts/chesnagrotesk-medium.otf') format('woff2'),
+    url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
+      format('woff');
   font-weight: 900;
   font-style: normal;
 }
 
-* {
+/* * {
   cursor: none !important;
-}
+} */
 
 .custom-cursor {
   position: fixed;

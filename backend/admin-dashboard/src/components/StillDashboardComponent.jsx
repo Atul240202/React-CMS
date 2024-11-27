@@ -113,6 +113,11 @@ const StillDashboardComponent = () => {
         let updatedStillData = { ...selectedStill };
         if (uploadType === 'main') {
           updatedStillData.image = urls[0];
+          await updateStill(
+            selectedStill.clientId,
+            selectedStill.id,
+            updatedStillData
+          );
         } else if (uploadType === 'grid') {
           console.log('handle upload still dashboard files', files);
           const newImages = await Promise.all(
@@ -415,7 +420,7 @@ const StillDashboardComponent = () => {
                     <span className='font-extrabold text-lg'>TITLE</span>
                     <div>
                       <button
-                        onClick={() => setEditingField('text')}
+                        onClick={() => setEditingField('teaxt')}
                         className='mr-2'
                       >
                         <Pencil className='h-4 w-4' />
@@ -597,6 +602,7 @@ const StillDashboardComponent = () => {
           onUpload={handleUpload}
           acceptVideo={false}
           multiple={uploadType === 'grid'}
+          requireCrop={true}
         />
 
         <ConfirmationModal

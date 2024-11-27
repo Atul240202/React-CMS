@@ -2,7 +2,7 @@
   padding: 40px;
   color: white;
   text-align: center;
-  max-width: 85vw;
+  max-width: 95vw;
   margin: auto;
 }
 
@@ -36,13 +36,14 @@
   display: flex;
   gap: 32px;
   margin-top: 20px;
-  height: 66vh;
+  height: 76vh;
 }
 
 .image-container {
   position: relative;
   overflow: hidden;
   margin-top: 16px;
+  height: 76vh;
 }
 
 .image-container img {
@@ -56,11 +57,11 @@
 }
 
 .image-container.large {
-  width: 66%;
+  width: 70%;
 }
 
 .image-container.small {
-  width: 34%;
+  width: 30%;
 }
 
 .image-container:hover img {
@@ -97,7 +98,7 @@
   position: absolute;
   width: 100%;
   align-self: center;
-  top: 5%;
+  top: 1%;
 }
 
 .image-container.large:hover .top-center {
@@ -127,7 +128,7 @@
 
 .bottom-center {
   position: absolute;
-  bottom: 10%;
+  bottom: 1%;
   text-align: center;
   width: 100%;
   transform: translateY(100%);
@@ -142,7 +143,7 @@
 .right-center {
   position: absolute;
   right: 10%;
-  bottom: 5%;
+  bottom: 1%;
   transform: translateX(100%);
   transition: 1s;
 }

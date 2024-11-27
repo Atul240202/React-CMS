@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
+import { motion } from 'framer-motion';
 import { db } from '../Firebase';
 import TransitionEffect from '../components/TransitionEffect';
-import { motion } from 'framer-motion';
 import '../styles/FadeInOut.css';
+import '../styles/ClientsPage.css';
 
 export default function Clients() {
   const [clients, setClients] = useState([]);
@@ -12,8 +13,8 @@ export default function Clients() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [hoveredLogos, setHoveredLogos] = useState({});
-  const navigate = useNavigate();
   const [showContent, setShowContent] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -60,6 +61,35 @@ export default function Clients() {
     setShowContent(true);
   };
 
+  // Animation variants for container
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: 'beforeChildren',
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  // Animation variants for individual logos
+  const logoVariants = {
+    hidden: {
+      opacity: 0,
+      y: -50,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        duration: 0.6,
+        bounce: 0.35,
+      },
+    },
+  };
+
   return (
     <>
       <TransitionEffect
@@ -69,67 +99,44 @@ export default function Clients() {
         onTransitionComplete={handleTransitionComplete}
       />
       {showContent && (
-        <div style={styles.clientContainer}>
-          <h1 style={styles.clientHeader}>Clients</h1>
-          <div style={styles.logoGrid}>
+        <div className='client-container'>
+          <motion.h1
+            className='client-header'
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Clients
+          </motion.h1>
+          <motion.div
+            className='logo-grid'
+            variants={containerVariants}
+            initial='hidden'
+            animate='visible'
+          >
             {clients.map((client) => (
-              <div
+              <motion.div
                 key={client.id}
-                style={styles.logoItem}
+                className='logo-item'
+                variants={logoVariants}
                 onClick={() => navigateToClientPage(client.id)}
               >
                 <img
                   src={client.image}
                   alt={client.name}
-                  style={styles.logoImage(hoveredLogos[client.id] || false)}
+                  className={`logo-image ${
+                    hoveredLogos[client.id] ? 'hovered' : ''
+                  }`}
                   onMouseEnter={() => handleMouseEnter(client.id)}
                   onMouseLeave={() => handleMouseLeave(client.id)}
                   loading='lazy'
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       )}
-      {error && <div style={styles.loadingError}>{error}</div>}
+      {error && <div className='loading-error'>{error}</div>}
     </>
   );
 }
-
-const styles = {
-  clientContainer: {
-    width: '90%',
-    margin: '0 auto',
-    padding: '12vh 0',
-    textAlign: 'center',
-  },
-  clientHeader: {
-    fontSize: '2.5rem',
-    marginBottom: '2rem',
-    color: '#fff',
-  },
-  logoGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gap: '1.5rem',
-  },
-  logoItem: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'pointer',
-  },
-  logoImage: (isHovered) => ({
-    width: '100%',
-    maxWidth: '200px',
-    height: 'auto',
-    filter: isHovered ? 'grayscale(0%)' : 'grayscale(100%)',
-    transition: 'filter 0.3s ease-in-out',
-  }),
-  loadingError: {
-    color: '#fff',
-    fontSize: '1.2rem',
-    textAlign: 'center',
-    marginTop: '2rem',
-  },
-};
