@@ -38,15 +38,15 @@ const Slider = () => {
 
   const goToPrev = () => {
     if (isAnimating || heroBanners.length <= 1) return;
-    const nextIndex = (currentIndex + 1) % heroBanners.length;
-    startAnimation(nextIndex, 'top-to-bottom');
+    const prevIndex =
+      currentIndex === 0 ? heroBanners.length - 1 : currentIndex - 1;
+    startAnimation(prevIndex, 'top-to-bottom');
   };
 
   const goToNext = () => {
     if (isAnimating || heroBanners.length <= 1) return;
-    const prevIndex =
-      currentIndex === 0 ? heroBanners.length - 1 : currentIndex - 1;
-    startAnimation(prevIndex, 'bottom-to-top');
+    const nextIndex = (currentIndex + 1) % heroBanners.length;
+    startAnimation(nextIndex, 'bottom-to-top');
   };
 
   const startAnimation = (newIndex, direction) => {

@@ -6,12 +6,20 @@ const ContactUs = () => {
   return (
     <div>
       <div className='location-header'>
-        <h2 style={{ fontWeight: 800 }}>GET IN TOUCH</h2>
+        <h2 className='font-chesna'>GET IN TOUCH</h2>
       </div>
       <div className='contact-us-container'>
         <div className='contact-form'>
           <input type='text' placeholder='NAME' className='contact-input' />
           <input type='email' placeholder='EMAIL' className='contact-input' />
+          <input
+            type='tel'
+            placeholder='MOBILE NUMBER'
+            className='contact-input'
+            pattern='[0-9]{10}'
+            maxLength={10}
+          />
+
           <textarea
             placeholder='CONTENT'
             className='contact-textarea'

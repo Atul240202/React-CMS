@@ -148,7 +148,7 @@ export default function TransitionEffect({
           </div>
           <div className='quote-wrapper'>
             <p className='quote-text'>"{randomQuote.text}"</p>
-            {/* <p className='quote-author'>-{randomQuote.author}</p> */}
+            <p className='quote-author'>-{randomQuote.author}</p>
           </div>
         </div>
       </div>

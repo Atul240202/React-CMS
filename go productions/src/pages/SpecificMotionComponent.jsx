@@ -92,7 +92,7 @@ export default function SpecificMotionComponent() {
         onTransitionComplete={handleTransitionComplete}
       />
       {showContent && motion && (
-        <div style={styles.container}>
+        <div style={styles.container} className='font-chesnal'>
           <div style={styles.videoContainer}>
             <video
               src={motion.video}
@@ -100,17 +100,19 @@ export default function SpecificMotionComponent() {
               muted
               loop
               style={styles.video}
-              className={`${isMobile ? 'w-[90%] mt-[5vh]' : 'w-[100%]'}`}
+              className={`${
+                isMobile ? 'w-[90%] mt-[5vh] ' : 'w-[100%] h-[95vh]'
+              }`}
               onClick={handleVideoClick}
             />
           </div>
           <div
             style={styles.textContainer}
-            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mt-5'}`}
+            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mx-7 font-chesnal'}`}
           >
             <h1
               style={styles.text}
-              className={`${isMobile ? 'text-sm' : 'text-4xl'}`}
+              className={`${isMobile ? 'text-sm' : 'text-4xl my-[auto]'}`}
             >
               {motion.text}
             </h1>
@@ -134,26 +136,28 @@ export default function SpecificMotionComponent() {
           <div style={styles.creditData}>
             <div
               style={styles.creditBlanks}
-              className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+              className={`${isMobile ? '' : 'flex-1'}`}
             ></div>
             <h3
               style={styles.creditContent}
-              className={`${isMobile ? 'text-sm flex-7' : 'text-xl flex-1'}`}
+              className={`${
+                isMobile ? 'text-sm ' : 'text-2xl leading-[0] flex-1'
+              }`}
             >
-              CLIENT: {motion.clientName}
+              CLIENT- {motion.clientName}
             </h3>
           </div>
           <hr style={styles.styleLine1} />
           <div style={styles.creditData}>
             <div
               style={styles.creditBlanks}
-              className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+              className={`${isMobile ? '' : 'flex-1'}`}
             ></div>
             <div
               style={styles.creditContent}
-              className={`${isMobile ? 'text-sm flex-7' : 'text-xl flex-1'}`}
+              className={`${isMobile ? 'text-sm' : 'text-2xl  flex-1'}`}
             >
-              PRODUCTION TITLE: {motion.productTitle || 'N/A'}
+              PRODUCTION TITLE- {motion.productTitle || 'N/A'}
             </div>
           </div>
           {motion.credits &&
@@ -162,21 +166,17 @@ export default function SpecificMotionComponent() {
                 <hr
                   style={styles.styleLine2}
                   className={` ${
-                    isMobile
-                      ? 'w-[73%] ml-[25%] mr-[2%]'
-                      : 'w-[50%] ml-[48%] mr-[2%]'
+                    isMobile ? 'w-[96%] mx-[2%]' : 'w-[49%] ml-[50%] mr-[1%]'
                   }`}
                 />
                 <div style={styles.creditData}>
                   <div
                     style={styles.creditBlanks}
-                    className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+                    className={`${isMobile ? '' : ' text-2xl flex-1'}`}
                   ></div>
                   <div
                     style={styles.creditContent}
-                    className={`${
-                      isMobile ? 'text-sm flex-7' : 'text-xl flex-1'
-                    }`}
+                    className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
                   >
                     {key.toUpperCase()}: {value}
                   </div>
@@ -186,7 +186,7 @@ export default function SpecificMotionComponent() {
           <hr
             style={styles.styleLine2}
             className={`${
-              isMobile ? 'w-[73%] ml-[25%] mr-[2%]' : 'w-[50%] ml-[48%] mr-[2%]'
+              isMobile ? 'w-[73%] ml-[25%] mr-[2%]' : 'w-[49%] ml-[50%] mr-[1%]'
             }`}
           />
 
@@ -238,13 +238,11 @@ const styles = {
   },
   text: {
     fontWeight: 'bold',
-    marginTop: 0,
-    marginBottom: 0,
   },
   creditHeader: {
     marginBottom: '1rem',
     fontWeight: 800,
-    marginLeft: '3vw',
+    marginLeft: '0vw',
   },
 
   creditContent: {
@@ -270,7 +268,6 @@ const styles = {
     maxWidth: '900px',
     padding: '20px',
     backgroundColor: '#000',
-    borderRadius: '8px',
   },
   closeButton: {
     position: 'absolute',
@@ -289,12 +286,15 @@ const styles = {
     height: '1px',
     border: 'none',
     background: 'white',
-    margin: '10px 20px',
+    marginLeft: '20px',
+    marginRight: '20px',
   },
   styleLine2: {
     height: '1px',
     border: 'none',
     background: 'white',
+    marginBottom: '10px',
+    marginTop: '10px',
   },
   loadingError: {
     color: '#fff',

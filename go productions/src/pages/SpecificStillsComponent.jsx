@@ -226,7 +226,7 @@ export default function SpecificStillsComponent() {
               </div>
               <hr
                 style={styles.styleLine2}
-                className={`${isMobile ? 'w-[75%] ml-[25%]' : 'right-0'}`}
+                className={`${isMobile ? 'w-[98%] my-[1%]' : 'right-0'}`}
               />
             </React.Fragment>
           ))}

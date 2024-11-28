@@ -265,10 +265,11 @@ const MotionDashboardComponent = () => {
         <h2 className='text-2xl font-extrabold mb-4'>MOTION CAMPAIGN</h2>
 
         {/* Campaign Thumbnails */}
+        {/* Campaign Thumbnails */}
         <div className='grid grid-cols-1 p-8 bg-[#1C1C1C] backdrop-blur-[84px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8'>
           {motions.map((motion, index) => (
             <DraggableMotionItem
-              key={`${motion.id}-${index}`}
+              key={motion.id}
               id={motion.id}
               index={index}
               motion={motion}
@@ -279,7 +280,7 @@ const MotionDashboardComponent = () => {
             />
           ))}
           <div
-            className='flex items-center justify-center bg-zinc-800 h-40 cursor-pointer hover:bg-gray-700 transition-colors'
+            className='flex items-center justify-center bg-zinc-800 h-40 cursor-pointer hover:bg-zinc-700 transition-colors'
             onClick={handleAddNew}
           >
             <Plus className='h-8 w-8' />
@@ -373,7 +374,7 @@ const MotionDashboardComponent = () => {
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex items-center flex-row'>
                     <span className='text-xl font-extrabold'>
-                      PRODUCT TITLE:
+                      Product Title:
                     </span>
                     <div className='flex items-center ml-3 space-x-2'>
                       {editingField === 'productTitle' ? (

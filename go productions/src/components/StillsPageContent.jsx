@@ -56,8 +56,8 @@ const StillsPageContent = ({ stillPageData }) => {
               onClick={() => handleClick(item)}
               loading='lazy'
             />
-            <div className='flex flex-row items-center justify-between w-full mt-4'>
-              <h2 className='text-xl md:text-2xl lg:text-3xl font-bold text-white'>
+            <div className='flex flex-row items-center justify-between w-full'>
+              <h2 className='text-xl md:text-2xl lg:text-3xl font-chesnal text-white'>
                 {item.text}
               </h2>
               <img

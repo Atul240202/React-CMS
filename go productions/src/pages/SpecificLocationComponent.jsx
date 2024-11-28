@@ -88,8 +88,27 @@ export default function SpecificLocationComponent() {
               loading='lazy'
             />
           </div>
-          <h2 style={styles.locationTitle}>{location.text.toUpperCase()}</h2>
-          <p style={styles.locationAddress}>{location.address.toUpperCase()}</p>
+          <div className='flex justify-between items-start ml-[5vw] mr-[5vw]'>
+            <div className='flex flex-col text-left'>
+              <h2 style={styles.locationTitle} className='font-chesna'>
+                {location.text.toUpperCase()}
+              </h2>
+              <p style={styles.locationAddress} className='font-chesna'>
+                {location.address.toUpperCase()}
+              </p>
+            </div>
+            <div className='mt-3'>
+              <button
+                className='bg-white/10 border-2 rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
+                onClick={() =>
+                  console.log('Request availability for', location.name)
+                }
+              >
+                Request availability
+              </button>
+            </div>
+          </div>
+
           <div style={styles.imagesGrid}>
             {imageLayout.map((image, index) => (
               <div
@@ -147,14 +166,17 @@ const styles = {
     objectFit: 'cover',
   },
   locationTitle: {
-    fontSize: '24px',
+    fontSize: '36px',
     fontWeight: 'bold',
     marginBottom: '0.5rem',
+    marginTop: '0.5rem',
   },
   locationAddress: {
-    fontSize: '18px',
-    color: '#bbb',
-    marginBottom: '2rem',
+    fontSize: '24px',
+    color: 'white',
+    fontWeight: 'bold',
+    marginBottom: '1rem',
+    marginTop: '0.5rem',
   },
   imagesGrid: {
     display: 'grid',
@@ -177,5 +199,24 @@ const styles = {
     fontSize: '1.2rem',
     textAlign: 'center',
     marginTop: '2rem',
+  },
+  buttonContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: '2rem',
+  },
+  requestButton: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#fff',
+    backgroundColor: '#007bff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  },
+  requestButtonHover: {
+    backgroundColor: '#0056b3', // Darker shade for hover effect
   },
 };

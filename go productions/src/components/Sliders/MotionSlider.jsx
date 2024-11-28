@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/FadeInOut.css';
+import gifSrc from '../../assets/gif.gif';
 
 const words = ['FEATURE', 'MOTION', 'MOTIONS', 'MOVIES', 'FLICKS', 'PICTURES'];
 
@@ -33,7 +34,7 @@ function MotionSlider() {
 
   return (
     <div
-      className={`w-full  pt-[15vh] relative overflow-hidden ${
+      className={`w-full pt-[15vh] relative overflow-hidden ${
         isMobile ? 'h-[30vh]' : 'h-[85vh]'
       }`}
     >
@@ -77,7 +78,7 @@ function MotionSlider() {
         >
           {!isMobile && (
             <video
-              className='fadeinout object-cover w-[40%]'
+              className='fadeinout object-cover w-[40%] mt-6'
               src='https://res.cloudinary.com/da3r1iagy/video/upload/v1727868655/-f4de-4cd6-8720-860efd6c272b_ac1fhk.mp4'
               muted
               autoPlay
@@ -89,7 +90,7 @@ function MotionSlider() {
               initial={{ x: '150%' }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className={`font-extrabold leading-none m-0 ${
+              className={`font-extrabold leading-none my-0 ${
                 isMobile
                   ? 'text-5xl md:text-7xl lg:text-8xl text-center'
                   : 'text-[150px]'
@@ -97,7 +98,7 @@ function MotionSlider() {
             >
               MOTION
             </motion.h1>
-            <div className='relative h-[150px] flex flex-row text-center overflow-hidden'>
+            <div className='relative h-[50px] flex items-center justify-center gap-4'>
               <AnimatePresence mode='wait'>
                 <motion.h1
                   key={words[currentIndex]}
@@ -105,15 +106,20 @@ function MotionSlider() {
                   initial='initial'
                   animate='animate'
                   exit='exit'
-                  className={`leading-none m-0 place-items-center mt-3 w-full ${
+                  className={`leading-none m-0 place-items-center mt-7 ${
                     isMobile
                       ? 'text-xl md:text-6xl lg:text-7xl text-center'
-                      : 'text-[40px]'
+                      : 'text-[35px]'
                   }`}
                 >
                   {words[currentIndex]}
                 </motion.h1>
               </AnimatePresence>
+              <img
+                src={gifSrc}
+                alt='Animation'
+                className='pr-4 h-20 w-20 object-cover'
+              />
             </div>
           </div>
         </div>

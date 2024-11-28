@@ -42,7 +42,7 @@
 }
 
 .contact-textarea {
-  height: 190px; /* Height for the textarea */
+  height: 160px; /* Height for the textarea */
   font-size: 20px;
 }
 
@@ -53,6 +53,7 @@
   padding: 10px;
   font-size: 20px;
   max-width: 20%;
+  border-radius: 0;
   text-transform: uppercase;
   cursor: pointer;
   font-weight: bold;

@@ -12,7 +12,12 @@ const ShootLocation = () => {
   return (
     <div className='shoot-location-container'>
       <div className='location-header'>
-        <h2 style={{ fontWeight: 800, fontSize: '48px' }}>LOCATION</h2>
+        <h2
+          style={{ fontWeight: 800, fontSize: '48px' }}
+          className='font-chesna'
+        >
+          LOCATION
+        </h2>
       </div>
       <SwiperComponent />
       {/* <CustomSlider /> */}
