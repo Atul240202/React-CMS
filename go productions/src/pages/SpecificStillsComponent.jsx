@@ -226,9 +226,7 @@ export default function SpecificStillsComponent() {
               </div>
               <hr
                 style={styles.styleLine2}
-                className={`${
-                  isMobile ? 'w-[75%] ml-[25%]' : 'w-[52%] ml-[48%]'
-                }`}
+                className={`${isMobile ? 'w-[75%] ml-[25%]' : 'right-0'}`}
               />
             </React.Fragment>
           ))}
@@ -327,7 +325,7 @@ const styles = {
     height: '1px',
     border: 'none',
     background: 'white',
-    margin: '10px 0',
+    marginTop: '10px',
   },
   creditData: {
     display: 'flex',

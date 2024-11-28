@@ -19,7 +19,7 @@ function LocationSection() {
       }`}
     >
       {/* Map Container */}
-      <div className='absolute justify-center inset-0 h-[40vh] opacity-50'>
+      <div className='absolute justify-center inset-0 h-[60vh] opacity-50'>
         <iframe
           title='Go Productions Location'
           src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
@@ -31,7 +31,7 @@ function LocationSection() {
       </div>
 
       {/* Text Overlay */}
-      <div
+      {/* <div
         className={`relative  ${
           isMobile
             ? 'hidden h-[40vh]'
@@ -64,7 +64,7 @@ function LocationSection() {
         >
           GO PRODUCTION
         </h2>
-      </div>
+      </div> */}
     </div>
   );
 }
