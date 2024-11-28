@@ -73,7 +73,6 @@ const SwiperComponent = () => {
               loading='lazy'
               onClick={() => handleImageClick(location.url)}
             />
-            <p className='location-text'>{location.name}</p>
           </SwiperSlide>
         ))}
       </Swiper>

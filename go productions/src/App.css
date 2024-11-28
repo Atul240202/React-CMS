@@ -6,11 +6,17 @@
 }
 
 @font-face {
-  font-family: 'FONTSPRING DEMO - Chesna Grotesk Black';
-  src: url('../public/fonts/chesnagrotesk-medium.otf') format('woff2'),
-    url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
-      format('woff');
+  font-family: 'Chesna Bold';
+  src: url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
+    format('woff');
   font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Chesna Light';
+  src: url('../public/fonts/chesnagrotesk-medium.otf') format('woff2');
+  font-weight: 800;
   font-style: normal;
 }
 

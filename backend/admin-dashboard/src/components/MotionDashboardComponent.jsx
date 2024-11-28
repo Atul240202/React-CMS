@@ -373,7 +373,7 @@ const MotionDashboardComponent = () => {
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex items-center flex-row'>
                     <span className='text-xl font-extrabold'>
-                      Product Title:
+                      PRODUCT TITLE:
                     </span>
                     <div className='flex items-center ml-3 space-x-2'>
                       {editingField === 'productTitle' ? (
@@ -409,7 +409,7 @@ const MotionDashboardComponent = () => {
                       className='h-4 w-4 cursor-pointer'
                       onClick={() => setEditingField('productTitle')}
                     />
-                    <button
+                    {/* <button
                       onClick={() => toggleFieldVisibility('productTitle')}
                     >
                       {visibleFields[selectedMotion.id]?.productTitle ===
@@ -418,7 +418,7 @@ const MotionDashboardComponent = () => {
                       ) : (
                         <Eye className='h-4 w-4' />
                       )}
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               )}
@@ -485,14 +485,14 @@ const MotionDashboardComponent = () => {
               {/* Add button for new credits */}
               <div className='relative'>
                 <button
-                  className='flex items-center space-x-2 w-2/5 border border-white px-4 py-2 rounded justify-between text-xl font-extrabold'
+                  className='flex items-center space-x-2 w-1/6 border border-white px-4 py-2 rounded justify-between text-xl font-extrabold'
                   onClick={() => setShowCreditDropdown(!showCreditDropdown)}
                 >
                   <span>ADD</span>
                   <Plus className='h-4 w-4' />
                 </button>
                 {showCreditDropdown && (
-                  <div className='absolute top-full left-0 w-2/5 bg-white text-black mt-1 rounded shadow-lg'>
+                  <div className='absolute top-full left-0 w-1/6 bg-white text-black mt-1 rounded shadow-lg'>
                     {creditOptions.map((option) => (
                       <button
                         key={option}

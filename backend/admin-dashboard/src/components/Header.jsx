@@ -24,11 +24,11 @@ const ProfileModal = ({ isOpen, onClose }) => {
 
         const additionalData = docSnap.exists() ? docSnap.data() : {};
         setUserData({
-          name: additionalData.name || 'Default Name',
+          name: additionalData.name || 'Go Productions',
           email: user.email,
           profileImage:
             additionalData.profileImage ||
-            'https://res.cloudinary.com/da3r1iagy/image/upload/v1731682579/Profile_1_rhsgml.png',
+            'https://res.cloudinary.com/da3r1iagy/image/upload/v1732738850/WhatsApp_Image_2024-11-28_at_1.50.16_AM_lolf0g.jpg',
         });
       }
     };
@@ -61,10 +61,10 @@ const ProfileModal = ({ isOpen, onClose }) => {
         fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
       }}
     >
-      <div className='bg-white w-full max-w-md p-6 relative'>
+      <div className='bg-zinc-900 w-full max-w-md p-6 relative'>
         <button
           onClick={onClose}
-          className='absolute right-4 top-4 text-zinc-900 hover:text-zinc-500'
+          className='absolute right-4 top-4 text-white hover:text-zinc-500'
         >
           X {/* Replace with your close icon component */}
         </button>
@@ -78,17 +78,15 @@ const ProfileModal = ({ isOpen, onClose }) => {
             />
           </div>
           <div className='w-full space-y-4'>
-            <div className='flex flex-row border border-gray-700 rounded p-3'>
-              <div className='text-lg font-black text-zinc-800 pr-2'>NAME:</div>
-              <div className='text-lg text-zinc-700'>{userData.name}</div>
+            <div className='flex flex-row border text-white rounded p-3'>
+              <div className='text-lg font-black text-white pr-2'>NAME:</div>
+              <div className='text-lg text-white'>{userData.name}</div>
             </div>
-            <div className='flex flex-row border border-gray-700 rounded p-3'>
-              <div className='text-lg font-black text-zinc-800 pr-2'>
-                MAIL ID:
-              </div>
-              <div className='text-lg text-zinc-700'>{userData.email}</div>
+            <div className='flex flex-row border text-white rounded p-3'>
+              <div className='text-lg font-black text-white pr-2'>MAIL ID:</div>
+              <div className='text-lg text-white'>{userData.email}</div>
             </div>
-            <div className='space-y-2'>
+            {/* <div className='space-y-2'>
               <input
                 type='password'
                 placeholder='Enter new password'
@@ -108,7 +106,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
               {passwordSuccess && (
                 <p className='text-green-500 text-sm'>{passwordSuccess}</p>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -126,20 +124,20 @@ const LogoutModal = ({ isOpen, onClose, onLogout }) => {
         fontFamily: 'FONTSPRING DEMO - Chesna Grotesk Black, sans-serif',
       }}
     >
-      <div className='bg-white rounded-lg w-full max-w-sm p-6 relative'>
+      <div className='bg-zinc-900 rounded-lg w-full max-w-sm p-6 relative'>
         <button
           onClick={onClose}
-          className='absolute right-4 top-4 text-zinc-900 hover:text-zinc-700'
+          className='absolute right-4 top-4 text-white hover:text-zinc-700'
         >
           <X className='h-6 w-6' />
         </button>
         <div className='flex flex-col items-center pt-4'>
-          <h2 className='text-xl font-bold text-zinc-900 mb-6'>
+          <h2 className='text-xl font-bold text-white mb-6'>
             ARE YOU SURE YOU WANT TO LOG OUT?
           </h2>
           <button
             onClick={onLogout}
-            className='w-full py-3 bg-zinc-800 border border-gray-700 rounded-lg text-white hover:bg-gray-700 transition-colors'
+            className='w-full py-3 bg-zinc-800 border border-white rounded-lg text-white hover:bg-gray-700 transition-colors'
           >
             LOG OUT
           </button>

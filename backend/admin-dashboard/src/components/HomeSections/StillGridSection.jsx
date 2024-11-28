@@ -243,8 +243,8 @@ export default function StillGridSection() {
   };
 
   return (
-    <section className='space-y-8 py-8 bg-black'>
-      <div className='flex justify-between items-center mb-4'>
+    <section className='space-y-4 py-8 bg-black'>
+      <div className='flex justify-between items-center mb-2'>
         <h2 className='text-2xl font-extrabold tracking-wider text-white'>
           STILL GRID
         </h2>
@@ -254,7 +254,11 @@ export default function StillGridSection() {
           className='px-4 py-2 bg-zinc-800 text-white focus:outline-none'
         >
           {[2, 4, 6, 8].map((size) => (
-            <option key={size} value={size}>
+            <option
+              key={size}
+              value={size}
+              className='hover:text-white hover:bg-black '
+            >
               GRID {size.toString().padStart(2, '0')}
             </option>
           ))}
