@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../Firebase';
 import MotionSlider from '../components/Sliders/MotionSlider';
 import MotionContent from '../components/MotionComponents/MotionContent';
@@ -15,8 +15,13 @@ export default function Motions() {
   useEffect(() => {
     const fetchMotionData = async () => {
       try {
-        const clientsCollection = collection(db, 'clients');
-        const clientSnapshot = await getDocs(clientsCollection);
+        // Create a query to order clients by sequence
+        const clientsQuery = query(
+          collection(db, 'clients'),
+          orderBy('sequence', 'asc')
+        );
+
+        const clientSnapshot = await getDocs(clientsQuery);
         const motionList = [];
         let processedDocs = 0;
 
@@ -27,12 +32,18 @@ export default function Motions() {
               ? clientData.motions
               : [clientData.motions];
 
-            clientMotions.forEach((motion) => {
+            // Sort motions by sequence if it exists
+            const sortedMotions = clientMotions.sort(
+              (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
+            );
+
+            sortedMotions.forEach((motion) => {
               motionList.push({
                 id: `${doc.id}_${motion.clientId || ''}`,
                 clientKey: doc.id,
                 clientName: clientData.name,
                 clientImage: clientData.image,
+                sequence: motion.sequence ?? Infinity, // Add sequence to the final object
                 ...motion,
               });
             });
@@ -41,7 +52,12 @@ export default function Motions() {
           setProgress((processedDocs / clientSnapshot.size) * 100);
         });
 
-        setMotionData(motionList);
+        // Sort the final array by sequence
+        const sortedMotionList = motionList.sort(
+          (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
+        );
+
+        setMotionData(sortedMotionList);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching motion data: ', err);

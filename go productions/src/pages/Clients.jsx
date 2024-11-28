@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import { db } from '../Firebase';
 import TransitionEffect from '../components/TransitionEffect';
@@ -19,8 +19,14 @@ export default function Clients() {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const clientsCollection = collection(db, 'clients');
-        const clientSnapshot = await getDocs(clientsCollection);
+        // Create a query to order by sequence
+        const clientsQuery = query(
+          collection(db, 'clients'),
+          orderBy('sequence', 'asc')
+        );
+
+        // Get the ordered documents
+        const clientSnapshot = await getDocs(clientsQuery);
         const clientList = [];
         let processedDocs = 0;
 

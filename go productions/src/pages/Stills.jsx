@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StillsPageContent from '../components/StillsPageContent';
 import StillSlider from '../components/Sliders/StillSlider';
 import { db } from '../Firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import TransitionEffect from '../components/TransitionEffect';
 import '../styles/FadeInOut.css';
 
@@ -16,8 +16,13 @@ export default function Stills() {
   useEffect(() => {
     const fetchStillsData = async () => {
       try {
-        const clientsCollection = collection(db, 'clients');
-        const clientSnapshot = await getDocs(clientsCollection);
+        // Create a query to order clients by sequence
+        const clientsQuery = query(
+          collection(db, 'clients'),
+          orderBy('sequence', 'asc')
+        );
+
+        const clientSnapshot = await getDocs(clientsQuery);
         const stillsArray = [];
 
         let processedDocs = 0;
@@ -30,12 +35,18 @@ export default function Stills() {
               ? clientData.stills
               : Object.values(clientData.stills);
 
-            for (const still of clientStills) {
+            // Sort stills by sequence if it exists
+            const sortedStills = clientStills.sort(
+              (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
+            );
+
+            for (const still of sortedStills) {
               stillsArray.push({
                 id: `${doc.id}_${still.clientId || ''}`,
                 clientKey: doc.id,
                 clientName: clientData.name,
                 clientImage: clientData.image,
+                sequence: still.sequence ?? Infinity, // Add sequence to the final object
                 ...still,
               });
             }
@@ -44,8 +55,13 @@ export default function Stills() {
           setLoadingProgress((processedDocs / totalDocs) * 50);
         }
 
-        setStillsData(stillsArray);
-        await preloadImages(stillsArray);
+        // Sort the final array by sequence
+        const sortedStillsArray = stillsArray.sort(
+          (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
+        );
+
+        setStillsData(sortedStillsArray);
+        await preloadImages(sortedStillsArray);
         setLoading(false);
         setTimeout(() => setShowContent(true), 1000);
       } catch (err) {
