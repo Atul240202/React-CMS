@@ -15,7 +15,7 @@ const Still = () => {
   return (
     <section className='still-section'>
       <div className='still-header'>
-        <h2>STILL</h2>
+        <h2 className='font-chesna'>STILL</h2>
         <p>YOUR VISION, OUR EXPERTISE</p>
         <a href='/stills' className='see-more'>
           SEE MORE

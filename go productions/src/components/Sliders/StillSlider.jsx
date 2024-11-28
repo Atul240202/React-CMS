@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/FadeInOut.css';
+import gifSrc from '../../assets/gif.gif';
 
 const words = ['FEATURE', 'MOTION', 'MOTIONS', 'MOVIES', 'FLICKS', 'PICTURES'];
 
@@ -49,10 +50,10 @@ function StillSlider() {
             initial={{ x: '-120%' }}
             animate={{ x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className={`font-extrabold text-center m-0 ${
+            className={`font-extrabold m-0 items-end ${
               isMobile
                 ? 'text-5xl md:text-7xl lg:text-8xl mb-4'
-                : 'text-[150px] -mb-[90px]'
+                : 'text-[150px]'
             }`}
           >
             FEATURE
@@ -95,7 +96,7 @@ function StillSlider() {
             >
               STILL
             </motion.h1>
-            <div className='relative h-[150px] overflow-hidden'>
+            <div className='relative h-[50px] overflow-hidden flex items-center justify-center'>
               <AnimatePresence mode='wait'>
                 <motion.p
                   key={words[currentIndex]}
@@ -104,12 +105,19 @@ function StillSlider() {
                   animate='animate'
                   exit='exit'
                   className={`text-center font-bold ${
-                    isMobile ? 'text-2xl' : 'text-[25px]'
-                  } mt-5`}
+                    isMobile
+                      ? 'text-xl md:text-6xl lg:text-7xl text-center'
+                      : 'text-[35px]'
+                  } mt-7`}
                 >
                   {words[currentIndex]}
                 </motion.p>
               </AnimatePresence>
+              <img
+                src={gifSrc}
+                alt='Animation'
+                className='pr-4 h-20 w-20 object-cover'
+              />
             </div>
           </div>
         </div>

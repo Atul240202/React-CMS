@@ -8,7 +8,7 @@ const Motion = () => {
   return (
     <div className='motion-section'>
       <div className='motion-header'>
-        <h2>MOTION</h2>
+        <h2 className='font-chesna'>MOTION</h2>
         <p>YOUR VISION, OUR EXPERTISE</p>
         <a href='motions' className='see-more'>
           SEE MORE

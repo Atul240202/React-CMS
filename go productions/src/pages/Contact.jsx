@@ -120,13 +120,17 @@ function Contact() {
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>CONTACT US</h1>
+    <div style={styles.container} className='font-chesna'>
+      <h1 style={styles.title} className='font-chesna'>
+        CONTACT US
+      </h1>
       <hr style={styles.styleLine} />
 
       <h2
         style={styles.subtitle}
-        className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
+        className={`${
+          isMobile ? 'text-md' : 'text-[1.5rem] font-extrabold font-chesna'
+        }`}
       >
         LETS CREATE MAGIC TOGETHER
       </h2>
@@ -166,7 +170,7 @@ function Contact() {
           style={styles.textarea}
           required
         ></textarea>
-        <button type='submit' style={styles.button}>
+        <button type='submit' style={styles.button} className='rounded-[0]'>
           SEND
         </button>
       </form>
@@ -184,14 +188,14 @@ function Contact() {
           <hr style={styles.styleLine2} />
           <div style={styles.contactBox}>
             <h3
-              style={{ margin: '0' }}
+              style={{ margin: '0', fontSize: '1.5rem' }}
               className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
             >
               PHONE NUMBER
             </h3>
-            <p style={{ margin: '0' }}>
+            <p style={{ margin: '0', fontSize: '1.5rem' }}>
               <a style={{ color: 'white' }} href='tel:+918130405967'>
-                +91 81304 05967
+                +91 8130405967
               </a>
             </p>
           </div>
@@ -279,12 +283,12 @@ const styles = {
   },
   button: {
     width: '15%',
-    padding: '1rem',
+    padding: '0.5rem',
     backgroundColor: '#111',
     border: 'none',
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: '1rem',
+    fontSize: '1.5rem',
     cursor: 'pointer',
     textAlign: 'center',
     alignSelf: 'flex-end',

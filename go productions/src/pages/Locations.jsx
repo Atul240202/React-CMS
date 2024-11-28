@@ -14,6 +14,7 @@ export default function Locations() {
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [hoveredItems, setHoveredItems] = useState(new Set());
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,8 +63,8 @@ export default function Locations() {
   };
 
   const textVariants = {
-    hidden: { y: 100, opacity: 0 },
-    visible: {
+    initial: { y: 100, opacity: 0 },
+    hover: {
       y: 0,
       opacity: 1,
       transition: {
@@ -154,7 +155,7 @@ export default function Locations() {
 
           <div className='flex flex-col items-center p-4 md:p-8 bg-black'>
             {locations.map((item, index) => (
-              <div
+              <motion.div
                 key={item.id}
                 className={`flex ${
                   isMobile
@@ -166,6 +167,12 @@ export default function Locations() {
                   justify-between w-full max-w-[85rem] ${
                     isMobile ? 'h-auto mb-12' : 'h-[60vh] mb-8'
                   }`}
+                initial='initial'
+                animate={hoveredItems.has(item.id) ? 'hover' : 'initial'}
+                whileHover='hover'
+                onHoverStart={() => {
+                  setHoveredItems((prev) => new Set(prev).add(item.id));
+                }}
               >
                 <div
                   className={`${
@@ -182,33 +189,29 @@ export default function Locations() {
                     loading='lazy'
                   />
                 </div>
-                <motion.div
+                <div
                   className={`flex flex-col items-center justify-center ${
                     isMobile ? 'w-full text-center' : 'w-1/2'
                   }`}
-                  initial='hidden'
-                  whileInView='visible'
-                  viewport={{ once: true, margin: '-100px' }}
                 >
                   <motion.h2
                     variants={textVariants}
-                    className={`text-white font-extrabold ${
-                      isMobile ? 'text-2xl md:text-3xl mb-4' : 'text-4xl mb-6'
+                    className={`text-white font-chesna ${
+                      isMobile ? 'text-2xl md:text-3xl mb-4' : 'text-4xl mb-1'
                     }`}
                   >
                     {item.text}
                   </motion.h2>
                   <motion.h2
                     variants={textVariants}
-                    className={`text-white font-extrabold ${
-                      isMobile ? 'text-xl md:text-2xl' : 'text-4xl'
+                    className={`text-white font-chesna ${
+                      isMobile ? 'text-xl md:text-2xl' : 'text-4xl leading-3'
                     }`}
-                    transition={{ delay: 0.2 }}
                   >
                     {item.address}
                   </motion.h2>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </>

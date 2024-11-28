@@ -2,7 +2,12 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        chesna: ['"Chesna Bold"', 'sans-serif'], // Add your custom font
+        chesnal: ['"Chesna Light"', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
   corePlugins: {

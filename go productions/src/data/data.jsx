@@ -15,14 +15,14 @@ export const stillImages = [
   },
   {
     imgUrl:
-      'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819659/Component_69_imvclm.png',
+      'https://res.cloudinary.com/da3r1iagy/image/upload/v1729420385/FEST3046-scaled_qzddsc.png',
     logoUrl:
       'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819976/e20e92c99b193be2a7c7ab6b926a18fd_brkqin.png',
     hoverText: 'WINTER GTM',
   },
   {
     imgUrl:
-      'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819659/Component_69_imvclm.png',
+      'https://res.cloudinary.com/da3r1iagy/image/upload/v1729420385/FEST3046-scaled_qzddsc.png',
     logoUrl:
       'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819976/e20e92c99b193be2a7c7ab6b926a18fd_brkqin.png',
     hoverText: 'WINTER GTM',
@@ -43,7 +43,7 @@ export const stillImages = [
   },
   {
     imgUrl:
-      'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819659/Component_69_imvclm.png',
+      'https://res.cloudinary.com/da3r1iagy/image/upload/v1729420385/FEST3046-scaled_qzddsc.png',
     logoUrl:
       'https://res.cloudinary.com/da3r1iagy/image/upload/v1727819976/e20e92c99b193be2a7c7ab6b926a18fd_brkqin.png',
     hoverText: 'WINTER GTM',
