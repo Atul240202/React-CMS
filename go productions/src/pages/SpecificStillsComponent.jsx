@@ -226,7 +226,9 @@ export default function SpecificStillsComponent() {
               </div>
               <hr
                 style={styles.styleLine2}
-                className={`${isMobile ? 'w-[98%] my-[1%]' : 'right-0'}`}
+                className={`${
+                  isMobile ? 'w-[98%] my-[1%]' : 'w-[50%] ml-[50%]'
+                }`}
               />
             </React.Fragment>
           ))}
@@ -313,7 +315,7 @@ const styles = {
     marginLeft: '2vw',
     marginBottom: '1rem',
     fontWeight: 800,
-    marginLeft: '3vw',
+    marginLeft: '1vw',
   },
   styleLine1: {
     height: '1px',
