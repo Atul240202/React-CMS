@@ -1,5 +1,4 @@
-# Location Campaign Management System
-
+# Content Managment System (Currently customized for business portfolio of a production house)
 ## Project Overview
 
 This project is a web-based application designed for managing content displayed on portfolio site through a proper dashboard panel. It provides a user-friendly interface for creating, editing, and organizing data, including images and associated information.
