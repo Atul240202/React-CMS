@@ -20,3 +20,8 @@ This project is a web-based application designed for managing content displayed 
 - Tailwind CSS: Utility-first CSS framework for styling
 - @hello-pangea/dnd: Library for implementing drag-and-drop functionality
 - Lucide React: Icon library for UI elements
+
+
+## Project Structure:
+- backend/Admin-dashboard consist of code for backend dashboard.
+- go productions file consist code for frontend portfolio site currently customized for Production house portfolio site.
