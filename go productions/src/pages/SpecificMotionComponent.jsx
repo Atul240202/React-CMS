@@ -5,7 +5,7 @@ import { db } from '../Firebase';
 import TransitionEffect from '../components/TransitionEffect';
 
 export default function SpecificMotionComponent() {
-  const { text } = useParams();
+  const { clientId, id } = useParams();
   const location = useLocation();
   const [motion, setMotion] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,27 +23,26 @@ export default function SpecificMotionComponent() {
           motionData = location.state.motion;
           setProgress(100);
         } else {
-          const [clientId, motionId] = text.split('_');
           const clientDoc = doc(db, 'clients', clientId);
           setProgress(25);
           const clientSnapshot = await getDoc(clientDoc);
           setProgress(50);
           if (clientSnapshot.exists()) {
             const clientData = clientSnapshot.data();
-            motionData = clientData.motions.find(
-              (m) => m.clientId === motionId
-            );
+            motionData = clientData.motions.find((m) => m.id === id);
             setProgress(75);
             if (!motionData) {
               throw new Error('Motion not found');
             }
             motionData = {
-              id: text,
-              clientKey: clientId,
+              id: id,
+              clientId: clientId,
               clientName: clientData.name,
               clientImage: clientData.image,
               ...motionData,
             };
+
+            console.log('Motion data', motionData);
             setProgress(100);
           } else {
             throw new Error('Client not found');
@@ -60,7 +59,7 @@ export default function SpecificMotionComponent() {
 
     fetchMotionData();
     window.scrollTo(0, 0);
-  }, [text, location.state]);
+  }, [clientId, id, location.state]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,7 +91,7 @@ export default function SpecificMotionComponent() {
         onTransitionComplete={handleTransitionComplete}
       />
       {showContent && motion && (
-        <div style={styles.container} className='font-chesnal'>
+        <div style={styles.container}>
           <div style={styles.videoContainer}>
             <video
               src={motion.video}
@@ -108,7 +107,7 @@ export default function SpecificMotionComponent() {
           </div>
           <div
             style={styles.textContainer}
-            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mx-7 font-chesnal'}`}
+            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mx-7 '}`}
           >
             <h1
               style={styles.text}
@@ -155,34 +154,44 @@ export default function SpecificMotionComponent() {
             ></div>
             <div
               style={styles.creditContent}
-              className={`${isMobile ? 'text-sm' : 'text-2xl  flex-1'}`}
+              className={`${isMobile ? 'text-sm' : 'text-xl  flex-1'}`}
             >
               PRODUCTION TITLE- {motion.productTitle || 'N/A'}
             </div>
           </div>
           {motion.credits &&
-            Object.entries(motion.credits).map(([key, value]) => (
-              <React.Fragment key={key}>
-                <hr
-                  style={styles.styleLine2}
-                  className={` ${
-                    isMobile ? 'w-[96%] mx-[2%]' : 'w-[49%] ml-[50%] mr-[1%]'
-                  }`}
-                />
-                <div style={styles.creditData}>
-                  <div
-                    style={styles.creditBlanks}
-                    className={`${isMobile ? '' : ' text-2xl flex-1'}`}
-                  ></div>
-                  <div
-                    style={styles.creditContent}
-                    className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
-                  >
-                    {key.toUpperCase()}: {value}
-                  </div>
-                </div>
-              </React.Fragment>
-            ))}
+            Object.entries(motion.credits).map(([key, value]) => {
+              // Check if the credit should be visible
+              const isVisible =
+                motion.visibleFields[`credits.${key}`] !== false;
+              if (isVisible) {
+                return (
+                  <React.Fragment key={key}>
+                    <hr
+                      style={styles.styleLine2}
+                      className={` ${
+                        isMobile
+                          ? 'w-[96%] mx-[2%]'
+                          : 'w-[49%] ml-[50%] mr-[1%]'
+                      }`}
+                    />
+                    <div style={styles.creditData}>
+                      <div
+                        style={styles.creditBlanks}
+                        className={`${isMobile ? '' : ' text-2xl flex-1'}`}
+                      ></div>
+                      <div
+                        style={styles.creditContent}
+                        className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
+                      >
+                        {key.toUpperCase()}: {value}
+                      </div>
+                    </div>
+                  </React.Fragment>
+                );
+              }
+              return null;
+            })}
           <hr
             style={styles.styleLine2}
             className={`${
@@ -242,7 +251,6 @@ const styles = {
   creditHeader: {
     marginBottom: '1rem',
     fontWeight: 800,
-    marginLeft: '0vw',
   },
 
   creditContent: {
@@ -281,6 +289,7 @@ const styles = {
   },
   popupVideo: {
     width: '100%',
+    maxHeight: '80vh',
   },
   styleLine1: {
     height: '1px',

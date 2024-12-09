@@ -20,8 +20,8 @@ const StillsPageContent = ({ stillPageData }) => {
 
   if (!Array.isArray(stillPageData) || stillPageData.length === 0) {
     return (
-      <div className='text-white text-xl text-center mt-8'>
-        No stills available.
+      <div className='text-white text-xl text-center mt-[10vh] mb-[10vh]'>
+        No stills available for the selected filter.
       </div>
     );
   }

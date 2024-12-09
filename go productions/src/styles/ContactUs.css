@@ -2,24 +2,23 @@
   display: flex;
   justify-content: space-between;
   background-color: #000; /* Black background */
-  padding: 20px;
-  max-width: 85rem;
-  margin: auto;
+  width: 100%;
 }
 
-.location-header {
+.home-contact-header {
   position: relative;
-  max-width: 85rem;
-  margin: auto;
+  width: 100%;
 }
 
-.location-header h2 {
-  font-size: 30px;
+.home-contact-header h2 {
+  font-size: 48px;
   font-weight: bold;
+  margin-block-end: 0;
+  margin-block-start: 0;
 }
 
 .contact-form {
-  width: 55%;
+  width: 50vw;
   display: flex;
   flex-direction: column;
 }
@@ -51,12 +50,11 @@
   color: #fff; /* White text */
   border: none;
   padding: 10px;
-  font-size: 20px;
+  font-size: 25px;
   max-width: 20%;
   border-radius: 0;
   text-transform: uppercase;
   cursor: pointer;
-  font-weight: bold;
 }
 
 .map-container {

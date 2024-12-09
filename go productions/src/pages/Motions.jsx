@@ -7,15 +7,22 @@ import TransitionEffect from '../components/TransitionEffect';
 
 export default function Motions() {
   const [motionData, setMotionData] = useState([]);
+  const [filteredMotionData, setFilteredMotionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const filterOptions = [
+    'All',
+    'FASHION AND LIFESTYLE',
+    'ADVERTISING',
+    'DIGITAL',
+  ];
 
   useEffect(() => {
     const fetchMotionData = async () => {
       try {
-        // Create a query to order clients by sequence
         const clientsQuery = query(
           collection(db, 'clients'),
           orderBy('sequence', 'asc')
@@ -27,12 +34,12 @@ export default function Motions() {
 
         clientSnapshot.forEach((doc) => {
           const clientData = doc.data();
+          console.log('motion client data', clientData.name);
           if (clientData.motions) {
             const clientMotions = Array.isArray(clientData.motions)
               ? clientData.motions
               : [clientData.motions];
 
-            // Sort motions by sequence if it exists
             const sortedMotions = clientMotions.sort(
               (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
             );
@@ -43,7 +50,7 @@ export default function Motions() {
                 clientKey: doc.id,
                 clientName: clientData.name,
                 clientImage: clientData.image,
-                sequence: motion.sequence ?? Infinity, // Add sequence to the final object
+                sequence: motion.sequence ?? Infinity,
                 ...motion,
               });
             });
@@ -52,12 +59,12 @@ export default function Motions() {
           setProgress((processedDocs / clientSnapshot.size) * 100);
         });
 
-        // Sort the final array by sequence
         const sortedMotionList = motionList.sort(
           (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
         );
 
         setMotionData(sortedMotionList);
+        setFilteredMotionData(sortedMotionList);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching motion data: ', err);
@@ -68,6 +75,17 @@ export default function Motions() {
 
     fetchMotionData();
   }, []);
+
+  useEffect(() => {
+    if (activeFilter === 'All') {
+      setFilteredMotionData(motionData);
+    } else {
+      const filtered = motionData.filter(
+        (motion) => motion.filter && motion.filter.includes(activeFilter)
+      );
+      setFilteredMotionData(filtered);
+    }
+  }, [activeFilter, motionData]);
 
   const handleTransitionComplete = () => {
     setShowContent(true);
@@ -84,7 +102,20 @@ export default function Motions() {
       {showContent && (
         <>
           <MotionSlider />
-          <MotionContent motionData={motionData} />
+          <div className='flex flex-row justify-evenly space-x-4 my-4'>
+            {filterOptions.map((option) => (
+              <button
+                key={option}
+                className={`px-4 py-2 chesnal text-3xl border-none ${
+                  activeFilter === option ? 'bg-white text-black' : 'bg-black'
+                }`}
+                onClick={() => setActiveFilter(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <MotionContent motionData={filteredMotionData} />
         </>
       )}
       {error && <div style={styles.loadingError}>{error}</div>}

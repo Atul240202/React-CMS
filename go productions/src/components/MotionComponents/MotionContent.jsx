@@ -50,14 +50,14 @@ const MotionContent = ({ motionData }) => {
 
   if (!motionData || motionData.length === 0) {
     return (
-      <div className='text-white text-xl text-center mt-8'>
-        No motion data available
+      <div className='text-white text-xl text-center mt-[10vh] mb-[10vh]'>
+        No motion data available for the selected filter.
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col items-center justify-center max-w-[85rem] mx-auto p-4 md:p-8 bg-black'>
+    <div className='flex flex-col items-center justify-center max-w-[85vw] mx-auto p-4 md:p-8 bg-black'>
       {motionData.map((motion, index) => (
         <div
           key={motion.id}
@@ -71,11 +71,11 @@ const MotionContent = ({ motionData }) => {
         >
           <div
             className={`video-container ${
-              isMobile ? 'w-full mb-4' : 'w-[40%]'
+              isMobile ? 'w-full mb-4' : 'w-[40%] h-[30vh]'
             }`}
           >
             <video
-              className='w-full h-auto object-cover -mt-[1px] cursor-pointer'
+              className='w-full h-full object-cover -mt-[1px] cursor-pointer'
               src={motion.video}
               muted
               loop
@@ -86,20 +86,24 @@ const MotionContent = ({ motionData }) => {
           </div>
           <div
             className={`flex ${
-              isMobile ? 'flex-row items-center' : 'flex-col items-start h-full'
+              isMobile
+                ? 'flex-row items-center'
+                : 'flex-col items-start h-[30vh]'
             } justify-between relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
           >
             <img
               src={motion.logo || motion.clientImage}
               alt='Logo'
               className={`logo ${
-                isMobile ? 'w-32 md:w-40 mb-4 ml-0' : 'w-56'
+                isMobile ? 'w-32 md:w-40 mb-4 ml-0' : 'w-56 max-h-[10vh]'
               } h-auto self-end mb-auto`}
               loading='lazy'
             />
             <h2
-              className={`video-text mt-40 text-2xl md:text-4xl lg:text-7xl font-chesna  ${
-                isMobile ? 'text-center mt-0 text-xl mr-4' : 'text-left mb-0'
+              className={`video-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna  ${
+                isMobile
+                  ? 'text-center mt-0 text-xl mr-4'
+                  : 'text-left mb-0 max-h-[10vh]'
               } `}
             >
               {motion.text}
@@ -147,7 +151,7 @@ const MotionContent = ({ motionData }) => {
             opacity: 1;
           }
           100% {
-            transform: translateX(10%);
+            transform: translateX(30px);
           }
         }
 

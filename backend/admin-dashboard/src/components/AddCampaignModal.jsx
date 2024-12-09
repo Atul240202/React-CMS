@@ -34,8 +34,10 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
   const [editingField, setEditingField] = useState(null);
   const [showCreditDropdown, setShowCreditDropdown] = useState(false);
   const [croppingImage, setCroppingImage] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState([]);
 
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
+  const filterOptions = ['FASHION AND LIFESTYLE', 'ADVERTISING', 'EDITORIAL'];
 
   useEffect(() => {
     if (isOpen) {
@@ -243,8 +245,12 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
 
     setIsLoading(true);
     try {
+      const stillData = {
+        ...campaignData,
+        filter: selectedFilters,
+      };
       console.log('handle submit stills', campaignData.internalImages);
-      await addStill(campaignData.clientId, campaignData, mainFile);
+      await addStill(campaignData.clientId, stillData, mainFile);
 
       onAddStill();
       onClose();
@@ -279,6 +285,14 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
     },
     []
   );
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilters((prev) =>
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter]
+    );
+  };
 
   if (!isOpen) return null;
 
@@ -461,6 +475,24 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                 >
                   <Plus className='h-8 w-8' />
                 </button>
+              </div>
+            </div>
+
+            {/*Campaign Filter*/}
+            <div>
+              <h3 className='text-2xl font-black mb-4'>CAMPAIGN FILTER</h3>
+              <div className='space-y-2 bg-[#1C1C1C] backdrop-blur-[84px] p-6'>
+                {filterOptions.map((filter) => (
+                  <label key={filter} className='flex items-center space-x-2'>
+                    <input
+                      type='checkbox'
+                      checked={selectedFilters.includes(filter)}
+                      onChange={() => handleFilterChange(filter)}
+                      className='form-checkbox'
+                    />
+                    <span className='text-white'>{filter}</span>
+                  </label>
+                ))}
               </div>
             </div>
 

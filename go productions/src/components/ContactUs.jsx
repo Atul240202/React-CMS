@@ -4,11 +4,11 @@ import locationPointer from '../assets/locationPointer.gif';
 
 const ContactUs = () => {
   return (
-    <div>
-      <div className='location-header'>
+    <div className='w-[93vw] ml-[3.5vw] mr-[3.5vw] mb-[10vh]'>
+      <div className='home-contact-header '>
         <h2 className='font-chesna'>GET IN TOUCH</h2>
       </div>
-      <div className='contact-us-container'>
+      <div className='contact-us-container pt-5'>
         <div className='contact-form'>
           <input type='text' placeholder='NAME' className='contact-input' />
           <input type='email' placeholder='EMAIL' className='contact-input' />
@@ -24,7 +24,7 @@ const ContactUs = () => {
             placeholder='CONTENT'
             className='contact-textarea'
           ></textarea>
-          <button className='contact-btn'>SEND</button>
+          <button className='contact-btn font-chesna'>SEND</button>
         </div>
         <div className='map-container'>
           <iframe

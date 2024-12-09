@@ -64,7 +64,8 @@ const StillDashboardComponent = () => {
   const [croppingImage, setCroppingImage] = useState(null);
   const [newlyAddedImages, setNewlyAddedImages] = useState([]);
   const [showSaveButton, setShowSaveButton] = useState(false);
-
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const filterOptions = ['FASHION AND LIFESTYLE', 'ADVERTISING', 'EDITORIAL'];
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
 
   useEffect(() => {
@@ -260,6 +261,8 @@ const StillDashboardComponent = () => {
     try {
       await updateStill(selectedStill.clientId, selectedStill.id, {
         ...selectedStill,
+        filter: selectedFilters,
+
         visibleFields: visibleFields[selectedStill.id] || {},
       });
       setNewlyAddedImages([]);
@@ -290,6 +293,28 @@ const StillDashboardComponent = () => {
     setShowCreditDropdown(false);
     handleSave();
   };
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilters((prev) => {
+      const updatedFilters = prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter];
+
+      setSelectedStill((prevStill) => ({
+        ...prevStill,
+        filter: updatedFilters,
+      }));
+
+      setShowSaveButton(true);
+      return updatedFilters;
+    });
+  };
+
+  useEffect(() => {
+    if (selectedStill) {
+      setSelectedFilters(selectedStill.filter || []);
+    }
+  }, [selectedStill]);
 
   const handleRemoveCredit = (creditKey) => {
     setSelectedStill((prev) => {
@@ -480,6 +505,25 @@ const StillDashboardComponent = () => {
                 <Plus className='h-8 w-8' />
               </button>
             </div>
+
+            {/* Campaign Filter */}
+            <h3 className='text-2xl font-extrabold mb-4 mt-8'>
+              CAMPAIGN FILTER
+            </h3>
+            <div className='p-6 flex flex-col bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
+              {filterOptions.map((filter) => (
+                <label key={filter} className='flex items-center space-x-2'>
+                  <input
+                    type='checkbox'
+                    checked={selectedStill.filter?.includes(filter)}
+                    onChange={() => handleFilterChange(filter)}
+                    className='form-checkbox'
+                  />
+                  <span className='text-white'>{filter}</span>
+                </label>
+              ))}
+            </div>
+
             {/* Campaign Credits */}
             <h3 className='text-2xl font-extrabold mb-4 mt-8'>
               CAMPAIGN CREDITS

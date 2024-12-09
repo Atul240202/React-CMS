@@ -13,6 +13,7 @@ import {
   writeBatch,
   orderBy,
   limit,
+  arrayUnion,
 } from 'firebase/firestore';
 import {
   getStorage,
@@ -284,6 +285,49 @@ export async function getClientLogo(clientId) {
   }
 }
 
+export async function getMotions() {
+  try {
+    const clientsSnapshot = await getDocs(collection(db, 'clients'));
+    let allMotions = [];
+    clientsSnapshot.forEach((doc) => {
+      const clientData = doc.data();
+      if (clientData.motions) {
+        allMotions = [
+          ...allMotions,
+          ...clientData.motions.map((motion) => ({
+            ...motion,
+            clientId: doc.id,
+            clientName: clientData.name,
+            sequence: motion.sequence || 0, // Default to 0 if sequence is not available
+          })),
+        ];
+      }
+    });
+    return allMotions.sort((a, b) => a.sequence - b.sequence);
+  } catch (error) {
+    console.error('Error getting motions:', error);
+    throw error;
+  }
+}
+
+export async function updateMotionSequence(updates) {
+  const batch = writeBatch(db);
+
+  updates.forEach(({ id, clientId, sequence }) => {
+    const clientRef = doc(db, 'clients', clientId);
+    batch.update(clientRef, {
+      motions: arrayUnion({ id, sequence }),
+    });
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error('Error updating motion sequences:', error);
+    throw error;
+  }
+}
+
 export async function uploadMotion(clientId, motionData, videoFile) {
   try {
     // Upload video
@@ -299,12 +343,22 @@ export async function uploadMotion(clientId, motionData, videoFile) {
     if (clientDoc.exists()) {
       const clientData = clientDoc.data();
 
+      // Set all credit fields to be visible by default
+      const visibleFields = {};
+      for (const creditKey in motionData.credits) {
+        visibleFields[`credits.${creditKey}`] = true;
+      }
+
       // Prepare motion data
+      const motionId = Date.now().toString();
       const motionDoc = {
+        id: motionId,
         ...motionData,
         video: videoUrl,
         logo: clientData.image || '', // Use the client's image as the logo
         clientId: clientId,
+        filter: motionData.filter || [],
+        visibleFields: visibleFields,
       };
 
       // Add motion to client document
@@ -313,59 +367,12 @@ export async function uploadMotion(clientId, motionData, videoFile) {
         : [motionDoc];
 
       await updateDoc(clientRef, { motions: updatedMotions });
-      return { id: clientId, ...motionDoc };
+      return { id: motionId, ...motionDoc };
     } else {
       throw new Error('Client not found');
     }
   } catch (error) {
     console.error('Error uploading motion:', error);
-    throw error;
-  }
-}
-
-export async function getMotions() {
-  try {
-    const clientsSnapshot = await getDocs(collection(db, 'clients'));
-    let allMotions = [];
-    clientsSnapshot.forEach((doc) => {
-      const clientData = doc.data();
-      if (clientData.motions) {
-        allMotions = [
-          ...allMotions,
-          ...clientData.motions.map((motion) => ({
-            ...motion,
-            clientId: doc.id,
-            clientName: clientData.name,
-            sequence: motion.sequence || Math.floor(Math.random() * 1000), // Assign random sequence if not available
-          })),
-        ];
-        console.log('All motions data', allMotions);
-      }
-    });
-    return allMotions;
-  } catch (error) {
-    console.error('Error getting motions:', error);
-    throw error;
-  }
-}
-
-export async function updateMotionSequence(updates) {
-  const batch = writeBatch(db);
-
-  updates.forEach(({ id, clientId, sequence }) => {
-    const clientRef = doc(db, 'clients', clientId);
-    batch.update(clientRef, {
-      [`motions`]: arrayRemove({ id: id }),
-    });
-    batch.update(clientRef, {
-      [`motions`]: arrayUnion({ id: id, sequence: sequence }),
-    });
-  });
-
-  try {
-    await batch.commit();
-  } catch (error) {
-    console.error('Error updating motion sequences:', error);
     throw error;
   }
 }
@@ -390,6 +397,7 @@ export async function updateMotion(
         let updatedMotion = {
           ...clientData.motions[motionIndex],
           ...updatedData,
+          filter: updatedData.filter || [],
         };
 
         if (newVideoFile) {
@@ -426,14 +434,18 @@ export async function updateMotion(
   }
 }
 
-export async function deleteMotion(clientId, motionIndex) {
+export async function deleteMotion(clientId, motionId) {
   try {
     const clientRef = doc(db, 'clients', clientId);
     const clientDoc = await getDoc(clientRef);
 
     if (clientDoc.exists()) {
       const clientData = clientDoc.data();
-      if (motionIndex >= 0 && motionIndex < clientData.motions.length) {
+      const motionIndex = clientData.motions.findIndex(
+        (m) => m.id === motionId
+      );
+
+      if (motionIndex !== -1) {
         const motionToDelete = clientData.motions[motionIndex];
 
         // Delete video from Storage if it's a Firebase Storage URL
@@ -453,7 +465,7 @@ export async function deleteMotion(clientId, motionIndex) {
         ];
         await updateDoc(clientRef, { motions: updatedMotions });
       } else {
-        throw new Error('Motion index out of range');
+        throw new Error('Motion not found');
       }
     } else {
       throw new Error('Client not found');
@@ -511,42 +523,6 @@ export async function uploadImage(file, path) {
   return await getDownloadURL(storageRef);
 }
 
-export async function updateStill(
-  clientId,
-  stillId,
-  stillData,
-  file,
-  setUploadProgress
-) {
-  try {
-    const clientRef = doc(db, 'clients', clientId);
-    const clientDoc = await getDoc(clientRef);
-
-    if (!clientDoc.exists()) {
-      throw new Error('Client not found');
-    }
-
-    let updatedStillData = { ...stillData };
-    console.log('Updated still in firebase', updatedStillData);
-    if (file) {
-      const downloadURL = await uploadImage(
-        file,
-        `stills/${clientId}/${stillId}`
-      );
-      updatedStillData.image = downloadURL;
-    }
-
-    await updateDoc(clientRef, {
-      [`stills.${stillId}`]: updatedStillData,
-    });
-
-    return { id: stillId, clientId, ...updatedStillData };
-  } catch (error) {
-    console.error('Error updating still:', error);
-    throw error;
-  }
-}
-
 export async function deleteStill(clientId, stillId) {
   try {
     const clientRef = doc(db, 'clients', clientId);
@@ -601,14 +577,6 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
       throw new Error('Client not found');
     }
 
-    console.log(
-      'Still related data in addStill',
-      clientId,
-      stillData,
-      mainFile,
-      gridFiles
-    );
-
     let newStillData = { ...stillData };
 
     if (mainFile) {
@@ -618,7 +586,6 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
       );
       newStillData.image = mainImageUrl;
     }
-    console.log(Date.now().toLocaleString);
 
     if (gridFiles && gridFiles.length > 0) {
       const internalImages = {};
@@ -643,8 +610,21 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
 
     newStillData.sequence = maxSequence + 1;
 
+    // Include the filter field
+    newStillData.filter = stillData.filter || [];
+
+    // Set all credit fields to be visible by default
+    const visibleFields = {};
+    for (const creditKey in newStillData.credits) {
+      visibleFields[`credits.${creditKey}`] = true;
+    }
+    newStillData.visibleFields = visibleFields;
+
     await updateDoc(clientRef, {
-      [`stills.${stillId}`]: newStillData,
+      [`stills.${stillId}`]: {
+        ...newStillData,
+        visibleFields: newStillData.visibleFields,
+      },
     });
 
     return { id: stillId, clientId, ...newStillData };
@@ -654,6 +634,41 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
   }
 }
 
+export async function updateStill(
+  clientId,
+  stillId,
+  stillData,
+  file,
+  setUploadProgress
+) {
+  try {
+    const clientRef = doc(db, 'clients', clientId);
+    const clientDoc = await getDoc(clientRef);
+
+    if (!clientDoc.exists()) {
+      throw new Error('Client not found');
+    }
+
+    let updatedStillData = { ...stillData };
+    console.log('Updated still in firebase', updatedStillData);
+    if (file) {
+      const downloadURL = await uploadImage(
+        file,
+        `stills/${clientId}/${stillId}`
+      );
+      updatedStillData.image = downloadURL;
+    }
+
+    await updateDoc(clientRef, {
+      [`stills.${stillId}`]: updatedStillData,
+    });
+
+    return { id: stillId, clientId, ...updatedStillData };
+  } catch (error) {
+    console.error('Error updating still:', error);
+    throw error;
+  }
+}
 // export async function getLocations() {
 //   try {
 //     const locationsSnapshot = await getDocs(collection(db, 'locations'));

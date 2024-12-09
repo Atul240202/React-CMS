@@ -52,8 +52,8 @@ function MotionSlider() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className={`font-extrabold m-0 ${
               isMobile
-                ? 'text-5xl md:text-7xl lg:text-8xl mb-4'
-                : 'text-[150px] mb-[-75px]'
+                ? 'text-5xl mb-4'
+                : 'text-[150px] max-h-[25vh] leading-none pt-[11vh]'
             }`}
           >
             FEATURE

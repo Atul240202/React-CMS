@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
-import TransitionEffect from './components/TransitionEffect';
-import CustomCursor from './components/CustomCursor';
 import './App.css';
 
 // Lazy load components
@@ -38,16 +36,20 @@ function AppContent() {
 
   return (
     <>
-      {/* <CustomCursor /> */}
       <Suspense fallback={<div>Loading...</div>}>
         <Routes location={location}>
           <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
             <Route path='/motions' element={<Motions />} />
-            <Route
+            {/* <Route
               path='/motions/:text'
               element={<SpecificMotionComponent />}
+            /> */}
+            <Route
+              path='/motions/:clientId/:id'
+              element={<SpecificMotionComponent />}
             />
+            <Route path='/motions/:id' element={<SpecificMotionComponent />} />
             <Route path='/stills' element={<Stills />} />
             <Route
               path='/stills/:clientId/:stillId'

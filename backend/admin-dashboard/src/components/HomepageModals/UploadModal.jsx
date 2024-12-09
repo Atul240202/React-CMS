@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { X, Upload, HelpCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -6,6 +6,8 @@ import { storage } from '../../firebase';
 import GridImageCropModal from './GridImageCropModal';
 import ClientCrop from './ClientCrop';
 import Compressor from 'compressorjs';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { fetchFile } from '@ffmpeg/util';
 
 const UploadModal = ({
   isOpen,
@@ -25,6 +27,38 @@ const UploadModal = ({
   const [showClientCropModal, setShowClientCropModal] = useState(false);
   const [currentFileUrl, setCurrentFileUrl] = useState('');
   const [currentFile, setCurrentFile] = useState(null);
+  const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
+  const ffmpeg = new FFmpeg();
+
+  useEffect(() => {
+    loadFFmpeg().catch((error) => {
+      console.error('Error in loadFFmpeg:', error);
+      setFfmpegLoaded(false);
+    });
+  }, []);
+
+  const loadFFmpeg = async () => {
+    try {
+      await ffmpeg.load();
+      console.log('FFmpeg loaded successfully');
+      setFfmpegLoaded(true);
+    } catch (error) {
+      console.error('Failed to load FFmpeg:', error);
+      setFfmpegLoaded(false);
+    }
+  };
+
+  const resetState = () => {
+    setClientName('');
+    setFiles([]);
+    setUploadProgress(0);
+    setClientNameError('');
+    setIsUploading(false);
+    setShowCropModal(false);
+    setShowClientCropModal(false);
+    setCurrentFileUrl('');
+    setCurrentFile(null);
+  };
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
@@ -34,7 +68,6 @@ const UploadModal = ({
         const imageUrl = URL.createObjectURL(file);
         setCurrentFileUrl(imageUrl);
         setShowClientCropModal(true);
-        // onClose(); // Close the UploadModal when opening ClientCrop
       } else if (requireCrop) {
         const file = acceptedFiles[0];
         setCurrentFile(file);
@@ -45,7 +78,7 @@ const UploadModal = ({
         setFiles(acceptedFiles);
       }
     },
-    [isClientDashboard, requireCrop, onClose]
+    [isClientDashboard, requireCrop]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -81,6 +114,48 @@ const UploadModal = ({
         },
       });
     });
+  };
+
+  const compressVideo = async (file) => {
+    console.log('Attempting to compress video. FFmpeg loaded:', ffmpegLoaded);
+    if (!ffmpegLoaded) {
+      console.warn('FFmpeg not loaded, skipping video compression');
+      return file;
+    }
+
+    const inputName = 'input.mp4';
+    const outputName = 'output.mp4';
+
+    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+
+    await ffmpeg.run(
+      '-i',
+      inputName,
+      '-c:v',
+      'libx264',
+      '-crf',
+      '23',
+      '-preset',
+      'medium',
+      '-c:a',
+      'aac',
+      '-b:a',
+      '128k',
+      outputName
+    );
+
+    const data = ffmpeg.FS('readFile', outputName);
+    const compressedBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const compressedFile = new File([compressedBlob], file.name, {
+      type: 'video/mp4',
+    });
+
+    ffmpeg.FS('unlink', inputName);
+    ffmpeg.FS('unlink', outputName);
+
+    console.log('video file before compression', compressedFile);
+
+    return compressedFile;
   };
 
   const getCompressionOptions = (fileSize) => {
@@ -153,10 +228,13 @@ const UploadModal = ({
     try {
       const uploadPromises = filesToUpload.map(async (file) => {
         let fileToUpload = file;
-        if (!isClientDashboard && file.type.startsWith('image/')) {
-          fileToUpload = await compressImage(file);
+        if (!isClientDashboard) {
+          if (file.type.startsWith('image/')) {
+            fileToUpload = await compressImage(file);
+          } else if (file.type.startsWith('video/')) {
+            fileToUpload = await compressVideo(file);
+          }
         }
-
         const storageRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
 
@@ -201,10 +279,7 @@ const UploadModal = ({
         onUpload(urls, uploadedFiles);
       }
 
-      setUploadProgress(0);
-      setClientName('');
-      setFiles([]);
-      setIsUploading(false);
+      resetState();
       onClose();
     } catch (error) {
       console.error('Error uploading files:', error);
@@ -225,6 +300,11 @@ const UploadModal = ({
     await handleUpload([croppedFile]);
   };
 
+  const handleClose = () => {
+    resetState();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -235,7 +315,7 @@ const UploadModal = ({
             <h2 className='text-xl font-bold'>
               Upload {acceptVideo ? 'Video' : 'Photos'}
             </h2>
-            <button onClick={onClose}>
+            <button onClick={handleClose}>
               <X className='h-6 w-6' />
             </button>
           </div>

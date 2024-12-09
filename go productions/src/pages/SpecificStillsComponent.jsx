@@ -25,6 +25,7 @@ export default function SpecificStillsComponent() {
         setProgress(10);
         if (location.state?.still) {
           setStill(location.state.still);
+          console.log('Specific still data', location.state.still);
           setProgress(50);
         } else {
           const clientDoc = await getDoc(doc(db, 'clients', clientId));
@@ -35,6 +36,7 @@ export default function SpecificStillsComponent() {
             const stillData =
               clientData.stills[stillId] ||
               Object.values(clientData.stills).find((s) => s.id === stillId);
+
             if (stillData) {
               setStill(stillData);
               setProgress(50);
@@ -168,10 +170,16 @@ export default function SpecificStillsComponent() {
               alt='Client Logo'
               style={styles.logo}
               loading='lazy'
+              className={`${isMobile ? 'w-[124px]' : 'w-[200px]'}`}
             />
           </div>
           <div style={styles.descriptionContainer}>
-            <h2 style={styles.description}>{still.text}</h2>
+            <h2
+              style={styles.description}
+              className={`${isMobile ? 'text-[1.5rem]' : 'text-[2.5rem]'}`}
+            >
+              {still.text}
+            </h2>
           </div>
         </div>
       </div>
@@ -207,31 +215,53 @@ export default function SpecificStillsComponent() {
         </h3>
         <hr style={styles.styleLine1} />
 
+        <div style={styles.creditData}>
+          <div
+            style={styles.creditBlanks}
+            className={`${isMobile ? '' : 'flex-1'}`}
+          ></div>
+          <div
+            style={styles.creditContent}
+            className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
+          >
+            CLIENT: {still.clientName}
+          </div>
+        </div>
+        <hr style={styles.styleLine1} />
         {still.credits &&
-          Object.entries(still.credits).map(([key, value]) => (
-            <React.Fragment key={key}>
-              <div style={styles.creditData}>
-                <div
-                  style={styles.creditBlanks}
-                  className={`${isMobile ? 'flex-3' : 'flex-1'}`}
-                ></div>
-                <div
-                  style={styles.creditContent}
-                  className={`${
-                    isMobile ? 'text-sm flex-7' : 'text-xl flex-1'
-                  }`}
-                >
-                  {key.toUpperCase()}: {value}
-                </div>
-              </div>
-              <hr
-                style={styles.styleLine2}
-                className={`${
-                  isMobile ? 'w-[98%] my-[1%]' : 'w-[50%] ml-[50%]'
-                }`}
-              />
-            </React.Fragment>
-          ))}
+          Object.entries(still.credits).map(([key, value]) => {
+            // Check if the credit should be visible
+            const isVisible = still.visibleFields[`credits.${key}`] !== false;
+            if (isVisible) {
+              return (
+                <React.Fragment key={key}>
+                  <div style={styles.creditData}>
+                    <div
+                      style={styles.creditBlanks}
+                      className={`${isMobile ? 'flex-3' : 'flex-1'}`}
+                    ></div>
+                    <div
+                      style={styles.creditContent}
+                      className={`${
+                        isMobile
+                          ? 'text-sm flex-7 ml-[2vw]'
+                          : 'text-xl flex-1 ml-[0]'
+                      }`}
+                    >
+                      {key.toUpperCase()}: {value}
+                    </div>
+                  </div>
+                  <hr
+                    style={styles.styleLine2}
+                    className={`${
+                      isMobile ? 'w-[98%] my-[1%]' : 'w-[50%] ml-[50%]'
+                    }`}
+                  />
+                </React.Fragment>
+              );
+            }
+            return null;
+          })}
       </div>
 
       {isPopupVisible && (
@@ -271,12 +301,9 @@ const styles = {
     objectFit: 'cover',
   },
   logoContainer: {},
-  logo: {
-    width: '200px',
-  },
+  logo: {},
   descriptionContainer: {},
   description: {
-    fontSize: '2.5rem',
     fontWeight: 'bold',
     marginBottom: 0,
     marginTop: 0,
@@ -314,8 +341,6 @@ const styles = {
   creditHeader: {
     marginLeft: '2vw',
     marginBottom: '1rem',
-    fontWeight: 800,
-    marginLeft: '1vw',
   },
   styleLine1: {
     height: '1px',
@@ -331,12 +356,10 @@ const styles = {
   },
   creditData: {
     display: 'flex',
-    justifyContent: 'space-between',
     margin: '10px 0',
   },
   creditContent: {
     display: 'flex',
-    justifyContent: 'space-between',
     fontWeight: 'bold',
   },
   creditBlanks: {},

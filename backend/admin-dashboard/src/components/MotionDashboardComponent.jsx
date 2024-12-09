@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Pencil, Plus, X, Eye, EyeOff } from 'lucide-react';
+import { Pencil, Plus, X, Eye, EyeOff, Save } from 'lucide-react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import MotionCampaignModal from './MotionCampaignModal';
@@ -52,7 +52,10 @@ const MotionDashboardComponent = () => {
   const [motionToDelete, setMotionToDelete] = useState(null);
   const [visibleFields, setVisibleFields] = useState({});
   const [showCreditDropdown, setShowCreditDropdown] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [showSaveButton, setShowSaveButton] = useState(false);
   const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
+  const filterOptions = ['FASHION AND LIFESTYLE', 'ADVERTISING', 'DIGITAL'];
 
   useEffect(() => {
     fetchMotions();
@@ -140,6 +143,7 @@ const MotionDashboardComponent = () => {
         selectedMotion.id,
         {
           ...selectedMotion,
+          filter: selectedFilters,
           visibleFields: visibleFields[selectedMotion.id] || {},
         }
       );
@@ -147,6 +151,7 @@ const MotionDashboardComponent = () => {
         motions.map((m) => (m.id === updatedMotion.id ? updatedMotion : m))
       );
       setEditingField(null);
+      setShowSaveButton(false);
     } catch (error) {
       console.error('Error saving motion:', error);
     }
@@ -201,6 +206,7 @@ const MotionDashboardComponent = () => {
       }
     }
   };
+
   const moveMotion = useCallback((dragIndex, hoverIndex) => {
     setMotions((prevMotions) => {
       const newMotions = [...prevMotions];
@@ -210,6 +216,22 @@ const MotionDashboardComponent = () => {
       return newMotions;
     });
   }, []);
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilters((prev) => {
+      const updatedFilters = prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter];
+
+      setSelectedMotion((prevMotion) => ({
+        ...prevMotion,
+        filter: updatedFilters,
+      }));
+
+      setShowSaveButton(true);
+      return updatedFilters;
+    });
+  };
 
   const handleDragEnd = useCallback(async () => {
     const updates = motions.map((motion, index) => ({
@@ -269,7 +291,7 @@ const MotionDashboardComponent = () => {
         <div className='grid grid-cols-1 p-8 bg-[#1C1C1C] backdrop-blur-[84px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8'>
           {motions.map((motion, index) => (
             <DraggableMotionItem
-              key={motion.id}
+              key={`${motion.clientId}-${motion.id || index}`}
               id={motion.id}
               index={index}
               motion={motion}
@@ -302,7 +324,7 @@ const MotionDashboardComponent = () => {
             <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
                 <video
-                  className='w-full h-64 object-cover'
+                  className='w-full h-64 object-contain'
                   controls
                   poster={selectedMotion.thumbnail}
                 >
@@ -362,6 +384,35 @@ const MotionDashboardComponent = () => {
                   <Pencil className='h-4 w-4' />
                 </button>
               </div>
+            </div>
+
+            {/* Campaign Filter */}
+            <div>
+              <h3 className='text-2xl font-extrabold mb-4 mt-8'>
+                CAMPAIGN FILTER
+              </h3>
+              <div className='p-6 bg-[#1C1C1C] backdrop-blur-[84px] space-y-2'>
+                {filterOptions.map((filter) => (
+                  <label key={filter} className='flex items-center space-x-2'>
+                    <input
+                      type='checkbox'
+                      checked={selectedMotion.filter?.includes(filter)}
+                      onChange={() => handleFilterChange(filter)}
+                      className='form-checkbox'
+                    />
+                    <span className='text-white'>{filter}</span>
+                  </label>
+                ))}
+              </div>
+              {showSaveButton && (
+                <button
+                  onClick={handleSave}
+                  className='mt-4 px-4 py-2 border border-white bg-black text-white hover:bg-zinc-800 transition-colors'
+                >
+                  <Save className='inline-block mr-2 h-4 w-4' />
+                  Save Changes
+                </button>
+              )}
             </div>
 
             {/* Campaign Credits */}

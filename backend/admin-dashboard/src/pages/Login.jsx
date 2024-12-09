@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
@@ -49,11 +48,11 @@ export default function Login() {
   return (
     <div className='flex flex-col lg:flex-row h-screen bg-black relative overflow-hidden'>
       {/* Left Section */}
-      <div className='flex-1 flex flex-col justify-center px-32 relative z-20 text-center'>
+      <div className='flex-1 flex flex-col justify-center px-32 relative z-20 text-center items-center'>
         <h1 className='text-5xl font-bold text-white mb-8 mr-12 '>
           Welcome Back
         </h1>
-        <div className='backdrop-blur-md  bg-white/10 rounded-3xl p-8 max-w-md relative z-10 shadow-2xl border border-gray-600'>
+        <div className='backdrop-blur-md  bg-white/10 rounded-3xl p-8 max-w-md relative z-10 shadow-2xl border w-[30vw] h-auto border-gray-600'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div>
               <label

@@ -8,15 +8,22 @@ import '../styles/FadeInOut.css';
 
 export default function Stills() {
   const [stillsData, setStillsData] = useState([]);
+  const [filteredStillsData, setFilteredStillsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const filterOptions = [
+    'All',
+    'FASHION AND LIFESTYLE',
+    'ADVERTISING',
+    'EDITORIAL',
+  ];
 
   useEffect(() => {
     const fetchStillsData = async () => {
       try {
-        // Create a query to order clients by sequence
         const clientsQuery = query(
           collection(db, 'clients'),
           orderBy('sequence', 'asc')
@@ -35,7 +42,6 @@ export default function Stills() {
               ? clientData.stills
               : Object.values(clientData.stills);
 
-            // Sort stills by sequence if it exists
             const sortedStills = clientStills.sort(
               (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
             );
@@ -46,7 +52,7 @@ export default function Stills() {
                 clientKey: doc.id,
                 clientName: clientData.name,
                 clientImage: clientData.image,
-                sequence: still.sequence ?? Infinity, // Add sequence to the final object
+                sequence: still.sequence ?? Infinity,
                 ...still,
               });
             }
@@ -55,12 +61,12 @@ export default function Stills() {
           setLoadingProgress((processedDocs / totalDocs) * 50);
         }
 
-        // Sort the final array by sequence
         const sortedStillsArray = stillsArray.sort(
           (a, b) => (a.sequence ?? Infinity) - (b.sequence ?? Infinity)
         );
 
         setStillsData(sortedStillsArray);
+        setFilteredStillsData(sortedStillsArray);
         await preloadImages(sortedStillsArray);
         setLoading(false);
         setTimeout(() => setShowContent(true), 1000);
@@ -73,6 +79,17 @@ export default function Stills() {
 
     fetchStillsData();
   }, []);
+
+  useEffect(() => {
+    if (activeFilter === 'All') {
+      setFilteredStillsData(stillsData);
+    } else {
+      const filtered = stillsData.filter(
+        (still) => still.filter && still.filter.includes(activeFilter)
+      );
+      setFilteredStillsData(filtered);
+    }
+  }, [activeFilter, stillsData]);
 
   const preloadImages = async (data) => {
     const imageUrls = data
@@ -114,7 +131,20 @@ export default function Stills() {
   return (
     <>
       <StillSlider />
-      {showContent && <StillsPageContent stillPageData={stillsData} />}
+      <div className='flex flex-row justify-evenly space-x-4 my-4'>
+        {filterOptions.map((option) => (
+          <button
+            key={option}
+            className={`px-4 py-2 font-chesnal text-3xl border-none ${
+              activeFilter === option ? 'bg-white text-black' : 'bg-black'
+            }`}
+            onClick={() => setActiveFilter(option)}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {showContent && <StillsPageContent stillPageData={filteredStillsData} />}
     </>
   );
 }

@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Pencil, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import UploadModal from './HomepageModals/UploadModal';
-import { uploadMotion, getClientLogo, uploadClient } from '../firebase';
+import {
+  uploadMotion,
+  getClientLogo,
+  uploadClient,
+  getMotions,
+} from '../firebase';
 
 const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -20,7 +25,9 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
   const [visibleFields, setVisibleFields] = useState({});
   const [showClientModal, setShowClientModal] = useState(false);
   const [updatedClients, setUpdateClients] = useState(clients);
-  const creditOptions = ['PHOTOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const creditOptions = ['VIDEOGRAPHER', 'BRAND', 'STYLIST', 'CREW MEMBERS'];
+  const filterOptions = ['FASHION AND LIFESTYLE', 'ADVERTISING', 'DIGITAL'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -91,6 +98,14 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
     }
   };
 
+  const handleFilterChange = (filter) => {
+    setSelectedFilters((prev) =>
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter]
+    );
+  };
+
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
@@ -106,10 +121,23 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
         alert('Please upload a video');
         return;
       }
+      const motionDataWithFilters = {
+        ...campaignData,
+        filter: selectedFilters,
+      };
+
+      // Get the current highest sequence number
+      const motions = await getMotions();
+      const maxSequence = motions.reduce(
+        (max, motion) => Math.max(max, motion.sequence || 0),
+        -1
+      );
+      motionDataWithFilters.sequence = maxSequence + 1;
+
       await uploadMotion(
-        campaignData.clientId,
-        campaignData,
-        campaignData.video
+        motionDataWithFilters.clientId,
+        motionDataWithFilters,
+        motionDataWithFilters.video
       );
       onAddMotion();
       onClose();
@@ -168,7 +196,22 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
         <div className='max-w-5xl mx-auto rounded-lg p-8'>
           <div className='flex justify-between items-center mb-6'>
             <h2 className='text-2xl font-extrabold'>FILL CAMPAIGN DETAILS</h2>
-            <button onClick={onClose}>
+            <button
+              onClick={() => {
+                setCampaignData({
+                  logo: '',
+                  text: '',
+                  video: null,
+                  clientId: '',
+                  productTitle: '',
+                  credits: {},
+                });
+                setVideoPreviewUrl('');
+                setSelectedFilters([]);
+                setVisibleFields({});
+                onClose();
+              }}
+            >
               <X className='h-6 w-6' />
             </button>
           </div>
@@ -176,9 +219,12 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
           <div className='space-y-8'>
             <div className='bg-[#1C1C1C] p-6 flex justify-between'>
               {/* Main Video */}
-              <div className='aspect-video bg-zinc-800 overflow-hidden w-6/12'>
+              <div className='aspect-video bg-zinc-800 overflow-hidden w-6/12 flex items-center justify-center'>
                 {videoPreviewUrl ? (
-                  <video className='w-full h-full object-cover' controls>
+                  <video
+                    className='max-w-full max-h-full object-contain'
+                    controls
+                  >
                     <source src={videoPreviewUrl} type='video/mp4' />
                   </video>
                 ) : (
@@ -270,6 +316,26 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                   </span>
                   <Pencil className='h-4 w-4' />
                 </button>
+              </div>
+            </div>
+
+            {/* Campaign Filter */}
+
+            <div>
+              <h3 className='text-2xl font-extrabold mb-4'>CAMPAIGN FILTER</h3>
+              <div className='space-y-2 bg-[#1C1C1C] p-6'>
+                {filterOptions.map((filter) => (
+                  <label key={filter} className='flex items-center space-x-2'>
+                    <input
+                      type='checkbox'
+                      checked={selectedFilters.includes(filter)}
+                      onChange={() => handleFilterChange(filter)}
+                      className='form-checkbox'
+                    />
+
+                    <span className='text-white'>{filter}</span>
+                  </label>
+                ))}
               </div>
             </div>
 

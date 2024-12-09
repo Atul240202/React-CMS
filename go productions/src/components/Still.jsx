@@ -1,16 +1,75 @@
-import React from 'react';
-import { stillImages } from '../data/data';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { db } from '../Firebase';
 import '../styles/Still.css';
 
 const Still = () => {
-  // useEffect(() => {
-  //   onLoad();
-  // }, [onLoad]);
+  const [stillImages, setStillImages] = useState([]);
 
-  const imagePairs = [];
-  for (let i = 0; i < stillImages.length; i += 2) {
-    imagePairs.push(stillImages.slice(i, i + 2));
-  }
+  useEffect(() => {
+    const fetchHomeStills = async () => {
+      try {
+        const homeStillsQuery = query(
+          collection(db, 'homeStills'),
+          where('isVisible', '==', true),
+          orderBy('rowOrder', 'asc')
+        );
+        const querySnapshot = await getDocs(homeStillsQuery);
+        const stills = [];
+        querySnapshot.forEach((doc) => {
+          stills.push(doc.data());
+        });
+        console.log('home stills', stills);
+        setStillImages(stills);
+      } catch (error) {
+        console.error('Error fetching home stills:', error);
+      }
+    };
+
+    fetchHomeStills();
+  }, []);
+
+  const arrangeStills = () => {
+    const rows = [];
+    let currentRow = [];
+    let isLandscapeFirst = true;
+
+    stillImages.forEach((still) => {
+      if (currentRow.length === 2) {
+        rows.push(currentRow);
+        currentRow = [];
+        isLandscapeFirst = !isLandscapeFirst;
+      }
+
+      if (currentRow.length === 0) {
+        if (isLandscapeFirst) {
+          currentRow.push(still.isPortrait ? null : still);
+        } else {
+          currentRow.push(still.isPortrait ? still : null);
+        }
+      } else {
+        if (isLandscapeFirst) {
+          currentRow.push(still.isPortrait ? still : null);
+        } else {
+          currentRow.push(still.isPortrait ? null : still);
+        }
+      }
+
+      if (currentRow[0] === null) {
+        currentRow[0] = still;
+      } else if (currentRow[1] === null) {
+        currentRow[1] = still;
+      }
+    });
+
+    if (currentRow.length > 0) {
+      rows.push(currentRow);
+    }
+
+    return rows;
+  };
+
+  const stillRows = arrangeStills();
 
   return (
     <section className='still-section'>
@@ -22,29 +81,30 @@ const Still = () => {
         </a>
       </div>
 
-      {imagePairs.map((pair, rowIndex) => (
+      {stillRows.map((row, rowIndex) => (
         <div key={rowIndex} className='still-images'>
-          {pair.map((image, index) => {
-            // Determine if the image should be styled as large or small
+          {row.map((still, index) => {
+            if (!still) return null;
+
             const isLarge =
               (rowIndex % 2 === 0 && index === 0) ||
               (rowIndex % 2 !== 0 && index !== 0);
 
             return (
               <div
-                key={index}
+                key={still.clientId}
                 className={`image-container ${isLarge ? 'large' : 'small'}`}
               >
                 <img
-                  src={image.imgUrl}
-                  alt={image.altText}
+                  src={still.image}
+                  alt={still.productTitle}
                   className='main-image'
                   loading='lazy'
                 />
                 <div className='overlay'>
                   <img
-                    src={image.logoUrl}
-                    alt={`${image.altText} Logo`}
+                    src={still.logo}
+                    alt={`${still.clientName} Logo`}
                     className={`logo ${isLarge ? 'top-center' : 'left-center'}`}
                     loading='lazy'
                   />
@@ -53,7 +113,7 @@ const Still = () => {
                       isLarge ? 'bottom-center' : 'right-center'
                     }`}
                   >
-                    {image.hoverText}
+                    {still.productTitle}
                   </p>
                 </div>
               </div>
