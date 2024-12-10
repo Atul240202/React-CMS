@@ -101,9 +101,6 @@ const MotionDashboardComponent = () => {
 
   const handleUpload = async (files, urls) => {
     if (selectedMotion && files.length > 0) {
-      console.log('uploading motion data', selectedMotion);
-      console.log('uploading motion urls', urls[0].type, urls[0].name);
-      console.log('uploading motion files', files);
       try {
         const updatedMotion = await updateMotion(
           selectedMotion.clientId,
@@ -111,7 +108,6 @@ const MotionDashboardComponent = () => {
           urls[0],
           files[0]
         );
-        console.log('uploading motion', updatedMotion);
         setMotions(
           motions.map((m) => (m.id === updatedMotion.id ? updatedMotion : m))
         );

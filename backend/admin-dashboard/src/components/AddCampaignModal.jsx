@@ -136,7 +136,6 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
   const handleGridCrop = async (id, croppedImage) => {
     setIsLoading(true);
     try {
-      console.log('image url', croppedImage, id);
       // const formData = new FormData();
       // formData.append('file', croppedImage);
       // const response = await fetch('/api/upload', {
@@ -147,14 +146,12 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
       const storageRef = ref(storage, `stills/${id}/grid_${Date.now()}`);
       await uploadBytes(storageRef, croppedImage);
       const url = await getDownloadURL(storageRef);
-      console.log('cropped image url', url);
       setCampaignData((prev) => ({
         ...prev,
         internalImages: prev.internalImages.map((img) =>
           img.id === id ? { ...img, url } : img
         ),
       }));
-      console.log('cropped campaign data', campaignData);
     } catch (error) {
       console.error('Error cropping image:', error);
       alert('Failed to crop image. Please try again.');
@@ -249,7 +246,6 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
         ...campaignData,
         filter: selectedFilters,
       };
-      console.log('handle submit stills', campaignData.internalImages);
       await addStill(campaignData.clientId, stillData, mainFile);
 
       onAddStill();

@@ -30,15 +30,16 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
     setCrop(crop);
 
     // Log original image size
-    fetch(imageUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        console.log(
-          'Original Image Size:',
-          (blob.size / 1024).toFixed(2),
-          'KB'
-        );
-      });
+    // fetch(imageUrl)
+    //   .then((res) => res.blob())
+    //   .then((blob) => {
+    //     console.log(
+    //       'Original Image Size:',
+    //       (blob.size / 1024).toFixed(2),
+    //       'KB'
+    //     );
+    //   }
+    // );
   };
 
   const handleCropComplete = async () => {
@@ -85,8 +86,6 @@ const GridImageCropModal = ({ isOpen, onClose, imageUrl, onCropComplete }) => {
           console.error('Canvas to Blob failed');
           return;
         }
-
-        console.log('Cropped Image Size:', (blob.size / 1024).toFixed(2), 'KB');
 
         // Create file with original image type if possible
         const originalType =

@@ -147,11 +147,8 @@ export const confirmReset = async (code, newPassword) => {
 export async function uploadClient(name, clientKey, file, fileType) {
   try {
     // Get file extension and generate a unique filename
-    console.log('file type', fileType, file.name);
     const fileExtension = file.name.split('.').pop();
-    console.log('file extension', fileExtension);
     const uniqueFileName = `${clientKey}_${Date.now()}.${fileExtension}`;
-    console.log('client uniqieFileName', uniqueFileName);
     // Upload image to Firebase Storage with metadata
     const storageRef = ref(storage, `clients/${uniqueFileName}`);
     const metadata = {
@@ -159,7 +156,6 @@ export async function uploadClient(name, clientKey, file, fileType) {
     };
     await uploadBytes(storageRef, file, metadata);
     const imageUrl = await getDownloadURL(storageRef);
-    console.log('client imageUrl', imageUrl);
 
     // Add client data to Firestore
     const clientData = {
@@ -333,7 +329,6 @@ export async function uploadMotion(clientId, motionData, videoFile) {
     // Upload video
     const videoRef = ref(storage, `motions/${clientId}/${Date.now()}`);
     await uploadBytes(videoRef, videoFile);
-    console.log('new video file', videoFile);
     const videoUrl = await getDownloadURL(videoRef);
 
     // Get client data
@@ -505,7 +500,6 @@ export async function getStills() {
             ...still,
           })
         );
-        console.log('Still datas from getStills', clientStills);
         stills.push(...clientStills);
       }
     }
@@ -552,7 +546,6 @@ export async function deleteStill(clientId, stillId) {
 
 export async function updateStillDashboardSequence(updates) {
   const batch = writeBatch(db);
-  console.log('Sequence update', updates);
   updates.forEach(({ id, clientId, sequence }) => {
     const clientRef = doc(db, 'clients', clientId);
     batch.update(clientRef, {
@@ -650,7 +643,6 @@ export async function updateStill(
     }
 
     let updatedStillData = { ...stillData };
-    console.log('Updated still in firebase', updatedStillData);
     if (file) {
       const downloadURL = await uploadImage(
         file,
@@ -684,8 +676,6 @@ export async function updateStill(
 // }
 
 // export async function addLocation(locationData, mainFile, gridFiles) {
-//   console.log('firebase location data', locationData, mainFile);
-//   console.log('grid files in firebase', gridFiles);
 //   try {
 //     // Handle main image upload
 //     const mainImageUrl = await uploadImage(
@@ -709,8 +699,6 @@ export async function updateStill(
 //       locationImages: gridImageUrls,
 //       sequence: Date.now(), // Add a default sequence value
 //     };
-
-//     console.log('Firebase new location data', newLocationData);
 
 //     const docRef = await addDoc(collection(db, 'locations'), newLocationData);
 //     return { id: docRef.id, ...newLocationData };
@@ -760,7 +748,6 @@ export async function updateStill(
 //           gridFiles[i],
 //           `locations/grid_${locationId}_${Date.now()}_${i}`
 //         );
-//         console.log('Update location grid image file', gridImageUrl);
 //         gridImageUrls[`image${i + 1}`] = gridImageUrl;
 //       }
 //       updatedLocationData.locationImages = {
@@ -811,7 +798,6 @@ export async function updateStill(
 // }
 
 // export async function addLocationGridImage(locationId, file, url) {
-//   console.log('Updated location file', file, locationId);
 //   try {
 //     const locationRef = doc(db, 'locations', locationId);
 //     const locationDoc = await getDoc(locationRef);
@@ -822,7 +808,6 @@ export async function updateStill(
 
 //     const locationData = locationDoc.data();
 
-//     console.log('Location data:', locationData);
 //     const existingImages = locationData.locationImages || {};
 
 //     // Find the next available image number
@@ -837,14 +822,10 @@ export async function updateStill(
 //       `locations/${locationId}/grid_${newImageKey}_${Date.now()}`
 //     );
 
-//     console.log('firebase image url', imageUrl);
-
 //     const updatedLocationImages = {
 //       ...existingImages,
 //       [newImageKey]: url[0],
 //     };
-
-//     console.log('Updated location image data', updatedLocationImages);
 
 //     await updateDoc(locationRef, { locationImages: updatedLocationImages });
 
@@ -944,7 +925,6 @@ export async function updateLocation(
       //   mainFile,
       //   `locations/main_${locationId}_${Date.now()}`
       // );
-      // console.log('Firebase main location image', mainImageUrl);
       updatedLocationData.image = mainFile;
     }
 
@@ -1230,10 +1210,8 @@ export const updateHeroBannerSequences = async (updates) => {
 //       await updateDoc(clientRef, {
 //         [`stills.${stillId}.homepage`]: homepageData,
 //       });
-//       console.log('Homepage schema created successfully');
 //       return homepageData;
 //     } else {
-//       console.log('No such client!');
 //       return null;
 //     }
 //   } catch (error) {
@@ -1249,7 +1227,6 @@ export const updateHeroBannerSequences = async (updates) => {
 //     await updateDoc(clientRef, {
 //       [`stills.${stillId}.homepage.sequence`]: newSequence,
 //     });
-//     console.log('Still sequence updated successfully');
 //   } catch (error) {
 //     console.error('Error updating still sequence:', error);
 //     throw error;
@@ -1263,7 +1240,6 @@ export const updateHeroBannerSequences = async (updates) => {
 //     await updateDoc(clientRef, {
 //       [`stills.${stillId}.homepage`]: updatedData,
 //     });
-//     console.log('Homepage schema updated successfully');
 //   } catch (error) {
 //     console.error('Error updating homepage schema:', error);
 //     throw error;
@@ -1283,7 +1259,6 @@ export async function addStillGridItem(
     const croppedImageUrl = await getDownloadURL(uploadResult.ref);
     const clientRef = doc(db, 'clients', clientId);
     const clientDoc = await getDoc(clientRef);
-    console.log('Still client data', clientDoc);
     if (clientDoc.exists()) {
       const clientData = clientDoc.data();
 
@@ -1309,7 +1284,6 @@ export async function addStillGridItem(
           [`stills.${stillId}.homepage`]: newStillGridItem,
         });
 
-        console.log('Still grid item added successfully');
         return { id: stillId, ...newStillGridItem };
       } else {
         throw new Error('No matching still found for the given product title');
@@ -1330,7 +1304,6 @@ export async function addStillGridItem(
 //     await updateDoc(clientRef, {
 //       [`stills.${stillId}.homepage`]: deleteField(),
 //     });
-//     console.log('Still grid item deleted successfully');
 //   } catch (error) {
 //     console.error('Error deleting still grid item:', error);
 //     throw error;
@@ -1350,7 +1323,6 @@ export async function addStillGridItem(
 //     }
 
 //     await batch.commit();
-//     console.log('Still grid item order updated successfully');
 //   } catch (error) {
 //     console.error('Error updating still grid item order:', error);
 //     throw error;
@@ -1409,7 +1381,6 @@ export async function addHomeStill(clientId, productTitle, file, isPortrait) {
       };
 
       const newHomeStillRef = await addDoc(homeStillsRef, newHomeStill);
-      console.log('Home still added successfully');
       return { id: newHomeStillRef.id, ...newHomeStill };
     } else {
       throw new Error('Client not found');
@@ -1431,7 +1402,6 @@ export async function getClientsInfo() {
       name: doc.data().clientKey,
       logo: doc.data().image,
     }));
-    console.log('Clients info:', clientsInfo);
     return clientsInfo;
   } catch (error) {
     console.error('Error fetching clients info:', error);
@@ -1443,7 +1413,6 @@ export async function updateHomeStill(stillId, updatedData) {
   try {
     const stillRef = doc(db, 'homeStills', stillId);
     await updateDoc(stillRef, updatedData);
-    console.log('Home still updated successfully');
   } catch (error) {
     console.error('Error updating home still:', error);
     throw error;
@@ -1459,10 +1428,8 @@ export async function getProductTitlesByClient(clientId) {
       const productTitles = Object.values(stills).map(
         (still) => still.credits?.['PRODUCT TITLE'] || 'Untitled Product'
       );
-      console.log('Product titles:', productTitles);
       return productTitles;
     } else {
-      console.log('No such client!');
       return [];
     }
   } catch (error) {
@@ -1476,7 +1443,6 @@ export async function deleteHomeStill(stillId) {
   try {
     const stillRef = doc(db, 'homeStills', stillId);
     await deleteDoc(stillRef);
-    console.log('Home still deleted successfully');
   } catch (error) {
     console.error('Error deleting home still:', error);
     throw error;
@@ -1498,14 +1464,13 @@ export async function getInternalImagesByProduct(clientId, productTitle) {
         const internalImages = selectedStill.internalImages || [];
         const imageUrls = internalImages.map((image) => image.url);
 
-        console.log('Internal image URLs:', imageUrls);
         return imageUrls;
       } else {
-        console.log('No such product!');
+        console.warn('No such product!');
         return [];
       }
     } else {
-      console.log('No such client!');
+      console.warn('No such client!');
       return [];
     }
   } catch (error) {
@@ -1525,7 +1490,6 @@ export async function updateHomeStillOrder(items) {
     }
 
     await batch.commit();
-    console.log('Home still order updated successfully');
   } catch (error) {
     console.error('Error updating home still order:', error);
     throw error;
@@ -1559,7 +1523,6 @@ export async function updateHomeStillGridSize(size) {
     });
 
     await batch.commit();
-    console.log('Home still grid size updated successfully');
   } catch (error) {
     console.error('Error updating home still grid size:', error);
     throw error;
@@ -1572,7 +1535,6 @@ export async function updateStillGridItem(clientId, stillId, updatedData) {
     await updateDoc(clientRef, {
       [`stills.${stillId}.homepage`]: updatedData,
     });
-    console.log('Still grid item updated successfully');
   } catch (error) {
     console.error('Error updating still grid item:', error);
     throw error;

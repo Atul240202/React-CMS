@@ -48,5 +48,5 @@ app.post('/send-whatsapp', async (req, res) => {
 
 const PORT = 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.warn(`Server running on port ${PORT}`);
 });

@@ -27,7 +27,6 @@ export default function ClientCrop({
   }, [completedCrop]);
 
   const createCroppedImage = useCallback(async () => {
-    console.log('crop getting called');
     if (!imageRef) {
       return;
     }
@@ -42,7 +41,6 @@ export default function ClientCrop({
         const file = new File([blob], `client-logo-${Date.now()}.png`, {
           type: 'image/png',
         });
-        console.log('original logo file', file);
         onCropComplete(file, imageUrl);
       } else {
         // If cropped, create a new cropped image
@@ -90,7 +88,6 @@ export default function ClientCrop({
         const file = new File([blob], `client-logo-${Date.now()}.png`, {
           type: 'image/png',
         });
-        console.log('cropped logo file', file);
         const croppedImageUrl = URL.createObjectURL(blob);
         onCropComplete(file, croppedImageUrl);
       }

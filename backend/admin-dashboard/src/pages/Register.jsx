@@ -14,7 +14,6 @@ const Register = () => {
 
     try {
       const user = await signUp(name, email, password, profileImage);
-      console.log('User registered:', user);
       // Handle successful sign-up (e.g., redirect to login or dashboard)
     } catch (err) {
       console.error('Error signing up:', err.message);

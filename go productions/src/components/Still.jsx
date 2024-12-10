@@ -19,7 +19,6 @@ const Still = () => {
         querySnapshot.forEach((doc) => {
           stills.push(doc.data());
         });
-        console.log('home stills', stills);
         setStillImages(stills);
       } catch (error) {
         console.error('Error fetching home stills:', error);

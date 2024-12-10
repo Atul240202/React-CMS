@@ -64,7 +64,6 @@ const LocationDashboardComponent = () => {
   const fetchLocations = async () => {
     try {
       const fetchedLocations = await getLocations();
-      console.log('fetched location', fetchedLocations);
       setLocations(
         fetchedLocations.sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
       );
@@ -87,14 +86,12 @@ const LocationDashboardComponent = () => {
   const handleUpload = async (url, file) => {
     if (uploadType === 'main' && selectedLocation) {
       try {
-        console.log('image url', url);
         const updatedLocation = await updateLocation(
           selectedLocation.id,
           { ...selectedLocation },
           url,
           []
         );
-        console.log('Updated location', updatedLocation);
         setSelectedLocation(updatedLocation);
         setLocations(
           locations.map((loc) =>
@@ -106,8 +103,6 @@ const LocationDashboardComponent = () => {
       }
     } else if (uploadType === 'grid' && selectedLocation) {
       try {
-        console.log('URL file value', url);
-        console.log('Location file value', file);
         const newGridImage = await addLocationGridImage(
           selectedLocation.id,
           file,

@@ -40,10 +40,9 @@ const UploadModal = ({
   const loadFFmpeg = async () => {
     try {
       await ffmpeg.load();
-      console.log('FFmpeg loaded successfully');
       setFfmpegLoaded(true);
     } catch (error) {
-      console.error('Failed to load FFmpeg:', error);
+      console.warn('Failed to load FFmpeg:', error);
       setFfmpegLoaded(false);
     }
   };
@@ -105,7 +104,6 @@ const UploadModal = ({
       new Compressor(file, {
         ...options,
         success(result) {
-          console.log('Compression result:', result);
           resolve(result);
         },
         error(err) {
@@ -117,7 +115,6 @@ const UploadModal = ({
   };
 
   const compressVideo = async (file) => {
-    console.log('Attempting to compress video. FFmpeg loaded:', ffmpegLoaded);
     if (!ffmpegLoaded) {
       console.warn('FFmpeg not loaded, skipping video compression');
       return file;
@@ -152,8 +149,6 @@ const UploadModal = ({
 
     ffmpeg.FS('unlink', inputName);
     ffmpeg.FS('unlink', outputName);
-
-    console.log('video file before compression', compressedFile);
 
     return compressedFile;
   };
@@ -198,7 +193,6 @@ const UploadModal = ({
             maxHeight,
             convertSize: 3 * MB,
             success(finalResult) {
-              console.log('Final compression result:', finalResult);
               resolve(finalResult);
             },
             error(err) {
@@ -224,7 +218,6 @@ const UploadModal = ({
     }
 
     setIsUploading(true);
-    console.log('Files to upload:', filesToUpload);
     try {
       const uploadPromises = filesToUpload.map(async (file) => {
         let fileToUpload = file;

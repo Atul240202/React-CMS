@@ -34,7 +34,6 @@ export default function Motions() {
 
         clientSnapshot.forEach((doc) => {
           const clientData = doc.data();
-          console.log('motion client data', clientData.name);
           if (clientData.motions) {
             const clientMotions = Array.isArray(clientData.motions)
               ? clientData.motions

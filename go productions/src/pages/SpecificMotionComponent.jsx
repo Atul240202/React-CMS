@@ -42,7 +42,6 @@ export default function SpecificMotionComponent() {
               ...motionData,
             };
 
-            console.log('Motion data', motionData);
             setProgress(100);
           } else {
             throw new Error('Client not found');

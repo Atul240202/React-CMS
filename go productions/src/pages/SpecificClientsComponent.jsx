@@ -50,7 +50,6 @@ export default function SpecificClientsComponent() {
           }
 
           setClientData(data);
-          console.log('Client data', data);
         } else {
           setError('Client not found');
         }

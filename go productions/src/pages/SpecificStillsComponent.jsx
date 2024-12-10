@@ -25,7 +25,6 @@ export default function SpecificStillsComponent() {
         setProgress(10);
         if (location.state?.still) {
           setStill(location.state.still);
-          console.log('Specific still data', location.state.still);
           setProgress(50);
         } else {
           const clientDoc = await getDoc(doc(db, 'clients', clientId));
