@@ -101,7 +101,7 @@ export default function Motions() {
       {showContent && (
         <>
           <MotionSlider />
-          <div className='flex flex-row justify-evenly space-x-4 my-4'>
+          <div className='flex flex-row justify-evenly space-x-4 my-4 font-chesna'>
             {filterOptions.map((option) => (
               <button
                 key={option}

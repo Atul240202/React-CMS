@@ -135,8 +135,8 @@ export default function Stills() {
         {filterOptions.map((option) => (
           <button
             key={option}
-            className={`px-4 py-2 font-chesnal text-3xl border-none ${
-              activeFilter === option ? 'bg-white text-black' : 'bg-black'
+            className={`px-4 py-2 font-chesna text-3xl border-none ${
+              activeFilter === option ? 'bg-white text-black' : 'bg-black '
             }`}
             onClick={() => setActiveFilter(option)}
           >

@@ -97,20 +97,23 @@ function Contact() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/send-whatsapp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/send-whatsapp`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
-        setStatusMessage('Message sent to WhatsApp!');
-        setFormData({ name: '', email: '', content: '', number: '' }); // Clear form after successful submission
+        setStatusMessage('Message sent successfully!');
+        setFormData({ name: '', email: '', content: '', number: '' });
       } else {
-        setStatusMessage('Failed to send the message.');
+        setStatusMessage('Failed to send the message. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
