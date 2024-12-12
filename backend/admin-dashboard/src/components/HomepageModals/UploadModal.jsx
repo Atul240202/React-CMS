@@ -365,11 +365,16 @@ const UploadModal = ({
             <div className='mt-4'>
               <p className='text-gray-300'>Selected files:</p>
               <ul className='list-disc list-inside'>
-                {files.map((file, index) => (
+                {files.slice(0, 4).map((file, index) => (
                   <li key={index} className='text-gray-300'>
                     {file.name}
                   </li>
                 ))}
+                {files.length > 4 && (
+                  <div className='text-gray-300'>
+                    +{files.length - 4} more files...
+                  </div>
+                )}
               </ul>
             </div>
           )}
@@ -401,7 +406,16 @@ const UploadModal = ({
               >
                 Cancel
               </button>
-              {!requireCrop && !isClientDashboard && (
+              {/* {!requireCrop && !isClientDashboard && (
+                <button
+                  onClick={() => handleUpload(files)}
+                  className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700'
+                  disabled={files.length === 0 || isUploading}
+                >
+                  {isUploading ? 'Uploading...' : 'Upload'}
+                </button>
+              )} */}
+              {!requireCrop && (
                 <button
                   onClick={() => handleUpload(files)}
                   className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700'

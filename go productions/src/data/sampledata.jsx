@@ -168,7 +168,7 @@ export const sampleCreateClientPages = () => {
         logo: '', // fetch client image url as with key: image as logo
         text: 'Motion title',
         clientId: 'id',
-        productTitle: 'product title',
+        productTitle: 'Campaign title',
         credits: {
           photographer: 'Photographer 1',
           assistant: 'Assistant 1',

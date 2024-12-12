@@ -1266,7 +1266,7 @@ export async function addStillGridItem(
 
       // Find the still with the matching product title
       const stillId = Object.keys(stills).find(
-        (key) => stills[key].credits?.['PRODUCT TITLE'] === productTitle
+        (key) => stills[key].credits?.['CAMPAIGN TITLE'] === productTitle
       );
 
       if (stillId) {
@@ -1426,7 +1426,7 @@ export async function getProductTitlesByClient(clientId) {
     if (clientDoc.exists()) {
       const stills = clientDoc.data().stills || {};
       const productTitles = Object.values(stills).map(
-        (still) => still.credits?.['PRODUCT TITLE'] || 'Untitled Product'
+        (still) => still.credits?.['CAMPAIGN TITLE'] || 'Untitled Product'
       );
       return productTitles;
     } else {
@@ -1457,7 +1457,7 @@ export async function getInternalImagesByProduct(clientId, productTitle) {
     if (clientDoc.exists()) {
       const stills = clientDoc.data().stills || {};
       const selectedStill = Object.values(stills).find(
-        (still) => still.credits?.['PRODUCT TITLE'] === productTitle
+        (still) => still.credits?.['CAMPAIGN TITLE'] === productTitle
       );
 
       if (selectedStill) {

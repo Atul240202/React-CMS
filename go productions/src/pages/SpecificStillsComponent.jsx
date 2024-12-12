@@ -221,7 +221,7 @@ export default function SpecificStillsComponent() {
           ></div>
           <div
             style={styles.creditContent}
-            className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
+            className={`${isMobile ? 'text-sm' : 'text-2xl flex-1 px-4'}`}
           >
             CLIENT: {still.clientName}
           </div>
@@ -244,7 +244,7 @@ export default function SpecificStillsComponent() {
                       className={`${
                         isMobile
                           ? 'text-sm flex-7 ml-[2vw]'
-                          : 'text-xl flex-1 ml-[0]'
+                          : 'text-2xl flex-1 ml-[0]'
                       }`}
                     >
                       {key.toUpperCase()}: {value}
@@ -338,8 +338,8 @@ const styles = {
     textAlign: 'left',
   },
   creditHeader: {
-    marginLeft: '2vw',
     marginBottom: '1rem',
+    fontWeight: 800,
   },
   styleLine1: {
     height: '1px',

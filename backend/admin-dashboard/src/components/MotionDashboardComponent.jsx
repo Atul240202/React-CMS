@@ -421,7 +421,7 @@ const MotionDashboardComponent = () => {
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex items-center flex-row'>
                     <span className='text-xl font-extrabold'>
-                      Product Title:
+                      CAMPAIGN Title:
                     </span>
                     <div className='flex items-center ml-3 space-x-2'>
                       {editingField === 'productTitle' ? (

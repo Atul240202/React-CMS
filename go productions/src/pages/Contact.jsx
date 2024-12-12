@@ -15,7 +15,7 @@ function LocationSection() {
   return (
     <div
       className={`relative w-[90%]  m-auto  bg-black ${
-        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[70vh] mt-[15vh]'
+        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[75vh] mt-[15vh]'
       }`}
     >
       {/* Map Container */}
@@ -31,7 +31,7 @@ function LocationSection() {
       </div>
 
       {/* Text Overlay */}
-      {/* <div
+      <div
         className={`relative  ${
           isMobile
             ? 'hidden h-[40vh]'
@@ -44,7 +44,7 @@ function LocationSection() {
             fontSize: '7rem', // Equivalent to 'text-7xl'
             fontWeight: 'bold',
             letterSpacing: '0.05em', // Approximation for tracking-wider
-            marginTop: '-13vh', // Equivalent to 'mt-[-6vh]'
+            marginTop: '-16vh', // Equivalent to 'mt-[-6vh]'
             fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
             fontStyle: 'normal',
           }}
@@ -57,14 +57,14 @@ function LocationSection() {
             fontSize: '7rem', // Equivalent to 'text-7xl'
             fontWeight: 'bold',
             letterSpacing: '0.05em', // Approximation for tracking-wider
-            marginTop: '20vh', // Equivalent to 'mt-[20vh]'
+            marginTop: '40vh', // Equivalent to 'mt-[20vh]'
             fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
             fontStyle: 'normal',
           }}
         >
           GO PRODUCTION
         </h2>
-      </div> */}
+      </div>
     </div>
   );
 }
@@ -103,7 +103,6 @@ function Contact() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-        credentials: 'include', // Include this if your server is configured to accept credentials
       });
 
       const result = await response.json();
@@ -181,7 +180,7 @@ function Contact() {
         <div style={styles.contactDetails}>
           <h3 style={{ fontSize: '1.5rem' }}>ADDRESS</h3>
           <hr style={styles.styleLine1} />
-          <p>
+          <p className='font-sans'>
             KH NO. 621 SILVER OAK FARMS, ZERO NUMBER RD, GHITORNI, NEW DELHI,
             DELHI - 110030
           </p>

@@ -153,9 +153,9 @@ export default function SpecificMotionComponent() {
             ></div>
             <div
               style={styles.creditContent}
-              className={`${isMobile ? 'text-sm' : 'text-xl  flex-1'}`}
+              className={`${isMobile ? 'text-sm' : 'text-2xl  flex-1'}`}
             >
-              PRODUCTION TITLE- {motion.productTitle || 'N/A'}
+              CAMPAIGN TITLE- {motion.productTitle || 'N/A'}
             </div>
           </div>
           {motion.credits &&
@@ -181,7 +181,9 @@ export default function SpecificMotionComponent() {
                       ></div>
                       <div
                         style={styles.creditContent}
-                        className={`${isMobile ? 'text-sm' : 'text-xl flex-1'}`}
+                        className={`${
+                          isMobile ? 'text-sm' : 'text-2xl flex-1'
+                        }`}
                       >
                         {key.toUpperCase()}: {value}
                       </div>
@@ -254,6 +256,7 @@ const styles = {
 
   creditContent: {
     display: 'flex',
+    fontWeight: 'bold',
   },
   creditBlanks: {},
   logo: {},

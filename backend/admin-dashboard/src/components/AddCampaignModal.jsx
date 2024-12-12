@@ -23,7 +23,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
     internalImages: [],
     clientId: '',
     credits: {
-      'PRODUCT TITLE': '',
+      'CAMPAIGN TITLE': '',
     },
   });
   const [uploadType, setUploadType] = useState('');
@@ -307,7 +307,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                   internalImages: [],
                   clientId: '',
                   credits: {
-                    'PRODUCT TITLE': '',
+                    'CAMPAIGN TITLE': '',
                   },
                 });
                 onClose();
@@ -530,7 +530,7 @@ function AddCampaignModal({ isOpen, onClose, onAddStill }) {
                         className='h-4 w-4 cursor-pointer'
                         onClick={() => setEditingField(key)}
                       />
-                      {key !== 'PRODUCT TITLE' && (
+                      {key !== 'CAMPAIGN TITLE' && (
                         <Trash2
                           className='h-4 w-4 cursor-pointer'
                           onClick={() => handleRemoveCredit(key)}

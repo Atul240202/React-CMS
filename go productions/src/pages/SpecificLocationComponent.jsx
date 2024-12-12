@@ -37,7 +37,7 @@ export default function SpecificLocationComponent() {
             ...(locationData.internalImages || []).map((img) => ({
               src: img.url,
               gridColumn: img.ratio > 1 ? 'span 2' : 'span 1',
-              gridRow: img.ratio > 1 ? 'span 1' : 'span 2',
+              gridRow: img.ratio < 1 ? 'span 1' : 'span 2',
             })),
           ];
 

@@ -576,7 +576,7 @@ const StillDashboardComponent = () => {
                       className='h-4 w-4 cursor-pointer'
                       onClick={() => setEditingField(`credits.${key}`)}
                     />
-                    {key !== 'PRODUCT TITLE' && (
+                    {key !== 'CAMPAIGN TITLE' && (
                       <button
                         onClick={() => toggleFieldVisibility(`credits.${key}`)}
                       >
