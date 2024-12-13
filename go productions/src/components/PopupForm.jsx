@@ -65,7 +65,7 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
             value={formData.name}
             onChange={handleChange}
             placeholder='NAME'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black  border-black uppercase'
+            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
             required
           />
           <input
@@ -74,7 +74,7 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
             value={formData.email}
             onChange={handleChange}
             placeholder='EMAIL'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black  border-black uppercase'
+            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
             required
           />
           <input
@@ -83,14 +83,14 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
             value={formData.phone}
             onChange={handleChange}
             placeholder='PHONE'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black  border-black uppercase'
+            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
             required
           />
           <div className='w-full text-left'>
             <DatePicker
               selected={formData.date}
               onChange={handleDateChange}
-              className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black  border-black uppercase text-black'
+              className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black text-black'
               placeholderText='SELECT DATE'
               required
             />
@@ -100,7 +100,7 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
             value={formData.message}
             onChange={handleChange}
             placeholder='MESSAGE'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black  border-black uppercase'
+            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
             rows='4'
             required
           ></textarea>

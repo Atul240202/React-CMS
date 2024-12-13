@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TransitionEffect from '../components/TransitionEffect';
 
 function LocationSection() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -14,16 +15,18 @@ function LocationSection() {
   }, []);
   return (
     <div
-      className={`relative w-[90%]  m-auto  bg-black ${
+      className={`relative w-[90%] m-auto bg-black ${
         isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[75vh] mt-[15vh]'
       }`}
     >
       {/* Map Container */}
-      <div className='absolute justify-center inset-0 h-[60vh] opacity-50'>
+      <div
+        className='absolute justify-center inset-0 h-[60vh] opacity-50 ' // Ensure this has higher z-index
+      >
         <iframe
           title='Go Productions Location'
           src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
-          className='w-full h-full border-0'
+          className='w-full h-full border-0 z-10'
           allowFullScreen=''
           loading='lazy'
           referrerPolicy='no-referrer-when-downgrade'
@@ -32,35 +35,37 @@ function LocationSection() {
 
       {/* Text Overlay */}
       <div
-        className={`relative  ${
+        className={`relative ${
           isMobile
             ? 'hidden h-[40vh]'
-            : 'h-[60vh] z-1  flex flex-col justify-between items-center'
+            : 'h-[60vh] flex flex-col justify-between items-center' // Set a lower z-index for this
         }`}
       >
         <h1
           style={{
-            color: 'white',
+            color: 'transparent', // Set the fill color to transparent
+            WebkitTextStroke: '2px white', // Outline with white color
             fontSize: '7rem', // Equivalent to 'text-7xl'
             fontWeight: 'bold',
             letterSpacing: '0.05em', // Approximation for tracking-wider
-            marginTop: '-16vh', // Equivalent to 'mt-[-6vh]'
-            fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
+            marginTop: '-14vh', // Equivalent to 'mt-[-6vh]'
             fontStyle: 'normal',
           }}
+          className='font-chesna z-0'
         >
           LOCATION
         </h1>
         <h2
           style={{
-            color: 'white',
+            color: 'transparent', // Set the fill color to transparent
+            WebkitTextStroke: '2px white', // Outline with white color
             fontSize: '7rem', // Equivalent to 'text-7xl'
             fontWeight: 'bold',
             letterSpacing: '0.05em', // Approximation for tracking-wider
             marginTop: '40vh', // Equivalent to 'mt-[20vh]'
-            fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
             fontStyle: 'normal',
           }}
+          className='font-chesna'
         >
           GO PRODUCTION
         </h2>

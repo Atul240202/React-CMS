@@ -91,14 +91,14 @@ export default function SpecificLocationComponent() {
 
       const result = await response.json();
       if (result.success) {
-        alert('Request sent successfully!');
+        // alert('Request sent successfully!');
         closeForm();
       } else {
-        alert('Failed to send the request. Please try again.');
+        // alert('Failed to send the request. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while sending the request.');
+      // alert('An error occurred while sending the request.');
     }
   };
 
@@ -131,7 +131,7 @@ export default function SpecificLocationComponent() {
             </div>
             <div className='mt-3'>
               <button
-                className='bg-white/10 border-2 rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
+                className='bg-white/10 border-2 uppercase font-chesna text-xl rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
                 onClick={openForm}
               >
                 Request availability
