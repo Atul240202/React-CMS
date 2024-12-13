@@ -38,9 +38,9 @@ const ClientLogo = () => {
     return <div className='error'>{error}</div>;
   }
 
-  if (clientLogos.length === 0) {
-    return <div className='no-logos'>No client logos available</div>;
-  }
+  // if (clientLogos.length === 0) {
+  //   return <div className='no-logos'>No client logos available</div>;
+  // }
 
   // Duplicate the logos array to create a seamless loop
   const displayLogos = [...clientLogos, ...clientLogos];
