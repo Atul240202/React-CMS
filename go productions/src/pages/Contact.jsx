@@ -16,17 +16,17 @@ function LocationSection() {
   return (
     <div
       className={`relative w-[90%] m-auto bg-black ${
-        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[75vh] mt-[15vh]'
+        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[90vh] mt-[5vh]'
       }`}
     >
       {/* Map Container */}
       <div
-        className='absolute inset-0 h-full opacity-50 z-10' // Ensure this has higher z-index
+        className='absolute inset-0 mt-[15vh] z-10 justify-center items-center' // Ensure this has higher z-index
       >
         <iframe
           title='Go Productions Location'
           src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
-          className='w-full h-full border-0'
+          className='w-full h-[50vh] border-0'
           allowFullScreen=''
           loading='lazy'
           referrerPolicy='no-referrer-when-downgrade'
@@ -35,8 +35,8 @@ function LocationSection() {
 
       {/* Text Overlay */}
       <div
-        className={`absolute inset-0 flex flex-col justify-center items-center ${
-          isMobile ? 'h-[40vh]' : 'h-[60vh]'
+        className={`absolute inset-0 flex flex-col justify-between items-center ${
+          isMobile ? 'h-[40vh]' : 'h-[85vh]'
         }`}
       >
         <h1
@@ -48,7 +48,7 @@ function LocationSection() {
             letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
-          className='font-chesna'
+          className='font-chesna my-0'
         >
           LOCATION
         </h1>
@@ -61,7 +61,7 @@ function LocationSection() {
             letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
-          className='font-chesna'
+          className='font-chesna my-0'
         >
           GO PRODUCTION
         </h2>
