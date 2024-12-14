@@ -52,7 +52,7 @@ export default function Login() {
         <h1 className='text-5xl font-bold text-white mb-8 mr-12 '>
           Welcome Back
         </h1>
-        <div className='backdrop-blur-md  bg-white/10 rounded-3xl p-8 max-w-md relative z-10 shadow-2xl border w-[30vw] h-auto border-gray-600'>
+        <div className='backdrop-blur-md  bg-white/10 p-8 max-w-md relative z-10 shadow-2xl border w-[30vw] h-auto border-gray-600'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div>
               <label
