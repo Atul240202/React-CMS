@@ -18,7 +18,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import CampaignGrid from './CampaignGrid';
-import ImageCropper from './ImageCropper';
 const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -213,35 +212,27 @@ const StillDashboardComponent = () => {
     setShowSaveButton(true);
   };
 
-  const handleGridCrop = (id, croppedImage) => {
-    setCroppingImage({ id, image: croppedImage });
-  };
-
   const handleCropComplete = async (id, croppedFile) => {
-    if (croppingImage) {
-      try {
-        // const formData = new FormData();
-        // formData.append('file', croppedFile);
-        // const response = await fetch('/api/upload', {
-        //   method: 'POST',
-        //   body: formData,
-        // });
-        // const { url } = await response.json();
-        const storageRef = ref(storage, `stills/${id}/grid_${Date.now()}`);
-        await uploadBytes(storageRef, croppedFile);
-        const url = await getDownloadURL(storageRef);
-        setSelectedStill((prev) => ({
-          ...prev,
-          internalImages: prev.internalImages.map((img) =>
-            img.id === croppingImage.id ? { ...img, url } : img
-          ),
-        }));
-        setShowSaveButton(true);
-      } catch (error) {
-        console.error('Error uploading cropped image:', error);
-      } finally {
-        setCroppingImage(null);
-      }
+    console.log('handleCropComplete', id, croppedFile);
+    if (!selectedStill || !croppedFile) return;
+
+    try {
+      const storageRef = ref(
+        storage,
+        `stills/${selectedStill.clientId}/grid_${Date.now()}`
+      );
+      await uploadBytes(storageRef, croppedFile);
+      const url = await getDownloadURL(storageRef);
+
+      setSelectedStill((prev) => ({
+        ...prev,
+        internalImages: prev.internalImages.map((img) =>
+          img.id === id ? { ...img, url } : img
+        ),
+      }));
+      setShowSaveButton(true);
+    } catch (error) {
+      console.error('Error uploading cropped image:', error);
     }
   };
 
@@ -441,7 +432,7 @@ const StillDashboardComponent = () => {
                     <span className='font-extrabold text-lg'>TITLE</span>
                     <div>
                       <button
-                        onClick={() => setEditingField('teaxt')}
+                        onClick={() => setEditingField('text')}
                         className='mr-2'
                       >
                         <Pencil className='h-4 w-4' />
@@ -653,14 +644,6 @@ const StillDashboardComponent = () => {
           }}
           onConfirm={handleConfirmDelete}
         />
-
-        {/* {croppingImage && (
-          <ImageCropper
-            image={croppingImage.image}
-            onComplete={handleCropComplete}
-            onCancel={() => setCroppingImage(null)}
-          />
-        )} */}
       </div>
     </DndProvider>
   );

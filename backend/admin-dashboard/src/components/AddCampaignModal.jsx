@@ -9,7 +9,6 @@ import {
 } from '../firebase';
 import UploadModal from './HomepageModals/UploadModal';
 import CampaignGrid from './CampaignGrid';
-import ImageCropper from './ImageCropper';
 import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 
 function AddCampaignModal({ isOpen, onClose, onAddStill }) {

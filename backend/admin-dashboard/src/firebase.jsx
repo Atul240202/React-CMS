@@ -143,6 +143,19 @@ export const confirmReset = async (code, newPassword) => {
     throw error;
   }
 };
+
+// Utility function to delete media from uploads folder of storage
+const deleteFromUploads = async (path) => {
+  try {
+    console.log('delete from uploads', `uploads/${path}`);
+    const uploadsRef = ref(storage, `uploads/${path}`);
+    await deleteObject(uploadsRef);
+    console.log(`Deleted from uploads: ${path}`);
+  } catch (error) {
+    console.warn(`File not found in uploads or already deleted: ${path}`);
+  }
+};
+
 // Utility function to upload a client
 export async function uploadClient(name, clientKey, file, fileType) {
   try {
@@ -580,19 +593,51 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
       newStillData.image = mainImageUrl;
     }
 
+    // if (gridFiles && gridFiles.length > 0) {
+    //   const gridImagesPromises = gridFiles.map((file, index) =>
+    //     uploadImage(
+    //       file,
+    //       `stills/${clientId}/internalimages/grid_${Date.now()}_${index}`
+    //     )
+    //   );
+
+    //   const gridImageUrls = await Promise.all(gridImagesPromises);
+
+    //   const internalImages = gridImageUrls.reduce((acc, url, index) => {
+    //     acc[`item${index + 1}`] = url;
+    //     return acc;
+    //   }, {});
+
+    //   newStillData.internalImages = internalImages;
+    // }
     if (gridFiles && gridFiles.length > 0) {
-      const internalImages = {};
-      for (let i = 0; i < gridFiles.length; i++) {
-        const gridImageUrl = await uploadImage(
-          gridFiles[i],
-          `stills/${clientId}/grid_${Date.now()}_${i}`
-        );
-        internalImages[`item${i + 1}`] = gridImageUrl;
-      }
+      const internalImages = await Promise.all(
+        gridFiles.map(async (file, index) => {
+          const url = await uploadImage(
+            file,
+            `stills/${clientId}/grid_${Date.now()}_${index}`
+          );
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          return {
+            id: `${Date.now()}-${index}`,
+            url,
+            ratio: img.width / img.height,
+            order: index,
+          };
+        })
+      );
+
       newStillData.internalImages = internalImages;
     }
 
     const stillId = Date.now().toString();
+
+    // Add the stillId to newStillData as the id field
+    newStillData.id = stillId;
 
     // Get the current highest sequence number
     const stills = await getStills();
@@ -613,6 +658,7 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
     }
     newStillData.visibleFields = visibleFields;
 
+    // Save the still to the client's document
     await updateDoc(clientRef, {
       [`stills.${stillId}`]: {
         ...newStillData,
