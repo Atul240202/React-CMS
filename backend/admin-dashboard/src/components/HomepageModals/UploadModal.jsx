@@ -401,7 +401,7 @@ const UploadModal = ({
             <div className='space-x-2'>
               <button
                 onClick={onClose}
-                className='px-4 py-2 rounded bg-gray-800 hover:bg-gray-700'
+                className='px-4 py-2 bg-gray-800 hover:bg-gray-700'
                 disabled={isUploading}
               >
                 Cancel
@@ -418,7 +418,7 @@ const UploadModal = ({
               {!requireCrop && (
                 <button
                   onClick={() => handleUpload(files)}
-                  className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700'
+                  className='px-4 py-2 bg-blue-600 hover:bg-blue-700'
                   disabled={files.length === 0 || isUploading}
                 >
                   {isUploading ? 'Uploading...' : 'Upload'}

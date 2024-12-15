@@ -90,7 +90,7 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
             <DatePicker
               selected={formData.date}
               onChange={handleDateChange}
-              className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black text-black'
+              className='w-full py-3 pl-1 mb-4 bg-white border-2 border-black text-black'
               placeholderText='SELECT DATE'
               required
             />
