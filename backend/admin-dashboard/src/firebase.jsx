@@ -593,15 +593,44 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
       newStillData.image = mainImageUrl;
     }
 
+    // if (gridFiles && gridFiles.length > 0) {
+    //   const gridImagesPromises = gridFiles.map((file, index) =>
+    //     uploadImage(
+    //       file,
+    //       `stills/${clientId}/internalimages/grid_${Date.now()}_${index}`
+    //     )
+    //   );
+
+    //   const gridImageUrls = await Promise.all(gridImagesPromises);
+
+    //   const internalImages = gridImageUrls.reduce((acc, url, index) => {
+    //     acc[`item${index + 1}`] = url;
+    //     return acc;
+    //   }, {});
+
+    //   newStillData.internalImages = internalImages;
+    // }
     if (gridFiles && gridFiles.length > 0) {
-      const internalImages = {};
-      for (let i = 0; i < gridFiles.length; i++) {
-        const gridImageUrl = await uploadImage(
-          gridFiles[i],
-          `stills/${clientId}/grid_${Date.now()}_${i}`
-        );
-        internalImages[`item${i + 1}`] = gridImageUrl;
-      }
+      const internalImages = await Promise.all(
+        gridFiles.map(async (file, index) => {
+          const url = await uploadImage(
+            file,
+            `stills/${clientId}/grid_${Date.now()}_${index}`
+          );
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          return {
+            id: `${Date.now()}-${index}`,
+            url,
+            ratio: img.width / img.height,
+            order: index,
+          };
+        })
+      );
+
       newStillData.internalImages = internalImages;
     }
 
