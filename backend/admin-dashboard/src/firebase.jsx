@@ -143,6 +143,19 @@ export const confirmReset = async (code, newPassword) => {
     throw error;
   }
 };
+
+// Utility function to delete media from uploads folder of storage
+const deleteFromUploads = async (path) => {
+  try {
+    console.log('delete from uploads', `uploads/${path}`);
+    const uploadsRef = ref(storage, `uploads/${path}`);
+    await deleteObject(uploadsRef);
+    console.log(`Deleted from uploads: ${path}`);
+  } catch (error) {
+    console.warn(`File not found in uploads or already deleted: ${path}`);
+  }
+};
+
 // Utility function to upload a client
 export async function uploadClient(name, clientKey, file, fileType) {
   try {
@@ -594,6 +607,9 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
 
     const stillId = Date.now().toString();
 
+    // Add the stillId to newStillData as the id field
+    newStillData.id = stillId;
+
     // Get the current highest sequence number
     const stills = await getStills();
     const maxSequence = stills.reduce(
@@ -613,6 +629,7 @@ export async function addStill(clientId, stillData, mainFile, gridFiles) {
     }
     newStillData.visibleFields = visibleFields;
 
+    // Save the still to the client's document
     await updateDoc(clientRef, {
       [`stills.${stillId}`]: {
         ...newStillData,

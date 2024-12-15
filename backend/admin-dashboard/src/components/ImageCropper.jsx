@@ -89,7 +89,6 @@ function ImageCropper({ image, onComplete, onCancel }) {
               ref={imgRef}
               src={image.url}
               alt='Crop preview'
-              crossOrigin='anonymous'
               className='max-w-full max-h-[60vh] object-contain'
             />
           </ReactCrop>

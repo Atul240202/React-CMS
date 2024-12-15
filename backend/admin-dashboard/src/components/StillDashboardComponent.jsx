@@ -441,7 +441,7 @@ const StillDashboardComponent = () => {
                     <span className='font-extrabold text-lg'>TITLE</span>
                     <div>
                       <button
-                        onClick={() => setEditingField('teaxt')}
+                        onClick={() => setEditingField('text')}
                         className='mr-2'
                       >
                         <Pencil className='h-4 w-4' />
