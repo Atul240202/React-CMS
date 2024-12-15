@@ -40,10 +40,9 @@ const UploadModal = ({
   const loadFFmpeg = async () => {
     try {
       await ffmpeg.load();
-      console.log('FFmpeg loaded successfully');
       setFfmpegLoaded(true);
     } catch (error) {
-      console.error('Failed to load FFmpeg:', error);
+      console.warn('Failed to load FFmpeg:', error);
       setFfmpegLoaded(false);
     }
   };
@@ -105,7 +104,6 @@ const UploadModal = ({
       new Compressor(file, {
         ...options,
         success(result) {
-          console.log('Compression result:', result);
           resolve(result);
         },
         error(err) {
@@ -117,7 +115,6 @@ const UploadModal = ({
   };
 
   const compressVideo = async (file) => {
-    console.log('Attempting to compress video. FFmpeg loaded:', ffmpegLoaded);
     if (!ffmpegLoaded) {
       console.warn('FFmpeg not loaded, skipping video compression');
       return file;
@@ -152,8 +149,6 @@ const UploadModal = ({
 
     ffmpeg.FS('unlink', inputName);
     ffmpeg.FS('unlink', outputName);
-
-    console.log('video file before compression', compressedFile);
 
     return compressedFile;
   };
@@ -198,7 +193,6 @@ const UploadModal = ({
             maxHeight,
             convertSize: 3 * MB,
             success(finalResult) {
-              console.log('Final compression result:', finalResult);
               resolve(finalResult);
             },
             error(err) {
@@ -224,7 +218,6 @@ const UploadModal = ({
     }
 
     setIsUploading(true);
-    console.log('Files to upload:', filesToUpload);
     try {
       const uploadPromises = filesToUpload.map(async (file) => {
         let fileToUpload = file;
@@ -372,11 +365,16 @@ const UploadModal = ({
             <div className='mt-4'>
               <p className='text-gray-300'>Selected files:</p>
               <ul className='list-disc list-inside'>
-                {files.map((file, index) => (
+                {files.slice(0, 4).map((file, index) => (
                   <li key={index} className='text-gray-300'>
                     {file.name}
                   </li>
                 ))}
+                {files.length > 4 && (
+                  <div className='text-gray-300'>
+                    +{files.length - 4} more files...
+                  </div>
+                )}
               </ul>
             </div>
           )}
@@ -403,15 +401,24 @@ const UploadModal = ({
             <div className='space-x-2'>
               <button
                 onClick={onClose}
-                className='px-4 py-2 rounded bg-gray-800 hover:bg-gray-700'
+                className='px-4 py-2 bg-gray-800 hover:bg-gray-700'
                 disabled={isUploading}
               >
                 Cancel
               </button>
-              {!requireCrop && !isClientDashboard && (
+              {/* {!requireCrop && !isClientDashboard && (
                 <button
                   onClick={() => handleUpload(files)}
                   className='px-4 py-2 rounded bg-blue-600 hover:bg-blue-700'
+                  disabled={files.length === 0 || isUploading}
+                >
+                  {isUploading ? 'Uploading...' : 'Upload'}
+                </button>
+              )} */}
+              {!requireCrop && (
+                <button
+                  onClick={() => handleUpload(files)}
+                  className='px-4 py-2 bg-blue-600 hover:bg-blue-700'
                   disabled={files.length === 0 || isUploading}
                 >
                   {isUploading ? 'Uploading...' : 'Upload'}

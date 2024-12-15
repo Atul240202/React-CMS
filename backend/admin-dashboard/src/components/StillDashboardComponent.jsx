@@ -120,10 +120,8 @@ const StillDashboardComponent = () => {
             updatedStillData
           );
         } else if (uploadType === 'grid') {
-          console.log('handle upload still dashboard files', files);
           const newImages = await Promise.all(
             files.map(async (file, index) => {
-              console.log('handle upload still dashboard', file);
               const img = new Image();
               img.src = URL.createObjectURL(file);
               await new Promise((resolve) => {
@@ -216,7 +214,6 @@ const StillDashboardComponent = () => {
   };
 
   const handleGridCrop = (id, croppedImage) => {
-    console.log('handleGrid cropped image', croppedImage);
     setCroppingImage({ id, image: croppedImage });
   };
 
@@ -233,7 +230,6 @@ const StillDashboardComponent = () => {
         const storageRef = ref(storage, `stills/${id}/grid_${Date.now()}`);
         await uploadBytes(storageRef, croppedFile);
         const url = await getDownloadURL(storageRef);
-        console.log('cropped image url', url);
         setSelectedStill((prev) => ({
           ...prev,
           internalImages: prev.internalImages.map((img) =>
@@ -580,7 +576,7 @@ const StillDashboardComponent = () => {
                       className='h-4 w-4 cursor-pointer'
                       onClick={() => setEditingField(`credits.${key}`)}
                     />
-                    {key !== 'PRODUCT TITLE' && (
+                    {key !== 'CAMPAIGN TITLE' && (
                       <button
                         onClick={() => toggleFieldVisibility(`credits.${key}`)}
                       >

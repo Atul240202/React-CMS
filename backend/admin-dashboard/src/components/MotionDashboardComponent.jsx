@@ -101,9 +101,6 @@ const MotionDashboardComponent = () => {
 
   const handleUpload = async (files, urls) => {
     if (selectedMotion && files.length > 0) {
-      console.log('uploading motion data', selectedMotion);
-      console.log('uploading motion urls', urls[0].type, urls[0].name);
-      console.log('uploading motion files', files);
       try {
         const updatedMotion = await updateMotion(
           selectedMotion.clientId,
@@ -111,7 +108,6 @@ const MotionDashboardComponent = () => {
           urls[0],
           files[0]
         );
-        console.log('uploading motion', updatedMotion);
         setMotions(
           motions.map((m) => (m.id === updatedMotion.id ? updatedMotion : m))
         );
@@ -425,7 +421,7 @@ const MotionDashboardComponent = () => {
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex items-center flex-row'>
                     <span className='text-xl font-extrabold'>
-                      Product Title:
+                      CAMPAIGN Title:
                     </span>
                     <div className='flex items-center ml-3 space-x-2'>
                       {editingField === 'productTitle' ? (

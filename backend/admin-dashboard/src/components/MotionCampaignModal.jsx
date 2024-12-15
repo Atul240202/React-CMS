@@ -346,7 +346,7 @@ const MotionCampaignModal = ({ isOpen, onClose, onAddMotion, clients }) => {
                 <div className='flex items-center justify-between border border-white p-3 rounded'>
                   <div className='flex flex-row'>
                     <span className='font-extrabold text-xl'>
-                      PRODUCT TITLE:
+                      CAMPAIGN TITLE:
                     </span>
                     {editingField === 'productTitle' ? (
                       <input

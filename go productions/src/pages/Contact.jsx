@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TransitionEffect from '../components/TransitionEffect';
 
 function LocationSection() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -14,16 +15,18 @@ function LocationSection() {
   }, []);
   return (
     <div
-      className={`relative w-[90%]  m-auto  bg-black ${
-        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[70vh] mt-[15vh]'
+      className={`relative w-[90%] m-auto bg-black ${
+        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[90vh] mt-[5vh]'
       }`}
     >
       {/* Map Container */}
-      <div className='absolute justify-center inset-0 h-[60vh] opacity-50'>
+      <div
+        className='absolute inset-0 mt-[15vh] z-10 justify-center items-center' // Ensure this has higher z-index
+      >
         <iframe
           title='Go Productions Location'
           src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
-          className='w-full h-full border-0'
+          className='w-full h-[50vh] border-0'
           allowFullScreen=''
           loading='lazy'
           referrerPolicy='no-referrer-when-downgrade'
@@ -31,46 +34,47 @@ function LocationSection() {
       </div>
 
       {/* Text Overlay */}
-      {/* <div
-        className={`relative  ${
-          isMobile
-            ? 'hidden h-[40vh]'
-            : 'h-[60vh] z-1  flex flex-col justify-between items-center'
+      <div
+        className={`absolute inset-0 flex flex-col justify-between items-center ${
+          isMobile ? 'h-[40vh]' : 'h-[85vh]'
         }`}
       >
         <h1
           style={{
-            color: 'white',
-            fontSize: '7rem', // Equivalent to 'text-7xl'
+            color: 'transparent', // Set the fill color to transparent
+            WebkitTextStroke: '2px white', // Outline with white color
+            fontSize: isMobile ? '4rem' : '7rem', // Responsive font size
             fontWeight: 'bold',
-            letterSpacing: '0.05em', // Approximation for tracking-wider
-            marginTop: '-13vh', // Equivalent to 'mt-[-6vh]'
-            fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
+            letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
+          className='font-chesna my-0'
         >
           LOCATION
         </h1>
         <h2
           style={{
-            color: 'white',
-            fontSize: '7rem', // Equivalent to 'text-7xl'
+            color: 'transparent', // Set the fill color to transparent
+            WebkitTextStroke: '2px white', // Outline with white color
+            fontSize: isMobile ? '3.5rem' : '6.5rem', // Responsive font size
             fontWeight: 'bold',
-            letterSpacing: '0.05em', // Approximation for tracking-wider
-            marginTop: '20vh', // Equivalent to 'mt-[20vh]'
-            fontFamily: '"Londrina Outline", sans-serif', // Inline font-family
+            letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
+          className='font-chesna my-0'
         >
           GO PRODUCTION
         </h2>
-      </div> */}
+      </div>
     </div>
   );
 }
+
 function Contact() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [statusMessage, setStatusMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -78,7 +82,24 @@ function Contact() {
     number: '',
   });
 
-  const [statusMessage, setStatusMessage] = useState('');
+  // Simulate loading progress for the transition
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setLoading(false); // Transition completes when progress reaches 100%
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 200); // Progress increment interval
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -97,21 +118,23 @@ function Contact() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/send-whatsapp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        credentials: 'include', // Include this if your server is configured to accept credentials
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/send-whatsapp`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
-        setStatusMessage('Message sent to WhatsApp!');
-        setFormData({ name: '', email: '', content: '', number: '' }); // Clear form after successful submission
+        setStatusMessage('Message sent successfully!');
+        setFormData({ name: '', email: '', content: '', number: '' });
       } else {
-        setStatusMessage('Failed to send the message.');
+        setStatusMessage('Failed to send the message. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -119,104 +142,121 @@ function Contact() {
     }
   };
 
+  const handleTransitionComplete = () => {
+    console.log('Transition complete! Content is now visible.');
+  };
+
   return (
-    <div style={styles.container} className='font-chesna'>
-      <h1 style={styles.title} className='font-chesna'>
-        CONTACT US
-      </h1>
-      <hr style={styles.styleLine} />
+    <>
+      <TransitionEffect
+        isLoading={loading}
+        progress={progress}
+        pageName='Contact'
+        onTransitionComplete={handleTransitionComplete}
+      />
+      {!loading && (
+        <div style={styles.container} className='font-chesna'>
+          <h1 style={styles.title} className='font-chesna'>
+            CONTACT US
+          </h1>
+          <hr style={styles.styleLine} />
 
-      <h2
-        style={styles.subtitle}
-        className={`${
-          isMobile ? 'text-md' : 'text-[1.5rem] font-extrabold font-chesna'
-        }`}
-      >
-        LETS CREATE MAGIC TOGETHER
-      </h2>
-      <form style={styles.form} onSubmit={handleSubmit}>
-        <input
-          type='text'
-          name='name'
-          value={formData.name}
-          onChange={handleInputChange}
-          placeholder='WRITE YOUR NAME HERE,'
-          style={styles.input}
-          required
-        />
-        <input
-          type='email'
-          name='email'
-          value={formData.email}
-          onChange={handleInputChange}
-          placeholder='WRITE YOUR EMAIL ID HERE,'
-          style={styles.input}
-          required
-        />
-        <input
-          type='tel'
-          name='number'
-          value={formData.number}
-          onChange={handleInputChange}
-          placeholder='ENTER YOUR MOBILE NO.'
-          style={styles.input}
-          required
-        />
-        <textarea
-          name='content'
-          value={formData.content}
-          onChange={handleInputChange}
-          placeholder='WRITE YOUR CONTENT HERE,'
-          style={styles.textarea}
-          required
-        ></textarea>
-        <button type='submit' style={styles.button} className='rounded-[0]'>
-          SEND
-        </button>
-      </form>
-      {statusMessage && <p style={styles.status}>{statusMessage}</p>}
+          <h2
+            style={styles.subtitle}
+            className={`${
+              isMobile ? 'text-md' : 'text-[1.5rem] font-extrabold font-chesna'
+            }`}
+          >
+            LETS CREATE MAGIC TOGETHER
+          </h2>
+          <form style={styles.form} onSubmit={handleSubmit}>
+            <input
+              type='text'
+              name='name'
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder='WRITE YOUR NAME HERE,'
+              style={styles.input}
+              required
+            />
+            <input
+              type='email'
+              name='email'
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder='WRITE YOUR EMAIL ID HERE,'
+              style={styles.input}
+              required
+            />
+            <input
+              type='tel'
+              name='number'
+              value={formData.number}
+              onChange={handleInputChange}
+              placeholder='ENTER YOUR MOBILE NO.'
+              style={styles.input}
+              required
+            />
+            <textarea
+              name='content'
+              value={formData.content}
+              onChange={handleInputChange}
+              placeholder='WRITE YOUR CONTENT HERE,'
+              style={styles.textarea}
+              required
+            ></textarea>
+            <button type='submit' style={styles.button} className='rounded-[0]'>
+              SEND
+            </button>
+          </form>
+          {statusMessage && <p style={styles.status}>{statusMessage}</p>}
 
-      {/* New section for Address and Map */}
-      <div style={styles.infoSection}>
-        <div style={styles.contactDetails}>
-          <h3 style={{ fontSize: '1.5rem' }}>ADDRESS</h3>
-          <hr style={styles.styleLine1} />
-          <p>
-            KH NO. 621 SILVER OAK FARMS, ZERO NUMBER RD, GHITORNI, NEW DELHI,
-            DELHI - 110030
-          </p>
-          <hr style={styles.styleLine2} />
-          <div style={styles.contactBox}>
-            <h3
-              style={{ margin: '0', fontSize: '1.5rem' }}
-              className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
-            >
-              PHONE NUMBER
-            </h3>
-            <p style={{ margin: '0', fontSize: '1.5rem' }}>
-              <a style={{ color: 'white' }} href='tel:+918130405967'>
-                +91 8130405967
-              </a>
-            </p>
-          </div>
-          <hr style={styles.styleLine2} />
-          <div style={styles.contactBox}>
-            <h3
-              style={{ margin: '0' }}
-              className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
-            >
-              SEND MAIL
-            </h3>
-            <p style={{ margin: '0' }}>
-              <a style={{ color: 'white' }} href='mailto:help@gostudio.in'>
-                help@gostudio.in
-              </a>
-            </p>
+          {/* New section for Address and Map */}
+          <div style={styles.infoSection}>
+            <div style={styles.contactDetails}>
+              <h3 style={{ fontSize: '1.5rem' }}>ADDRESS</h3>
+              <hr style={styles.styleLine1} />
+              <p className='font-sans font-extrabold'>
+                KH NO. 621 SILVER OAK FARMS, ZERO NUMBER RD, GHITORNI, NEW
+                DELHI, DELHI - 110030
+              </p>
+              <hr style={styles.styleLine2} />
+              <div style={styles.contactBox}>
+                <h3
+                  style={{ margin: '0', fontSize: '1.5rem' }}
+                  className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
+                >
+                  PHONE NUMBER
+                </h3>
+                <p
+                  style={{ margin: '0', fontSize: '1.5rem' }}
+                  className='font-sans font-extrabold'
+                >
+                  <a style={{ color: 'white' }} href='tel:+918130405967'>
+                    +91 8130405967
+                  </a>
+                </p>
+              </div>
+              <hr style={styles.styleLine2} />
+              <div style={styles.contactBox}>
+                <h3
+                  style={{ margin: '0' }}
+                  className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
+                >
+                  SEND MAIL
+                </h3>
+                <p style={{ margin: '0' }} className='font-sans font-extrabold'>
+                  <a style={{ color: 'white' }} href='mailto:help@gostudio.in'>
+                    help@gostudio.in
+                  </a>
+                </p>
+              </div>
+            </div>
+            <LocationSection />
           </div>
         </div>
-        <LocationSection />
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

@@ -187,7 +187,7 @@ export default function MotionUploadModal({
 
           <div>
             <label className='block text-sm font-medium text-gray-400 mb-1'>
-              Select Product Title
+              Select Campaign Title
             </label>
             <select
               value={selectedProductTitle}
@@ -195,7 +195,7 @@ export default function MotionUploadModal({
               className='w-full bg-zinc-800 text-white rounded p-2'
               disabled={!selectedClient}
             >
-              <option value=''>Select a product title</option>
+              <option value=''>Select a proCampaignduct title</option>
               {productTitles.map((title, index) => (
                 <option key={index} value={title}>
                   {title}

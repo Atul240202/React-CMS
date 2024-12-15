@@ -34,7 +34,6 @@ export default function Motions() {
 
         clientSnapshot.forEach((doc) => {
           const clientData = doc.data();
-          console.log('motion client data', clientData.name);
           if (clientData.motions) {
             const clientMotions = Array.isArray(clientData.motions)
               ? clientData.motions
@@ -102,7 +101,7 @@ export default function Motions() {
       {showContent && (
         <>
           <MotionSlider />
-          <div className='flex flex-row justify-evenly space-x-4 my-4'>
+          <div className='flex flex-row justify-evenly space-x-4 my-4 font-chesna'>
             {filterOptions.map((option) => (
               <button
                 key={option}

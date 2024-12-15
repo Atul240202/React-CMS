@@ -136,7 +136,7 @@ export default function StillUploadModal({
 
         <div className='mb-4'>
           <label className='block text-gray-400 mb-2'>
-            Select Product Title
+            Select Campaign Title
           </label>
           <select
             className='w-full p-2 rounded bg-zinc-800 text-white'

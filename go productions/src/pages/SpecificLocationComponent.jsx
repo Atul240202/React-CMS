@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ImagePopupComponent from '../components/ImagePopupComponent';
+import PopupForm from '../components/PopupForm';
 import { db } from '../Firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import TransitionEffect from '../components/TransitionEffect';
@@ -15,6 +16,7 @@ export default function SpecificLocationComponent() {
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
   const [imageLayout, setImageLayout] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -29,15 +31,10 @@ export default function SpecificLocationComponent() {
 
           // Prepare layout for images
           const layout = [
-            {
-              src: locationData.image,
-              gridColumn: 'span 2',
-              gridRow: 'span 2', // Assuming main image takes larger space
-            },
             ...(locationData.internalImages || []).map((img) => ({
               src: img.url,
               gridColumn: img.ratio > 1 ? 'span 2' : 'span 1',
-              gridRow: img.ratio > 1 ? 'span 1' : 'span 2',
+              gridRow: img.ratio < 1 ? 'span 1' : 'span 2',
             })),
           ];
 
@@ -57,6 +54,7 @@ export default function SpecificLocationComponent() {
     fetchLocation();
     window.scrollTo(0, 0);
   }, [locationKey]);
+
   const handleTransitionComplete = () => {
     setShowContent(true);
   };
@@ -68,6 +66,40 @@ export default function SpecificLocationComponent() {
 
   const closePopup = () => {
     setIsPopupOpen(false);
+  };
+
+  const openForm = () => {
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleFormSubmit = async (formData) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/send-whatsapp-location`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        // alert('Request sent successfully!');
+        closeForm();
+      } else {
+        // alert('Failed to send the request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // alert('An error occurred while sending the request.');
+    }
   };
 
   return (
@@ -99,10 +131,8 @@ export default function SpecificLocationComponent() {
             </div>
             <div className='mt-3'>
               <button
-                className='bg-white/10 border-2 rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
-                onClick={() =>
-                  console.log('Request availability for', location.name)
-                }
+                className='bg-white/10 border-2 uppercase font-chesna text-xl rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
+                onClick={openForm}
               >
                 Request availability
               </button>
@@ -135,6 +165,15 @@ export default function SpecificLocationComponent() {
               images={imageLayout.map((img) => img.src)}
               initialIndex={popupIndex}
               onClose={closePopup}
+            />
+          )}
+
+          {isFormOpen && (
+            <PopupForm
+              onClose={closeForm}
+              onSubmit={handleFormSubmit}
+              locationName={location.text}
+              locationAddress={location.address}
             />
           )}
         </div>

@@ -205,7 +205,9 @@ export default function Locations() {
                   <motion.h2
                     variants={textVariants}
                     className={`text-white font-chesna ${
-                      isMobile ? 'text-xl md:text-2xl' : 'text-4xl leading-3'
+                      isMobile
+                        ? 'text-xl md:text-2xl'
+                        : 'text-3xl text-center ml-1'
                     }`}
                   >
                     {item.address}
