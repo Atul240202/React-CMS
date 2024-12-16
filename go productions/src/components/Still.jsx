@@ -11,7 +11,6 @@ const Still = () => {
       try {
         const homeStillsQuery = query(
           collection(db, 'homeStills'),
-          where('isVisible', '==', true),
           orderBy('rowOrder', 'asc')
         );
         const querySnapshot = await getDocs(homeStillsQuery);
@@ -19,6 +18,7 @@ const Still = () => {
         querySnapshot.forEach((doc) => {
           stills.push(doc.data());
         });
+        console.log('stills data', stills);
         setStillImages(stills);
       } catch (error) {
         console.error('Error fetching home stills:', error);
