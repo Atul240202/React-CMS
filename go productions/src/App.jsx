@@ -1,7 +1,8 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import './App.css';
+import PreLoader from './components/PreLoader/PreLoader';
 
 // Lazy load components
 const Home = lazy(() => import('./pages/Home'));
@@ -24,22 +25,31 @@ const SpecificLocationsComponent = lazy(() =>
 );
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleSliderLoad = () => {
+    setIsLoading(false);
+    console.log('App jsx preloader', isLoading);
+  };
   return (
     <BrowserRouter>
-      <AppContent />
+      {isLoading && <PreLoader />}
+      <div style={{ visibility: isLoading ? 'hidden' : 'visible' }}>
+        <AppContent onSliderLoad={handleSliderLoad} />
+      </div>
     </BrowserRouter>
   );
 }
 
-function AppContent() {
+function AppContent({ onSliderLoad }) {
   const location = useLocation();
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div></div>}>
         <Routes location={location}>
           <Route element={<Layout />}>
-            <Route path='/' element={<Home />} />
+            <Route path='/' element={<Home onSliderLoad={onSliderLoad} />} />
             <Route path='/motions' element={<Motions />} />
             {/* <Route
               path='/motions/:text'

@@ -7,10 +7,10 @@ import ClientLogo from '../components/ClientLogo';
 import ShootLocation from '../components/ShootLocation';
 import ContactUs from '../components/ContactUs';
 
-function Home() {
+function Home({ onSliderLoad }) {
   return (
     <div className='App'>
-      <Slider />
+      <Slider onSliderLoad={onSliderLoad} />
       <Still />
       <Motion />
       <ClientLogo />
