@@ -6,6 +6,14 @@
 }
 
 @font-face {
+  font-family: 'Chesna ExtraBold';
+  src: url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
+    format('woff');
+  font-weight: 1000;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Chesna Bold';
   src: url('../public/fonts/Fontspring-DEMO-chesnagrotesk-black.otf')
     format('woff');

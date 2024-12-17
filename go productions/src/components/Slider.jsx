@@ -1,16 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Slider.css';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../Firebase';
 
-const Slider = () => {
+const Slider = ({ onSliderLoad }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [newIndex, setNewIndex] = useState(null);
   const [animationDirection, setAnimationDirection] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
   const [heroBanners, setHeroBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadedCount, setLoadedCount] = useState(0); // Track image loading progress
+
   const [error, setError] = useState(null);
+
+  const handleImageLoad = useCallback(() => {
+    setLoadedCount((prevCount) => {
+      const newCount = prevCount + 1;
+      console.log('Image loaded. New loadedCount:', newCount);
+      return newCount;
+    });
+  }, []);
 
   useEffect(() => {
     const fetchHeroBanners = async () => {
@@ -22,6 +32,7 @@ const Slider = () => {
         querySnapshot.forEach((doc) => {
           fetchedBanners.push({ id: doc.id, ...doc.data() });
         });
+        console.log('Fetched banner', fetchedBanners);
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
         // onLoad();
@@ -72,6 +83,15 @@ const Slider = () => {
     }
   };
 
+  useEffect(() => {
+    console.log('Current loadedCount:', loadedCount);
+    console.log('HeroBanners length:', heroBanners.length);
+    if (heroBanners.length > 0 && loadedCount === 1) {
+      console.log('All images loaded. Calling onSliderLoad.');
+      onSliderLoad();
+    }
+  }, [loadedCount, heroBanners.length, onSliderLoad]);
+
   if (error) {
     return <div className='error'>{error}</div>;
   }
@@ -88,6 +108,7 @@ const Slider = () => {
           alt={`Slide ${currentIndex}`}
           className='image'
           loading='lazy'
+          onLoad={handleImageLoad}
         />
       </div>
       {newIndex !== null && (
@@ -97,6 +118,7 @@ const Slider = () => {
             alt={`Slide ${newIndex}`}
             className='image'
             loading='lazy'
+            onLoad={handleImageLoad}
           />
         </div>
       )}

@@ -4,8 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        chesna: ['"Chesna Bold"', 'sans-serif'], // Add your custom font
+        chesna: ['"Chesna Bold"', 'sans-serif'],
         chesnal: ['"Chesna Light"', 'sans-serif'],
+        chesnaextra: ['"Chesna ExtraBold"', 'sans-serif'],
       },
     },
   },
