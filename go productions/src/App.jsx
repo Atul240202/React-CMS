@@ -26,14 +26,19 @@ const SpecificLocationsComponent = lazy(() =>
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
   const handleSliderLoad = () => {
-    setIsLoading(false);
-    console.log('App jsx preloader', isLoading);
+    setIsExiting(true);
+
+    setTimeout(() => {
+      setIsLoading(false); // Hide the PreLoader after the animation
+      console.log('App jsx preloader', isLoading);
+    }, 2000);
   };
   return (
     <BrowserRouter>
-      {isLoading && <PreLoader />}
+      {isLoading && <PreLoader isExiting={isExiting} />}
       <div style={{ visibility: isLoading ? 'hidden' : 'visible' }}>
         <AppContent onSliderLoad={handleSliderLoad} />
       </div>
