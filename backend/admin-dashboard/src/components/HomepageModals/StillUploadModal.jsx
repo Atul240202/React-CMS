@@ -20,6 +20,7 @@ export default function StillUploadModal({
   const [selectedClient, setSelectedClient] = useState('');
   const [productTitles, setProductTitles] = useState([]);
   const [selectedProductTitle, setSelectedProductTitle] = useState('');
+  const [selectedStillId, setSelectedStillId] = useState('');
   const [internalImages, setInternalImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState('');
 

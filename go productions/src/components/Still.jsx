@@ -93,27 +93,31 @@ const Still = () => {
                 key={still.clientId}
                 className={`image-container ${isLarge ? 'large' : 'small'}`}
               >
-                <img
-                  src={still.image}
-                  alt={still.productTitle}
-                  className='main-image'
-                  loading='lazy'
-                />
-                <div className='overlay'>
+                <a href={still.urlForSpecificStillPage}>
                   <img
-                    src={still.logo}
-                    alt={`${still.clientName} Logo`}
-                    className={`logo ${isLarge ? 'top-center' : 'left-center'}`}
+                    src={still.image}
+                    alt={still.productTitle}
+                    className='main-image'
                     loading='lazy'
                   />
-                  <p
-                    className={`hover-text ${
-                      isLarge ? 'bottom-center' : 'right-center'
-                    }`}
-                  >
-                    {still.productTitle}
-                  </p>
-                </div>
+                  <div className='overlay'>
+                    <img
+                      src={still.logo}
+                      alt={`${still.clientName} Logo`}
+                      className={`logo ${
+                        isLarge ? 'top-center' : 'left-center'
+                      }`}
+                      loading='lazy'
+                    />
+                    <p
+                      className={`hover-text ${
+                        isLarge ? 'bottom-center' : 'right-center'
+                      }`}
+                    >
+                      {still.productTitle}
+                    </p>
+                  </div>
+                </a>
               </div>
             );
           })}

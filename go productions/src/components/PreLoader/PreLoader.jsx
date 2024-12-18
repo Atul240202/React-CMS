@@ -13,12 +13,13 @@ function PreLoader({ isExiting }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
 
   const exitTransitionDelay = isExiting ? 0 : 1; // Make delay 0 when exiting
+  const textExitTransitionDelay = isExiting ? 0 : 2;
 
   return (
     <AnimatePresence>
@@ -61,8 +62,8 @@ function PreLoader({ isExiting }) {
             }}
             initial={{ x: '-80%', opacity: 0 }}
             animate={{ x: '-15vw', opacity: 1 }}
-            exit={{ x: '0', opacity: 0 }}
-            transition={{ delay: exitTransitionDelay + 1, duration: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: textExitTransitionDelay, duration: 1 }}
           >
             STILL
           </motion.div>
@@ -76,15 +77,15 @@ function PreLoader({ isExiting }) {
             }}
             initial={{ x: '80%', opacity: 0 }}
             animate={{ x: '20vw', opacity: 1 }}
-            exit={{ x: '0', opacity: 0 }}
-            transition={{ delay: exitTransitionDelay + 1, duration: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: textExitTransitionDelay, duration: 1 }}
           >
             MOTION
           </motion.div>
 
           {/* Rotating image container */}
           <motion.div
-            className='mt-10 overflow-hidden relative border-2 border-white'
+            className='mt-10 overflow-hidden relative border-2 border-white z-89'
             style={{
               transformOrigin: 'center',
               position: 'relative',
@@ -122,7 +123,7 @@ function PreLoader({ isExiting }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 2 }}
               />
             </AnimatePresence>
           </motion.div>

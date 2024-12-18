@@ -25,7 +25,16 @@ const SpecificLocationsComponent = lazy(() =>
 );
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  return (
+    <BrowserRouter>
+      <AppWithRouter />
+    </BrowserRouter>
+  );
+}
+
+function AppWithRouter() {
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(location.pathname === '/');
   const [isExiting, setIsExiting] = useState(false);
 
   const handleSliderLoad = () => {
@@ -33,16 +42,23 @@ function App() {
 
     setTimeout(() => {
       setIsLoading(false); // Hide the PreLoader after the animation
-      console.log('App jsx preloader', isLoading);
-    }, 2000);
+    }, 1500);
   };
+
   return (
-    <BrowserRouter>
-      {isLoading && <PreLoader isExiting={isExiting} />}
-      <div style={{ visibility: isLoading ? 'hidden' : 'visible' }}>
+    <>
+      {isLoading && location.pathname === '/' && (
+        <PreLoader isExiting={isExiting} />
+      )}
+      <div
+        style={{
+          visibility:
+            isLoading && location.pathname === '/' ? 'hidden' : 'visible',
+        }}
+      >
         <AppContent onSliderLoad={handleSliderLoad} />
       </div>
-    </BrowserRouter>
+    </>
   );
 }
 
@@ -50,41 +66,35 @@ function AppContent({ onSliderLoad }) {
   const location = useLocation();
 
   return (
-    <>
-      <Suspense fallback={<div></div>}>
-        <Routes location={location}>
-          <Route element={<Layout />}>
-            <Route path='/' element={<Home onSliderLoad={onSliderLoad} />} />
-            <Route path='/motions' element={<Motions />} />
-            {/* <Route
-              path='/motions/:text'
-              element={<SpecificMotionComponent />}
-            /> */}
-            <Route
-              path='/motions/:clientId/:id'
-              element={<SpecificMotionComponent />}
-            />
-            <Route path='/motions/:id' element={<SpecificMotionComponent />} />
-            <Route path='/stills' element={<Stills />} />
-            <Route
-              path='/stills/:clientId/:stillId'
-              element={<SpecificStillsComponent />}
-            />
-            <Route path='/locations' element={<Locations />} />
-            <Route
-              path='/locations/:locationKey'
-              element={<SpecificLocationsComponent />}
-            />
-            <Route path='/clients' element={<Clients />} />
-            <Route
-              path='/clients/:clientKey'
-              element={<SpecificClientsComponent />}
-            />
-            <Route path='/contact' element={<Contact />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </>
+    <Suspense fallback={<div></div>}>
+      <Routes location={location}>
+        <Route element={<Layout />}>
+          <Route path='/' element={<Home onSliderLoad={onSliderLoad} />} />
+          <Route path='/motions' element={<Motions />} />
+          <Route
+            path='/motions/:clientId/:id'
+            element={<SpecificMotionComponent />}
+          />
+          <Route path='/motions/:id' element={<SpecificMotionComponent />} />
+          <Route path='/stills' element={<Stills />} />
+          <Route
+            path='/stills/:clientId/:stillId'
+            element={<SpecificStillsComponent />}
+          />
+          <Route path='/locations' element={<Locations />} />
+          <Route
+            path='/locations/:locationKey'
+            element={<SpecificLocationsComponent />}
+          />
+          <Route path='/clients' element={<Clients />} />
+          <Route
+            path='/clients/:clientKey'
+            element={<SpecificClientsComponent />}
+          />
+          <Route path='/contact' element={<Contact />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
 

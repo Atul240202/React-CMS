@@ -1423,7 +1423,9 @@ export async function addHomeStill(clientId, productTitle, file, isPortrait) {
         clientId: clientId,
         logo: clientData.image,
         productTitle: productTitle,
-        urlForSpecificStillPage: `/stills/${clientId}/${productTitle}`,
+        // stillId: id,
+        // urlForSpecificStillPage: `/stills/${clientId}/${stillId}`,
+        urlForSpecificStillPage: `/clients/${clientId}`,
       };
 
       const newHomeStillRef = await addDoc(homeStillsRef, newHomeStill);
