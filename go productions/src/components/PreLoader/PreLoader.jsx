@@ -7,58 +7,52 @@ const images = [
   'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2940',
 ];
 
-function PreLoader({ isLoading, onTransitionComplete }) {
+function PreLoader({ isExiting }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isExiting, setIsExiting] = useState(false);
 
-  // Rotate images every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setIsExiting(true);
-    }
-  }, [isLoading]);
+  const exitTransitionDelay = isExiting ? 0 : 1; // Make delay 0 when exiting
 
   return (
-    <AnimatePresence onExitComplete={onTransitionComplete}>
-      {(isLoading || isExiting) && (
+    <AnimatePresence>
+      {!isExiting && (
         <motion.div
           className='fixed inset-0 bg-black z-50 flex flex-col items-center justify-center overflow-hidden'
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, delay: 1 }}
+          transition={{ duration: 1, delay: exitTransitionDelay }}
         >
-          {/* Logo */}
+          {/* Title */}
           <motion.h1
             className='text-6xl leading-[0] text-white font-bold'
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: exitTransitionDelay, duration: 0 }}
           >
             <span className='font-chesnaextra'>GO</span>{' '}
             <span className='font-chesnal'>PRODUCTION</span>
           </motion.h1>
 
-          {/* Subtext */}
+          {/* Subtitle */}
           <motion.h4
             className='mt-0 text-2xl text-white font-chesna'
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: exitTransitionDelay, duration: 0 }}
           >
             BOLD IDEAS, BEAUTIFUL DESIGN
           </motion.h4>
 
-          {/* "Still" Text Animation */}
+          {/* Left floating text */}
           <motion.div
             className='absolute text-white text-5xl font-bold z-40'
             style={{
@@ -67,13 +61,13 @@ function PreLoader({ isLoading, onTransitionComplete }) {
             }}
             initial={{ x: '-80%', opacity: 0 }}
             animate={{ x: '-15vw', opacity: 1 }}
-            exit={{ x: '-80%', opacity: 0 }}
-            transition={{ delay: 1, duration: 1 }}
+            exit={{ x: '0', opacity: 0 }}
+            transition={{ delay: exitTransitionDelay + 1, duration: 1 }}
           >
             STILL
           </motion.div>
 
-          {/* "Motion" Text Animation */}
+          {/* Right floating text */}
           <motion.div
             className='absolute text-white text-5xl font-bold z-40'
             style={{
@@ -82,27 +76,42 @@ function PreLoader({ isLoading, onTransitionComplete }) {
             }}
             initial={{ x: '80%', opacity: 0 }}
             animate={{ x: '20vw', opacity: 1 }}
-            exit={{ x: '80%', opacity: 0 }}
-            transition={{ delay: 1, duration: 1 }}
+            exit={{ x: '0', opacity: 0 }}
+            transition={{ delay: exitTransitionDelay + 1, duration: 1 }}
           >
             MOTION
           </motion.div>
 
-          {/* Rotating Image Frame */}
+          {/* Rotating image container */}
           <motion.div
             className='mt-10 overflow-hidden relative border-2 border-white'
-            initial={{ opacity: 0, scale: 0.5, width: '50vw', height: '50vh' }}
-            animate={{ opacity: 1, scale: 1, width: '50vw', height: '50vh' }}
-            exit={{
+            style={{
+              transformOrigin: 'center',
+              position: 'relative',
+            }}
+            initial={{
               opacity: 0,
+              scale: 0.5,
+              width: '50vw',
+              height: '50vh',
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              width: '50vw',
+              height: '50vh',
+            }}
+            exit={{
+              opacity: 1,
               scale: 2,
               width: '100vw',
               height: '100vh',
-              top: 0,
-              left: 0,
               position: 'fixed',
+              x: '0',
+              y: '0',
+              transformOrigin: 'center',
             }}
-            transition={{ duration: 1.5, ease: 'easeInOut' }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
           >
             <AnimatePresence>
               <motion.img
@@ -113,12 +122,12 @@ function PreLoader({ isLoading, onTransitionComplete }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1 }}
               />
             </AnimatePresence>
           </motion.div>
 
-          {/* Infinity Spinner */}
+          {/* Infinite spinner */}
           <motion.svg
             width='100'
             height='60'
@@ -127,7 +136,7 @@ function PreLoader({ isLoading, onTransitionComplete }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ delay: 1, duration: 1 }}
+            transition={{ delay: exitTransitionDelay, duration: 1 }}
           >
             <motion.path
               d='M20,30 C20,15 35,15 50,30 C65,45 80,45 80,30 C80,15 65,15 50,30 C35,45 20,45 20,30 Z'
