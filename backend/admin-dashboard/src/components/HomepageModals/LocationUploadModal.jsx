@@ -92,7 +92,7 @@ export default function LocationUploadModal({
           linkedLocationId: selectedLocation,
           name: selectedLocationData.text,
           image: locationImage,
-          url: `/location/${selectedLocation}`,
+          url: `/locations/${selectedLocation}`,
         };
         const uploadedLocation = await uploadHomeLocation(newLocation);
         onUpload(uploadedLocation);

@@ -11,10 +11,10 @@ export default function SpecificClientsComponent() {
   const location = useLocation();
   const [isStill, setIsStill] = useState(true);
   const [clientData, setClientData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Keeps track of loading state for TransitionEffect
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(false); // Controls when to show the content
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -24,29 +24,18 @@ export default function SpecificClientsComponent() {
 
         if (clientSnapshot.exists()) {
           const data = clientSnapshot.data();
-          // Convert stills object to array
           const stillsArray = data.stills ? Object.values(data.stills) : [];
           data.stills = stillsArray;
 
-          // Calculate total items to load
+          // Simulate loading progress
           const totalItems =
             stillsArray.length + (data.motions ? data.motions.length : 0);
           let loadedItems = 0;
 
-          // Simulate loading for stills
-          for (const still of stillsArray) {
-            await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate async loading
+          for (const item of [...stillsArray, ...(data.motions || [])]) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
             loadedItems++;
             setProgress((loadedItems / totalItems) * 100);
-          }
-
-          // Simulate loading for motions
-          if (data.motions) {
-            for (const motion of data.motions) {
-              await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate async loading
-              loadedItems++;
-              setProgress((loadedItems / totalItems) * 100);
-            }
           }
 
           setClientData(data);
@@ -57,24 +46,13 @@ export default function SpecificClientsComponent() {
         console.error('Error fetching client data:', err);
         setError('Failed to load client data. Please try again later.');
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 500); // Ensure the transition effect exits smoothly
       }
     };
 
     fetchClientData();
     window.scrollTo(0, 0);
-
-    // Set a timeout to ensure the transition screen disappears after 6 seconds
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      setProgress(100);
-    }, 6000);
-
-    return () => clearTimeout(timeout);
   }, [clientKey]);
-
-  const setStillPage = () => setIsStill(true);
-  const setMotionPage = () => setIsStill(false);
 
   const handleTransitionComplete = () => {
     setShowContent(true);
@@ -88,7 +66,7 @@ export default function SpecificClientsComponent() {
         pageName={location.state?.name || 'Client'}
         onTransitionComplete={handleTransitionComplete}
       />
-      {showContent && (
+      {showContent && !loading && (
         <div style={styles.specClientContainer}>
           <div style={styles.specClientHeader}>
             <h2 style={styles.headerText}>
@@ -104,7 +82,7 @@ export default function SpecificClientsComponent() {
           <div style={styles.specificClientContent}>
             <div style={styles.clientContentSections}>
               <div
-                onClick={setStillPage}
+                onClick={() => setIsStill(true)}
                 style={{
                   ...styles.clientContentSection,
                   ...(isStill ? styles.activeTab : {}),
@@ -113,7 +91,7 @@ export default function SpecificClientsComponent() {
                 STILL
               </div>
               <div
-                onClick={setMotionPage}
+                onClick={() => setIsStill(false)}
                 style={{
                   ...styles.clientContentSection,
                   ...(!isStill ? styles.activeTab : {}),

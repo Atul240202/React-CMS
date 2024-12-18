@@ -10,6 +10,7 @@ import {
   deleteHomeStill,
   addHomeStill,
   updateHomeStillGridSize,
+  updateHomeStill,
 } from '../../firebase';
 import toast from 'react-hot-toast';
 
@@ -24,6 +25,7 @@ export default function StillGridSection() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [selectedProductTitle, setSelectedProductTitle] = useState(null);
+  const [selectedStillId, setSelectedStillId] = useState(null);
   const [isPortrait, setIsPortrait] = useState(true);
   const [editingItemId, setEditingItemId] = useState(null);
   const [hoveredItemId, setHoveredItemId] = useState(null);
@@ -85,6 +87,7 @@ export default function StillGridSection() {
     setSelectedImage(imageUrl);
     setSelectedClientId(clientId);
     setSelectedProductTitle(productTitle);
+
     setIsPortrait(isPortrait);
     setFrameIndex(index);
     setShowUploadModal(false);

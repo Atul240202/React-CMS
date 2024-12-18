@@ -10,17 +10,21 @@ const Slider = ({ onSliderLoad }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [heroBanners, setHeroBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadedCount, setLoadedCount] = useState(0); // Track image loading progress
-
   const [error, setError] = useState(null);
 
-  const handleImageLoad = useCallback(() => {
-    setLoadedCount((prevCount) => {
-      const newCount = prevCount + 1;
-      console.log('Image loaded. New loadedCount:', newCount);
-      return newCount;
-    });
-  }, []);
+  const prefetchImages = async (images) => {
+    const promises = images.map(
+      (image) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = image.imageUrl;
+          img.onload = () => resolve(image);
+          img.onerror = (err) => reject(err);
+        })
+    );
+
+    return Promise.all(promises);
+  };
 
   useEffect(() => {
     const fetchHeroBanners = async () => {
@@ -32,20 +36,20 @@ const Slider = ({ onSliderLoad }) => {
         querySnapshot.forEach((doc) => {
           fetchedBanners.push({ id: doc.id, ...doc.data() });
         });
-        console.log('Fetched banner', fetchedBanners);
+
+        await prefetchImages(fetchedBanners);
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
-        // onLoad();
+        onSliderLoad();
       } catch (err) {
         console.error('Error fetching hero banners:', err);
         setError('Failed to load images. Please try again later.');
         setIsLoading(false);
-        // onLoad();
       }
     };
 
     fetchHeroBanners();
-  }, []);
+  }, [onSliderLoad]);
 
   const goToPrev = () => {
     if (isAnimating || heroBanners.length <= 1) return;
@@ -83,21 +87,12 @@ const Slider = ({ onSliderLoad }) => {
     }
   };
 
-  useEffect(() => {
-    console.log('Current loadedCount:', loadedCount);
-    console.log('HeroBanners length:', heroBanners.length);
-    if (heroBanners.length > 0 && loadedCount === 1) {
-      console.log('All images loaded. Calling onSliderLoad.');
-      onSliderLoad();
-    }
-  }, [loadedCount, heroBanners.length, onSliderLoad]);
-
   if (error) {
     return <div className='error'>{error}</div>;
   }
 
-  if (heroBanners.length === 0) {
-    return <div className='no-images'>No images available</div>;
+  if (isLoading || heroBanners.length === 0) {
+    return <div className='loading'>Loading...</div>;
   }
 
   return (
@@ -108,7 +103,6 @@ const Slider = ({ onSliderLoad }) => {
           alt={`Slide ${currentIndex}`}
           className='image'
           loading='lazy'
-          onLoad={handleImageLoad}
         />
       </div>
       {newIndex !== null && (
@@ -118,7 +112,6 @@ const Slider = ({ onSliderLoad }) => {
             alt={`Slide ${newIndex}`}
             className='image'
             loading='lazy'
-            onLoad={handleImageLoad}
           />
         </div>
       )}
