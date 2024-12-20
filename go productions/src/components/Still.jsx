@@ -103,7 +103,7 @@ const Still = () => {
           <h2 className='font-chesna'>STILL</h2>
           <p>YOUR VISION, OUR EXPERTISE</p>
         </div>
-        <a href='/stills' className='see-more'>
+        <a href='https://react-cms-ygwg.vercel.app/stills' className='see-more'>
           SEE MORE
         </a>
       </div>
