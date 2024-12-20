@@ -51,7 +51,7 @@ function PreLoader({ isExiting }) {
             transition={{ delay: exitTransitionDelay, duration: 0 }}
           >
             <span className='font-chesnaextra'>GO</span>{' '}
-            <span className='font-chesnal'>PRODUCTION</span>
+            <span className='font-chesnal'>PRODUCTIONS</span>
           </motion.h1>
 
           {/* Subtitle */}
