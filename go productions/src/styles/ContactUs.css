@@ -69,3 +69,44 @@
   height: auto;
   object-fit: cover;
 }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .home-contact-header h2 {
+    font-size: 32px; /* Decreased font size for header */
+    text-align: center; /* Center align header text */
+  }
+
+  .contact-us-container {
+    flex-direction: column; /* Stack form and map vertically */
+    align-items: center; /* Center content horizontally */
+  }
+
+  .contact-form {
+    width: 90%; /* Full width on mobile */
+    align-items: center; /* Center form fields */
+  }
+
+  .contact-input,
+  .contact-textarea {
+    width: 100%; /* Full width for input fields */
+    font-size: 18px; /* Smaller font for mobile */
+  }
+
+  .contact-btn {
+    max-width: 50%; /* Full width for button */
+    width: 50%;
+    font-size: 20px; /* Adjust button font size */
+  }
+
+  .map-container {
+    width: 95%; /* Full width for map */
+    margin-top: 20px;
+    height: 30vh;
+  }
+
+  .status-message {
+    font-size: 16px; /* Smaller status message font size */
+    text-align: center;
+  }
+}

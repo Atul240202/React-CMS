@@ -5,7 +5,7 @@ body {
 
 .slider {
   margin-top: 5vh;
-  height: 20vh;
+  /* height: 20vh; */
   overflow: hidden;
   position: relative;
   width: 100%;
