@@ -2,13 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const images = [
-  'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2940',
-  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=2940',
-  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2940',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624904/RT1586_1_-min_m8dqnz.jpg',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/pantaloons5720_mzsih7.jpg',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/240129-08-165B_ozq35j.jpg',
 ];
 
 function PreLoader({ isExiting }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,7 +42,9 @@ function PreLoader({ isExiting }) {
         >
           {/* Title */}
           <motion.h1
-            className='text-6xl leading-[0] text-white font-bold'
+            className={`leading-[0] text-white font-bold ${
+              isMobile ? 'text-3xl' : 'text-6xl'
+            }`}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -44,7 +56,9 @@ function PreLoader({ isExiting }) {
 
           {/* Subtitle */}
           <motion.h4
-            className='mt-0 text-2xl text-white font-chesna'
+            className={`text-white font-chesna ${
+              isMobile ? 'text-sm mt-2' : 'text-2xl mt-0'
+            }`}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -54,41 +68,46 @@ function PreLoader({ isExiting }) {
           </motion.h4>
 
           {/* Left floating text */}
-          <motion.div
-            className='absolute text-white text-5xl font-bold z-40'
-            style={{
-              top: 'calc(50% - 13vh - 2rem)',
-              left: '25vw',
-            }}
-            initial={{ x: '-80%', opacity: 0 }}
-            animate={{ x: '-15vw', opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: textExitTransitionDelay, duration: 1 }}
-          >
-            STILL
-          </motion.div>
+          {!isMobile && (
+            <>
+              <motion.div
+                className='absolute text-white text-5xl font-bold z-40'
+                style={{
+                  top: 'calc(50% - 13vh - 2rem)',
+                  left: '25vw',
+                }}
+                initial={{ x: '-80%', opacity: 0 }}
+                animate={{ x: '-15vw', opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: textExitTransitionDelay, duration: 1 }}
+              >
+                STILL
+              </motion.div>
 
-          {/* Right floating text */}
-          <motion.div
-            className='absolute text-white text-5xl font-bold z-40'
-            style={{
-              bottom: 'calc(50% - 25vh - 2rem)',
-              right: '25vw',
-            }}
-            initial={{ x: '80%', opacity: 0 }}
-            animate={{ x: '20vw', opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: textExitTransitionDelay, duration: 1 }}
-          >
-            MOTION
-          </motion.div>
-
+              {/* Right floating text */}
+              <motion.div
+                className='absolute text-white text-5xl font-bold z-40'
+                style={{
+                  bottom: 'calc(50% - 25vh - 2rem)',
+                  right: '25vw',
+                }}
+                initial={{ x: '80%', opacity: 0 }}
+                animate={{ x: '20vw', opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: textExitTransitionDelay, duration: 1 }}
+              >
+                MOTION
+              </motion.div>
+            </>
+          )}
           {/* Rotating image container */}
           <motion.div
             className='mt-10 overflow-hidden relative border-2 border-white z-89'
             style={{
               transformOrigin: 'center',
               position: 'relative',
+              width: isMobile ? '90vw' : '50vw',
+              height: `calc(${isMobile ? '50vw' : '50vw'} / 16 * 9)`,
             }}
             initial={{
               opacity: 0,
@@ -130,8 +149,8 @@ function PreLoader({ isExiting }) {
 
           {/* Infinite spinner */}
           <motion.svg
-            width='100'
-            height='60'
+            width={isMobile ? '50' : '100'}
+            height={isMobile ? '30' : '60'}
             viewBox='0 0 100 60'
             className='mt-8'
             initial={{ opacity: 0 }}

@@ -1,16 +1,31 @@
+import React, { useState, useEffect } from 'react';
 import '../styles/Motion.css';
 import SliderComponent from './Sliders/SliderComponent';
 
 const Motion = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // useEffect(() => {
   //   onLoad();
   // }, [onLoad]);
   return (
-    <div className='motion-section'>
+    <div className={`motion-section ${isMobile ? 'h-auto' : 'h-[120vh]'}`}>
       <div className='motion-header'>
-        <h2 className='font-chesna'>MOTION</h2>
-        <p>YOUR VISION, OUR EXPERTISE</p>
-        <a href='motions' className='see-more'>
+        <div>
+          <h2 className='font-chesna'>MOTION</h2>
+          <p>YOUR VISION, OUR EXPERTISE</p>
+        </div>
+
+        <a href='/motions' className='see-more'>
           SEE MORE
         </a>
       </div>

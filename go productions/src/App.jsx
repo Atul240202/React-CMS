@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
+import TransitionEffect from './components/TransitionEffect';
 import './App.css';
 import PreLoader from './components/PreLoader/PreLoader';
 

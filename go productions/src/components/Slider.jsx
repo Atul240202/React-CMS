@@ -11,7 +11,16 @@ const Slider = ({ onSliderLoad }) => {
   const [heroBanners, setHeroBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const prefetchImages = async (images) => {
     const promises = images.map(
       (image) =>

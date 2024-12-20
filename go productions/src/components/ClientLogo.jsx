@@ -7,6 +7,16 @@ const ClientLogo = () => {
   const [clientLogos, setClientLogos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchClientLogos = async () => {
@@ -46,14 +56,17 @@ const ClientLogo = () => {
   const displayLogos = [...clientLogos, ...clientLogos];
 
   return (
-    <div className='slider'>
+    <div className={`slider ${isMobile ? 'h-auto mb-[5vh]' : 'h-[20vh]'}`}>
       <div className='slide-track'>
         {displayLogos.map((logo, index) => (
           <div key={`${logo.id}-${index}`} className='slide'>
             <img
               src={logo.image}
-              height='100'
-              width='300'
+              className={`${
+                isMobile ? 'h-[50px] w-[150px]' : 'h-[100px] w-[300px]'
+              }`}
+              // height='50'
+              // width='150'
               alt={`${logo.name} Logo`}
               loading='lazy'
             />

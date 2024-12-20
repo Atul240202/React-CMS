@@ -15,6 +15,16 @@ const SliderComponent = () => {
   const [modalVideo, setModalVideo] = useState(null);
   const [clickedVideoRect, setClickedVideoRect] = useState(null);
   const [isModalTransitioning, setIsModalTransitioning] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchMotionData = async () => {
@@ -83,7 +93,9 @@ const SliderComponent = () => {
         >
           {motionData.map((item) => (
             <SwiperSlide key={item.id}>
-              <div className='logo-container'>
+              <div
+                className={`logo-container ${isMobile ? 'h-[3vh]' : 'h-[8vh]'}`}
+              >
                 <img
                   src={item.logo}
                   alt={`${item.clientName} Logo`}
@@ -100,8 +112,12 @@ const SliderComponent = () => {
                 onMouseEnter={(e) => e.target.play()}
                 onMouseLeave={(e) => e.target.pause()}
               />
-              <div className='sample-text'>
-                <p>{item.productTitle}</p>
+              <div
+                className={`sample-text ${
+                  isMobile ? 'text-[30px]' : 'text-[50px]'
+                }`}
+              >
+                <p className='font-chesna'>{item.productTitle}</p>
               </div>
             </SwiperSlide>
           ))}

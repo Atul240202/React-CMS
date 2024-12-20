@@ -1,13 +1,13 @@
 .imageSlider {
   aspect-ratio: 16 / 9;
-  object-fit: cover; /* Ensures no stretching or distortion */
+  object-fit: cover;
   max-width: 100%;
-  filter: grayscale(100%); /* Makes the image black & white initially */
-  transition: filter 0.3s ease; /* Smooth transition effect */
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
 }
 
 .imageSlider:hover {
-  filter: grayscale(0%); /* Restores the image color on hover */
+  filter: grayscale(0%);
 }
 
 .location-text {
@@ -60,4 +60,50 @@
 .swiper-button-prev,
 .swiper-button-next {
   color: #000;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .swiper-container {
+    height: 50vh; /* Adjust height for mobile view */
+  }
+
+  .curved-swiper {
+    width: calc(100vw - 20px); /* Slight adjustment for mobile */
+  }
+
+  .curved-swiper::before {
+    top: -25px; /* Reduce the height offset for mobile */
+    height: 50px; /* Reduce height for the curve */
+    left: -5%; /* Adjust width offset */
+    width: 110%; /* Slightly smaller width */
+  }
+
+  .curved-swiper::after {
+    bottom: -25px; /* Reduce the height offset for mobile */
+    height: 50px; /* Reduce height for the curve */
+    left: -5%; /* Adjust width offset */
+    width: 110%; /* Slightly smaller width */
+  }
+
+  .imageSlider {
+    aspect-ratio: 16 / 9; /* Maintain the aspect ratio */
+    object-fit: cover; /* Ensure proper fitting */
+    max-width: 100%;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+    height: 80%; /* Adjust height for mobile view */
+  }
+
+  /* .swiper-button-prev,
+  .swiper-button-next {
+    display: none;
+  } */
+
+  .loading,
+  .error {
+    font-size: 16px; /* Adjust font size for messages */
+    text-align: center;
+    margin: auto;
+  }
 }
