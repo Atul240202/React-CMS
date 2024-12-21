@@ -175,9 +175,7 @@ export default function Locations() {
                 }}
               >
                 <div
-                  className={`${
-                    isMobile ? 'w-full mb-6' : 'w-1/2'
-                  } cursor-pointer`}
+                  className={`${isMobile ? 'w-full' : 'w-1/2'} cursor-pointer`}
                   onClick={() => navigateToLocationPage(item.id)}
                 >
                   <img
@@ -190,23 +188,27 @@ export default function Locations() {
                   />
                 </div>
                 <div
-                  className={`flex flex-col items-center justify-center ${
-                    isMobile ? 'w-full text-center' : 'w-1/2'
+                  className={`flex  ${
+                    isMobile
+                      ? 'flex-row w-full text-center items-start justify-between'
+                      : 'justify-center items-center flex-col w-1/2'
                   }`}
                 >
                   <motion.h2
-                    variants={textVariants}
+                    variants={isMobile ? '' : textVariants}
                     className={`text-white font-chesna ${
-                      isMobile ? 'text-2xl md:text-3xl mb-4' : 'text-4xl mb-1'
+                      isMobile
+                        ? 'text-lg md:text-xl mb-4 max-w-[35%]'
+                        : 'text-4xl mb-1'
                     }`}
                   >
                     {item.text}
                   </motion.h2>
                   <motion.h2
-                    variants={textVariants}
+                    variants={isMobile ? '' : textVariants}
                     className={`text-white font-chesna ${
                       isMobile
-                        ? 'text-xl md:text-2xl'
+                        ? 'text-lg md:text-xl max-w-[60%]'
                         : 'text-3xl text-center ml-1'
                     }`}
                   >

@@ -57,7 +57,7 @@ const MotionContent = ({ motionData }) => {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center max-w-[85vw] mx-auto p-4 md:p-8 bg-black'>
+    <div className='flex flex-col items-center justify-center max-w-[90vw] mx-auto p-4 md:p-8 bg-black'>
       {motionData.map((motion, index) => (
         <div
           key={motion.id}
@@ -71,7 +71,7 @@ const MotionContent = ({ motionData }) => {
         >
           <div
             className={`video-container ${
-              isMobile ? 'w-full mb-4' : 'w-[40%] h-[30vh]'
+              isMobile ? 'w-full mb-4 h-[20vh]' : 'w-[40%] h-[30vh]'
             }`}
           >
             <video
@@ -100,9 +100,9 @@ const MotionContent = ({ motionData }) => {
               loading='lazy'
             />
             <h2
-              className={`video-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna  ${
+              className={`video-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna${
                 isMobile
-                  ? 'text-center mt-0 text-xl mr-4'
+                  ? 'text-center mt-0 text-lg mr-7'
                   : 'text-left mb-0 max-h-[10vh]'
               } `}
             >

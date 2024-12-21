@@ -77,7 +77,7 @@ function PreLoader({ isExiting }) {
                   left: '25vw',
                 }}
                 initial={{ x: '-80%', opacity: 0 }}
-                animate={{ x: '-15vw', opacity: 1 }}
+                animate={{ x: '-10vw', opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: textExitTransitionDelay, duration: 1 }}
               >
@@ -92,7 +92,7 @@ function PreLoader({ isExiting }) {
                   right: '25vw',
                 }}
                 initial={{ x: '80%', opacity: 0 }}
-                animate={{ x: '20vw', opacity: 1 }}
+                animate={{ x: '15vw', opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: textExitTransitionDelay, duration: 1 }}
               >

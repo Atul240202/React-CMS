@@ -6,11 +6,15 @@ import Motion from '../components/Motion';
 import ClientLogo from '../components/ClientLogo';
 import ShootLocation from '../components/ShootLocation';
 import ContactUs from '../components/ContactUs';
+import TransitionEffect from '../components/TransitionEffect';
 
 function Home({ onSliderLoad }) {
+  const handleSliderLoad = () => {
+    onSliderLoad();
+  };
   return (
     <div className='App'>
-      <Slider onSliderLoad={onSliderLoad} />
+      <Slider onSliderLoad={handleSliderLoad} />
       <Still />
       <Motion />
       <ClientLogo />

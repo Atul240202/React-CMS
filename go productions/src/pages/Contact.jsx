@@ -15,18 +15,22 @@ function LocationSection() {
   }, []);
   return (
     <div
-      className={`relative w-[90%] m-auto bg-black ${
-        isMobile ? 'h-[40vh] mt-[5vh] mb-[5vh]' : 'h-[90vh] mt-[5vh]'
+      className={`relative  m-auto bg-black ${
+        isMobile
+          ? 'h-[40vh] mt-[5vh] mb-[5vh] w-[100%]'
+          : 'h-[90vh] mt-[5vh] w-[90%]'
       }`}
     >
       {/* Map Container */}
       <div
-        className='absolute inset-0 mt-[15vh] z-10 justify-center items-center' // Ensure this has higher z-index
+        className={`absolute inset-0 z-10 justify-center items-center ${
+          isMobile ? 'mt-[9vh]' : 'mt-[15vh]'
+        }`} // Ensure this has higher z-index
       >
         <iframe
           title='Go Productions Location'
           src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d448843.6236179242!2d77.1305966827735!3d28.491867243392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3c8554d41db%3A0xccc32753b0a293dd!2sGo%20Productions!5e0!3m2!1sen!2sin!4v1728834522687!5m2!1sen!2sin'
-          className='w-full h-[50vh] border-0'
+          className={`w-full  border-0 ${isMobile ? 'h-[22vh]' : 'h-[50vh]'}`}
           allowFullScreen=''
           loading='lazy'
           referrerPolicy='no-referrer-when-downgrade'
@@ -205,7 +209,13 @@ function Contact() {
               style={styles.textarea}
               required
             ></textarea>
-            <button type='submit' style={styles.button} className='rounded-[0]'>
+            <button
+              type='submit'
+              style={styles.button}
+              className={`rounded-[0] ${
+                isMobile ? 'text-[20px]' : 'text-[1.5rem]'
+              }`}
+            >
               SEND
             </button>
           </form>
@@ -223,14 +233,16 @@ function Contact() {
               <hr style={styles.styleLine2} />
               <div style={styles.contactBox}>
                 <h3
-                  style={{ margin: '0', fontSize: '1.5rem' }}
+                  style={{ margin: '0' }}
                   className={`${isMobile ? 'text-md' : 'text-[1.5rem]'}`}
                 >
                   PHONE NUMBER
                 </h3>
                 <p
-                  style={{ margin: '0', fontSize: '1.5rem' }}
-                  className='font-sans font-extrabold'
+                  style={{ margin: '0' }}
+                  className={`font-sans font-extrabold ${
+                    isMobile ? 'text-md' : 'text-[1.5rem]'
+                  }`}
                 >
                   <a style={{ color: 'white' }} href='tel:+918130405967'>
                     +91 8130405967
@@ -322,13 +334,12 @@ const styles = {
     minHeight: '150px',
   },
   button: {
-    width: '15%',
+    width: '25%',
     padding: '0.5rem',
     backgroundColor: '#111',
     border: 'none',
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: '1.5rem',
     cursor: 'pointer',
     textAlign: 'center',
     alignSelf: 'flex-end',

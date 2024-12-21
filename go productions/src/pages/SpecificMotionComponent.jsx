@@ -90,7 +90,10 @@ export default function SpecificMotionComponent() {
         onTransitionComplete={handleTransitionComplete}
       />
       {showContent && motion && (
-        <div style={styles.container}>
+        <div
+          style={styles.container}
+          className={`${isMobile ? 'w-[95vw]' : ''}`}
+        >
           <div style={styles.videoContainer}>
             <video
               src={motion.video}
@@ -99,14 +102,14 @@ export default function SpecificMotionComponent() {
               loop
               style={styles.video}
               className={`${
-                isMobile ? 'w-[90%] mt-[5vh] ' : 'w-[100%] h-[95vh]'
+                isMobile ? 'w-[100%] mt-[5vh] ' : 'w-[100%] h-[95vh]'
               }`}
               onClick={handleVideoClick}
             />
           </div>
           <div
             style={styles.textContainer}
-            className={`${isMobile ? 'mt-3 ml-5 mr-5' : 'mx-7 '}`}
+            className={`${isMobile ? 'mt-3' : 'mx-7 '}`}
           >
             <h1
               style={styles.text}
@@ -119,10 +122,13 @@ export default function SpecificMotionComponent() {
               alt='Logo'
               style={styles.logo}
               loading='lazy'
-              className={`${isMobile ? 'w-[100px]' : 'w-[250px]'}`}
+              className={`${isMobile ? 'max-w-[200px]' : 'w-[250px]'}`}
             />
           </div>
-          <div style={styles.creditContainer}>
+          <div
+            style={styles.creditContainer}
+            className={`${isMobile ? '' : 'ml-[2vw] mr-[2vw]'}`}
+          >
             <h3
               style={styles.creditHeader}
               className={`${isMobile ? 'text-md' : 'text-4xl'}`}
@@ -130,7 +136,10 @@ export default function SpecificMotionComponent() {
               CREDITS
             </h3>
           </div>
-          <hr style={styles.styleLine1} />
+          <hr
+            style={styles.styleLine1}
+            className={`${isMobile ? '' : 'ml-[20px] mr-[20px]'}`}
+          />
           <div style={styles.creditData}>
             <div
               style={styles.creditBlanks}
@@ -145,7 +154,10 @@ export default function SpecificMotionComponent() {
               CLIENT- {motion.clientName}
             </h3>
           </div>
-          <hr style={styles.styleLine1} />
+          <hr
+            style={styles.styleLine1}
+            className={`${isMobile ? '' : 'ml-[20px] mr-[20px]'}`}
+          />
           <div style={styles.creditData}>
             <div
               style={styles.creditBlanks}
@@ -169,9 +181,7 @@ export default function SpecificMotionComponent() {
                     <hr
                       style={styles.styleLine2}
                       className={` ${
-                        isMobile
-                          ? 'w-[96%] mx-[2%]'
-                          : 'w-[49%] ml-[50%] mr-[1%]'
+                        isMobile ? 'w-[100%]' : 'w-[49%] ml-[50%] mr-[1%]'
                       }`}
                     />
                     <div style={styles.creditData}>
@@ -195,9 +205,7 @@ export default function SpecificMotionComponent() {
             })}
           <hr
             style={styles.styleLine2}
-            className={`${
-              isMobile ? 'w-[73%] ml-[25%] mr-[2%]' : 'w-[49%] ml-[50%] mr-[1%]'
-            }`}
+            className={`${isMobile ? 'w-[100%]' : 'w-[49%] ml-[50%] mr-[1%]'}`}
           />
 
           {isPopupOpen && (
@@ -239,8 +247,8 @@ const styles = {
   },
   creditContainer: {
     marginTop: '5vh',
-    marginLeft: '2vw',
-    marginRight: '2vw',
+    // marginLeft: '2vw',
+    // marginRight: '2vw',
     textAlign: 'left',
   },
   creditData: {
@@ -297,8 +305,8 @@ const styles = {
     height: '1px',
     border: 'none',
     background: 'white',
-    marginLeft: '20px',
-    marginRight: '20px',
+    // marginLeft: '20px',
+    // marginRight: '20px',
   },
   styleLine2: {
     height: '1px',

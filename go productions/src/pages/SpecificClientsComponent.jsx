@@ -15,6 +15,16 @@ export default function SpecificClientsComponent() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showContent, setShowContent] = useState(false); // Controls when to show the content
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -30,23 +40,35 @@ export default function SpecificClientsComponent() {
           // Simulate loading progress
           const totalItems =
             stillsArray.length + (data.motions ? data.motions.length : 0);
-          let loadedItems = 0;
 
-          for (const item of [...stillsArray, ...(data.motions || [])]) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            loadedItems++;
-            setProgress((loadedItems / totalItems) * 100);
+          if (totalItems > 0) {
+            let loadedItems = 0;
+            for (const item of [...stillsArray, ...(data.motions || [])]) {
+              await new Promise((resolve) => setTimeout(resolve, 100)); // Simulated loading delay
+              loadedItems++;
+              setProgress((loadedItems / totalItems) * 100);
+            }
+          } else {
+            // If no data, ensure progress reaches 100%
+            setProgress(100);
           }
 
           setClientData(data);
         } else {
           setError('Client not found');
+          setProgress(100); // Set progress to 100% if client does not exist
         }
       } catch (err) {
         console.error('Error fetching client data:', err);
         setError('Failed to load client data. Please try again later.');
+        setProgress(100); // Ensure progress reaches 100% even on error
       } finally {
-        setTimeout(() => setLoading(false), 500); // Ensure the transition effect exits smoothly
+        console.log('In final block');
+        setTimeout(() => {
+          setLoading(false); // Ensure loading ends
+          console.log('In final timeout block');
+          setShowContent(true); // Show the content (or error message if applicable)
+        }, 500); // Allow a smooth transition
       }
     };
 
@@ -68,14 +90,21 @@ export default function SpecificClientsComponent() {
       />
       {showContent && !loading && (
         <div style={styles.specClientContainer}>
-          <div style={styles.specClientHeader}>
-            <h2 style={styles.headerText}>
-              CLIENTS {clientData?.name && ` ✦`}
+          <div
+            style={styles.specClientHeader}
+            className={`${isMobile ? 'w-[80%] m-auto mt-[3vh]' : 'w-[100%]'}`}
+          >
+            <h2
+              style={styles.headerText}
+              className={`${isMobile ? 'text-[20px]' : 'text-[30px]'}`}
+            >
+              CLIENTS {clientData?.name && `✦`}
             </h2>
             <img
               src={clientData?.image || '#'}
               alt={clientData?.name || ''}
               style={styles.clientLogo}
+              className={`${isMobile ? 'ml-[0] max-w-[40%]' : 'ml-[10px]'}`}
               loading='lazy'
             />
           </div>
@@ -131,16 +160,13 @@ const styles = {
     alignItems: 'center',
     paddingBottom: '10px',
     marginBottom: '20px',
-    width: '100%',
   },
   headerText: {
-    fontSize: '30px',
     fontWeight: 'bold',
   },
   clientLogo: {
     height: '40px',
     objectFit: 'contain',
-    marginLeft: '10px',
   },
   specificClientContent: {
     marginTop: '20px',

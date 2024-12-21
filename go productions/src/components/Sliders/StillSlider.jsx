@@ -96,7 +96,7 @@ function StillSlider() {
             >
               STILL
             </motion.h1>
-            <div className='relative h-[50px] overflow-hidden flex items-center justify-center'>
+            <div className='relative h-[50px] flex items-center justify-center'>
               <AnimatePresence mode='wait'>
                 <motion.p
                   key={words[currentIndex]}
@@ -113,11 +113,15 @@ function StillSlider() {
                   {words[currentIndex]}
                 </motion.p>
               </AnimatePresence>
-              <img
-                src={gifSrc}
-                alt='Animation'
-                className='pr-4 h-20 w-20 object-cover'
-              />
+              <div className=' right-0 flex items-center'>
+                <img
+                  src={gifSrc}
+                  alt='Animation'
+                  className={`object-cover ${
+                    isMobile ? 'h-14 w-14 mt-5 absolute' : 'h-20 w-20'
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>

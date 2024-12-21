@@ -19,6 +19,17 @@ export default function Motions() {
     'ADVERTISING',
     'DIGITAL',
   ];
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchMotionData = async () => {
@@ -101,13 +112,21 @@ export default function Motions() {
       {showContent && (
         <>
           <MotionSlider />
-          <div className='flex flex-row justify-evenly space-x-4 my-4 font-chesna'>
+          <div
+            className={`flex flex-row justify-evenly  my-4 font-chesna ${
+              isMobile ? 'space-x-2 mx-2' : 'space-x-4'
+            }`}
+          >
             {filterOptions.map((option) => (
               <button
                 key={option}
-                className={`px-4 py-2 chesnal text-3xl border-none ${
+                className={`border-none ${
                   activeFilter === option ? 'bg-white text-black' : 'bg-black'
-                }`}
+                } ${
+                  isMobile
+                    ? 'text-md px-2 py-1 font-chesnal'
+                    : ' font-chesna text-3xl px-4 py-2'
+                } `}
                 onClick={() => setActiveFilter(option)}
               >
                 {option}

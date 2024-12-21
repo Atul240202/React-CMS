@@ -17,6 +17,16 @@ export default function SpecificLocationComponent() {
   const [showContent, setShowContent] = useState(false);
   const [imageLayout, setImageLayout] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -117,21 +127,38 @@ export default function SpecificLocationComponent() {
               src={location.image}
               alt={location.text}
               style={styles.headerImage}
+              className={`${isMobile ? 'h-[30vh]' : 'h-[90vh]'}`}
               loading='lazy'
             />
           </div>
           <div className='flex justify-between items-start ml-[5vw] mr-[5vw]'>
-            <div className='flex flex-col text-left'>
-              <h2 style={styles.locationTitle} className='font-chesna'>
+            <div
+              className={`flex flex-col text-left ${isMobile ? 'w-[50%]' : ''}`}
+            >
+              <h2
+                style={styles.locationTitle}
+                className={`font-chesna ${
+                  isMobile
+                    ? 'text-[24px] mb-[2px] mt-[2px]'
+                    : 'text-[36px] mb-[0.5rem] mt-[0.5rem]'
+                }`}
+              >
                 {location.text.toUpperCase()}
               </h2>
-              <p style={styles.locationAddress} className='font-chesna'>
+              <p
+                style={styles.locationAddress}
+                className={`font-chesna ${
+                  isMobile ? 'text-[12px] mt-0' : 'text-[24px] mt-[0.5rem]'
+                }`}
+              >
                 {location.address.toUpperCase()}
               </p>
             </div>
-            <div className='mt-3'>
+            <div className={`mt-3 ${isMobile ? 'max-w-[40%]' : ''}`}>
               <button
-                className='bg-white/10 border-2 uppercase font-chesna text-xl rounded-[0] border-white text-white px-6 py-3 hover:bg-white/20 hover:border-white transition-all duration-300'
+                className={`${
+                  isMobile ? 'text-md px-3 py-2' : 'text-xl px-6 py-3'
+                } bg-white/10 border-2 uppercase font-chesna rounded-[0] border-white text-white  hover:bg-white/20 hover:border-white transition-all duration-300`}
                 onClick={openForm}
               >
                 Request availability
@@ -201,21 +228,15 @@ const styles = {
   },
   headerImage: {
     width: '100%',
-    height: '90vh',
     objectFit: 'cover',
   },
   locationTitle: {
-    fontSize: '36px',
     fontWeight: 'bold',
-    marginBottom: '0.5rem',
-    marginTop: '0.5rem',
   },
   locationAddress: {
-    fontSize: '24px',
     color: 'white',
     fontWeight: 'bold',
     marginBottom: '1rem',
-    marginTop: '0.5rem',
   },
   imagesGrid: {
     display: 'grid',

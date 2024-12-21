@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import TransitionEffect from './components/TransitionEffect';
@@ -35,10 +35,30 @@ function App() {
 
 function AppWithRouter() {
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(location.pathname === '/');
+  const [isLoading, setIsLoading] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
+  useEffect(() => {
+    // Check session storage for the countVisit value
+    const visitCount = parseInt(
+      sessionStorage.getItem('countVisit') || '0',
+      10
+    );
+
+    if (visitCount === 0 && location.pathname === '/') {
+      // First visit: Set isLoading to true and increment visit count
+      setIsLoading(true);
+      sessionStorage.setItem('countVisit', 1);
+    } else {
+      // Not the first visit: Increment visit count without showing preloader
+      if (location.pathname === '/') {
+        sessionStorage.setItem('countVisit', visitCount + 1);
+      }
+    }
+  }, [location.pathname]);
+
   const handleSliderLoad = () => {
+    console.log('handle slider load in app');
     setIsExiting(true);
 
     setTimeout(() => {

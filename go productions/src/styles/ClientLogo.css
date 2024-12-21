@@ -4,7 +4,7 @@ body {
 }
 
 .slider {
-  margin-top: 5vh;
+  /* margin-top: 5vh; */
   /* height: 20vh; */
   overflow: hidden;
   position: relative;
@@ -13,16 +13,15 @@ body {
 
 .slide-track {
   display: flex;
-  width: calc(600px * 10); /* Adjust this based on the number of logos */
+  /* width: calc(600px * 10); */
   animation: scroll 60s linear infinite;
   color: black;
   gap: 30px;
 }
 
-.slide {
+/* .slide {
   height: 100px;
-  width: 600px;
-}
+} */
 
 @keyframes scroll {
   0% {
