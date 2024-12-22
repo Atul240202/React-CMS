@@ -52,17 +52,18 @@ function AppWithRouter() {
         setIsFirstVisit(true);
         sessionStorage.setItem('countVisit', '1');
         console.log('First visit detected.');
-      } else if (visitCount > 1) {
+      } else if (visitCount >= 1) {
         setIsFirstVisit(false);
         sessionStorage.setItem('countVisit', (visitCount + 1).toString());
         setShowTransition(true);
-      } else if (visitCount === 1) {
-        sessionStorage.setItem('countVisit', (visitCount + 1).toString());
-        console.log(
-          'Session storage value in else',
-          sessionStorage.getItem('countVisit')
-        );
       }
+      // else if (visitCount === 1) {
+      //   sessionStorage.setItem('countVisit', (visitCount + 1).toString());
+      //   console.log(
+      //     'Session storage value in else',
+      //     sessionStorage.getItem('countVisit')
+      //   );
+      // }
     }
   }, [location.pathname]);
 
