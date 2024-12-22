@@ -56,10 +56,23 @@ const ClientLogo = () => {
   const displayLogos = [...clientLogos, ...clientLogos];
 
   return (
-    <div className={`slider ${isMobile ? 'h-auto mb-[5vh]' : 'h-[20vh]'}`}>
-      <div className='slide-track'>
+    <div
+      className={`slider ${
+        isMobile ? 'h-auto mb-[1vh] mt-[1vh]' : 'h-[20vh] mt-[5vh]'
+      }`}
+    >
+      <div
+        className={`slide-track ${
+          isMobile ? 'w-calc-300px-mul-10' : 'w-calc-600px-mul-10'
+        }`}
+      >
         {displayLogos.map((logo, index) => (
-          <div key={`${logo.id}-${index}`} className='slide'>
+          <div
+            key={`${logo.id}-${index}`}
+            className={`slide ${
+              isMobile ? 'w-[300px] h-[50px]' : 'w-[600px] h-[100px]'
+            }`}
+          >
             <img
               src={logo.image}
               className={`${

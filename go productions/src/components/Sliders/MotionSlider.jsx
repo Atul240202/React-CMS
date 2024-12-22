@@ -35,7 +35,7 @@ function MotionSlider() {
   return (
     <div
       className={`w-full pt-[15vh] relative overflow-hidden ${
-        isMobile ? 'h-[30vh]' : 'h-[85vh]'
+        isMobile ? 'h-[25vh]' : 'h-[85vh]'
       }`}
     >
       <div className='flex flex-col'>
@@ -52,7 +52,7 @@ function MotionSlider() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className={`font-extrabold m-0 ${
               isMobile
-                ? 'text-5xl mb-4'
+                ? 'text-5xl '
                 : 'text-[150px] max-h-[25vh] leading-none pt-[11vh]'
             }`}
           >
@@ -115,11 +115,15 @@ function MotionSlider() {
                   {words[currentIndex]}
                 </motion.h1>
               </AnimatePresence>
-              <img
-                src={gifSrc}
-                alt='Animation'
-                className='pr-4 h-20 w-20 object-cover'
-              />
+              <div className=' right-0 flex items-center'>
+                <img
+                  src={gifSrc}
+                  alt='Animation'
+                  className={`object-cover ${
+                    isMobile ? 'h-14 w-14 mt-5 absolute' : 'h-20 w-20'
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>

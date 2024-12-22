@@ -152,30 +152,36 @@ export default function SpecificStillsComponent() {
   }
 
   return (
-    <div style={styles.container}>
+    <div
+      style={styles.container}
+      className={`${isMobile ? 'w-[95vw] m-auto' : ''}`}
+    >
       <div style={styles.mainImageContainer} onClick={openMainImagePopup}>
         <img
           src={still.image}
           alt={still.text}
           style={styles.mainImage}
           className={`${
-            isMobile ? 'h-[30vh] w-[90%] m-auto' : 'h-[90vh] w-[100%]'
+            isMobile ? 'h-[30vh] w-[100%] m-auto' : 'h-[90vh] w-[100%]'
           }`}
         />
-        <div style={styles.imgTextContainer}>
+        <div
+          style={styles.imgTextContainer}
+          className={`${isMobile ? 'm-[0]' : 'm-[20px]'}`}
+        >
           <div style={styles.logoContainer}>
             <img
               src={still.logo || still.clientImage}
               alt='Client Logo'
               style={styles.logo}
               loading='lazy'
-              className={`${isMobile ? 'w-[124px]' : 'w-[200px]'}`}
+              className={`${isMobile ? 'max-w-[200px]' : 'w-[200px]'}`}
             />
           </div>
           <div style={styles.descriptionContainer}>
             <h2
               style={styles.description}
-              className={`${isMobile ? 'text-[1.5rem]' : 'text-[2.5rem]'}`}
+              className={`${isMobile ? 'text-sm' : 'text-[2.5rem]'}`}
             >
               {still.text}
             </h2>
@@ -183,7 +189,14 @@ export default function SpecificStillsComponent() {
         </div>
       </div>
       {imageLayout.length > 0 && (
-        <div style={styles.gridContainer}>
+        <div
+          style={styles.gridContainer}
+          className={`${
+            isMobile
+              ? 'w-[100%] grid-cols-1'
+              : 'w-[90%] mx-auto my-10 grid-cols-6'
+          }`}
+        >
           {imageLayout.map((image, index) => (
             <div
               key={index}
@@ -205,7 +218,10 @@ export default function SpecificStillsComponent() {
           ))}
         </div>
       )}
-      <div style={styles.creditsContainer}>
+      <div
+        style={styles.creditsContainer}
+        className={` ${isMobile ? 'ml-0 mr-0' : 'ml-[2vw] mr-[2vw]'}`}
+      >
         <h3
           style={styles.creditHeader}
           className={`${isMobile ? 'text-md' : 'text-4xl'}`}
@@ -243,7 +259,7 @@ export default function SpecificStillsComponent() {
                       style={styles.creditContent}
                       className={`${
                         isMobile
-                          ? 'text-sm flex-7 ml-[2vw]'
+                          ? 'text-sm flex-7 ml-[0]'
                           : 'text-2xl flex-1 ml-[0]'
                       }`}
                     >
@@ -253,7 +269,7 @@ export default function SpecificStillsComponent() {
                   <hr
                     style={styles.styleLine2}
                     className={`${
-                      isMobile ? 'w-[98%] my-[1%]' : 'w-[50%] ml-[50%]'
+                      isMobile ? 'w-[100%] my-[0]' : 'w-[50%] ml-[50%]'
                     }`}
                   />
                 </React.Fragment>
@@ -288,7 +304,6 @@ const styles = {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: '20px',
   },
   mainImageContainer: {
     position: 'relative',
@@ -309,10 +324,7 @@ const styles = {
   },
   gridContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(6, 1fr)',
     gap: '16px',
-    width: '90%',
-    margin: '20px auto',
   },
   gridItem: {
     overflow: 'hidden',
@@ -332,8 +344,6 @@ const styles = {
   creditsContainer: {
     marginTop: '30px',
     paddingTop: '20px',
-    marginLeft: '2vw',
-    marginRight: '2vw',
     color: '#fff',
     textAlign: 'left',
   },

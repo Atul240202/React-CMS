@@ -1,198 +1,178 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { FiMapPin, FiPhone, FiMail } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import gopro from '../assets/gopro.png';
-import { color } from 'framer-motion';
-
 const FooterComponent = () => {
-  const styles = {
-    footerContainer: {
-      position: 'relative',
-      bottom: 0,
-      width: 'calc(100% - 40px)',
-      backgroundColor: '#000',
-      color: '#fff',
-      backgroundImage:
-        'linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2))',
-      backgroundSize: '100% 1px',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'top',
-      padding: '20px',
-      '@media (maxWidth: 900px)': {
-        padding: '20px 10px',
-      },
-    },
-    logo: {
-      width: '30%',
-    },
-    logoImage: {
-      width: '100%',
-    },
-    footerContent: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      maxWidth: 'calc(100% - 40px)',
-      margin: '0 auto',
-      '@media (maxWidth: 900px)': {
-        flexDirection: 'column',
-        alignItems: 'center',
-      },
-    },
-    footerHeader: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'baseline',
-      justifyContent: 'space-between',
-      marginRight: '20vh',
-      marginLeft: '2.5vh',
-      '@media (maxWidth: 900px)': {
-        marginRight: 0,
-        marginLeft: 0,
-        flexDirection: 'column',
-        alignItems: 'center',
-      },
-    },
-    header1: {
-      fontSize: '1.5rem',
-      fontWeight: 'bold',
-      '@media (maxWidth: 900px)': {
-        fontSize: '1.2rem',
-      },
-    },
-    navLinks: {
-      listStyle: 'none',
-      padding: 0,
-      marginTop: '20px',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(1, 1fr)',
-      '@media (maxWidth: 1000px)': {
-        gap: '10px',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-      },
-      marginLeft: '1%',
-      width: '15vw',
-    },
-    navLink: {
-      marginBottom: '10px',
-      cursor: 'pointer',
-      fontSize: '0.9rem',
-      color: 'white',
-      fontWeight: 600,
-    },
-    contactItem: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '15px',
-      marginTop: '20px',
-    },
-    contactIcon: {
-      marginRight: '10px',
-      fontSize: '1rem',
-    },
-    socialIcons: {
-      display: 'flex',
-      gap: '15px',
-      fontSize: '1.2rem',
-      marginBottom: '15px',
-    },
-    legalLinks: {
-      fontSize: '0.8rem',
-      display: 'flex',
-      flexDirection: 'column',
-      flexWrap: 'wrap',
-      paddingTop: '20vh',
-      height: '100%',
-      '@media (maxWidth: 900px)': {
-        alignItems: 'center',
-      },
-    },
-    footerBottom: {
-      textAlign: 'center',
-      fontSize: '0.8rem',
-      marginTop: '20px',
-      color: '#999',
-    },
-  };
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <div style={styles.footerContainer}>
-      <footer>
-        <div style={styles.footerHeader}>
-          <Link to='/' style={styles.logo}>
-            <img
-              src={gopro}
-              alt='logo'
-              style={styles.logoImage}
-              loading='lazy'
-            />
-          </Link>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <div style={styles.socialIcons}>
-              <FaInstagram />
-              <FaTwitter />
-              <FaFacebook />
-              <FaYoutube />
+    <footer
+      className='bg-black text-white w-full'
+      style={styles.footerContainer}
+    >
+      <div className='max-w-screen-2xl mx-auto px-4 py-8'>
+        {isMobile ? (
+          // Mobile Layout
+          <div className='flex flex-col font-chesna'>
+            <div className='flex justify-between items-center mb-8'>
+              <Link to='/' className='w-32'>
+                <img src={gopro} alt='GO PRODUCTIONS' className='w-[200px]' />
+              </Link>
+              <div className='flex gap-4 text-xl'>
+                <FaInstagram />
+                <FaTwitter />
+                <FaFacebook />
+                <FaYoutube />
+              </div>
             </div>
-          </div>
-        </div>
-        <div style={styles.footerContent}>
-          {/* Logo and Navigation Links */}
-          <div>
-            <ul style={styles.navLinks}>
-              <Link to='/motions' style={styles.navLink}>
-                MOTIONS
-              </Link>
-              <Link to='/stills' style={styles.navLink}>
-                STILLS
-              </Link>
-              <Link to='/clients' style={styles.navLink}>
-                CLIENTS
-              </Link>
-              <Link to='/locations' style={styles.navLink}>
-                LOCATIONS
-              </Link>
-              <Link to='/contacts' style={styles.navLink}>
-                CONTACT US
-              </Link>
-            </ul>
-          </div>
 
-          {/* Contact Information */}
-          <div>
-            <div style={styles.contactItem}>
-              <FiMapPin style={styles.contactIcon} />
-              <span>NYC, United States</span>
+            <div className='grid grid-cols-3 gap-8 mb-8'>
+              <div className='space-y-2'>
+                <Link to='/motions' className='block font-semibold text-white'>
+                  MOTION
+                </Link>
+                <Link to='/stills' className='block font-semibold text-white'>
+                  STILL
+                </Link>
+              </div>
+              <div className='space-y-2'>
+                <Link to='/contacts' className='block font-semibold text-white'>
+                  CONTACT US
+                </Link>
+                <Link
+                  to='/locations'
+                  className='block font-semibold text-white'
+                >
+                  LOCATION
+                </Link>
+              </div>
+              <div className='space-y-2'>
+                <Link to='#' className='block font-semibold text-white'>
+                  CAREERS
+                </Link>
+                <Link to='/contact' className='block font-semibold text-white'>
+                  CONTACT
+                </Link>
+              </div>
             </div>
-            <div style={styles.contactItem}>
-              <FiPhone style={styles.contactIcon} />
-              <span>00011222333</span>
+            <div className='space-y-4 mb-8'>
+              <div className='flex items-center gap-2'>
+                <FiMapPin className='text-sm' />
+                <span className='text-sm'>NYC, United States</span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <FiPhone className='text-sm' />
+                <span className='text-sm'>000111222333</span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <FiMail className='text-sm' />
+                <span className='text-sm'>somebody@gmail.com</span>
+              </div>
             </div>
-            <div style={styles.contactItem}>
-              <FiMail style={styles.contactIcon} />
-              <span>somebody@gmail.com</span>
-            </div>
-          </div>
 
-          {/* Social Media Icons and Legal Links */}
-          <div style={styles.legalLinks}>
-            <span>Legal and Policies</span>
-            <div style={styles.footerBottom}>
-              <span>&copy; 2024 Go Productions / All rights reserved</span>
+            <div className='border-t border-gray-800 pt-4 text-end'>
+              <div className='text-sm mb-2'>Legal and Policies</div>
+              <div className='text-sm text-gray-400'>
+                ©2024 Go Productions / All rights reserved
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        ) : (
+          // Desktop Layout
+          <div className='flex flex-col font-chesna'>
+            <div className='flex justify-between items-start mb-12'>
+              <Link to='/' className='w-1/4'>
+                <img src={gopro} alt='logo' className='w-[400px]' />
+              </Link>
+              <div className='flex gap-6 text-2xl'>
+                <FaInstagram />
+                <FaTwitter />
+                <FaFacebook />
+                <FaYoutube />
+              </div>
+            </div>
+
+            <div className='grid grid-cols-3 gap-12'>
+              <div>
+                <div className='space-y-2 '>
+                  <div>
+                    <Link to='/motions' className='font-semibold text-white'>
+                      MOTIONS
+                    </Link>
+                  </div>
+                  <div>
+                    <Link to='/stills' className='font-semibold text-white'>
+                      STILLS
+                    </Link>
+                  </div>
+                  <div>
+                    <Link to='/clients' className='font-semibold text-white'>
+                      CLIENTS
+                    </Link>
+                  </div>
+                  <div>
+                    <Link to='/locations' className='font-semibold text-white'>
+                      LOCATIONS
+                    </Link>
+                  </div>
+                  <div>
+                    <Link to='/contacts' className='font-semibold text-white'>
+                      CONTACT US
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className='space-y-6'>
+                <div className='flex items-center gap-3'>
+                  <FiMapPin className='text-xl' />
+                  <span>Faridabad, United Pradesh</span>
+                </div>
+                <div className='flex items-center gap-3 font-sans font-extrabold'>
+                  <FiPhone className='text-xl' />
+                  <span>+91 9876543210</span>
+                </div>
+                <div className='flex items-center gap-3 font-sans font-extrabold'>
+                  <FiMail className='text-xl' />
+                  <span>somebody@gmail.com</span>
+                </div>
+              </div>
+
+              <div className='flex flex-col justify-end'>
+                <div className='text-sm mb-4'>Legal and Policies</div>
+                <div className='text-sm text-gray-400 font-sans font-extrabold'>
+                  ©2024 Go Productions / All rights reserved
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </footer>
   );
+};
+
+const styles = {
+  footerContainer: {
+    backgroundColor: '#000',
+    color: '#fff',
+    backgroundImage:
+      'linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2))',
+    backgroundSize: '100% 1px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'top',
+  },
 };
 
 export default FooterComponent;

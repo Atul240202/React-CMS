@@ -49,6 +49,7 @@ const Slider = ({ onSliderLoad }) => {
         await prefetchImages(fetchedBanners);
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
+        console.log('silder component progress', fetchedBanners);
         onSliderLoad();
       } catch (err) {
         console.error('Error fetching hero banners:', err);
