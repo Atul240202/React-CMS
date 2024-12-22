@@ -25,10 +25,7 @@ const Motion = () => {
           <p>YOUR VISION, OUR EXPERTISE</p>
         </div>
 
-        <a
-          href='https://react-cms-ygwg.vercel.app/motions'
-          className='see-more'
-        >
+        <a href='/motions' className='see-more'>
           SEE MORE
         </a>
       </div>
