@@ -47,23 +47,26 @@ function AppWithRouter() {
         sessionStorage.getItem('countVisit') || '0',
         10
       );
-      console.log('visit count', visitCount);
-      if (visitCount === 0) {
-        setIsFirstVisit(true);
-        sessionStorage.setItem('countVisit', '1');
-        console.log('First visit detected.');
-      } else if (visitCount >= 1) {
-        setIsFirstVisit(false);
-        sessionStorage.setItem('countVisit', (visitCount + 1).toString());
-        setShowTransition(true);
+      console.log('Visit count before switch:', visitCount);
+
+      switch (true) {
+        case visitCount === 0: {
+          setIsFirstVisit(true);
+          sessionStorage.setItem('countVisit', '1');
+          console.log('First visit detected, visit count set to 1.');
+          break;
+        }
+        case visitCount >= 1: {
+          setIsFirstVisit(false);
+          sessionStorage.setItem('countVisit', (visitCount + 1).toString());
+          setShowTransition(true);
+          console.log('Returning visit, visit count incremented.');
+          break;
+        }
+        default:
+          console.warn('Unexpected visit count:', visitCount);
+          break;
       }
-      // else if (visitCount === 1) {
-      //   sessionStorage.setItem('countVisit', (visitCount + 1).toString());
-      //   console.log(
-      //     'Session storage value in else',
-      //     sessionStorage.getItem('countVisit')
-      //   );
-      // }
     }
   }, [location.pathname]);
 

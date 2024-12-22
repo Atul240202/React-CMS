@@ -116,7 +116,7 @@ const MotionContent = ({ motionData }) => {
           </div>
         </div>
       ))}
-      <style jsx>{`
+      <style>{`
         .animate .video-container {
           animation: expandVideo 1s ease-out forwards;
         }
