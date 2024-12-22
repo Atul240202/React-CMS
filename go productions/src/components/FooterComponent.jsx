@@ -21,7 +21,7 @@ const FooterComponent = () => {
       className='bg-black text-white w-full'
       style={styles.footerContainer}
     >
-      <div className='max-w-screen-2xl mx-auto px-4 py-8'>
+      <div className='max-w-[95vw] mx-auto px-4 py-8'>
         {isMobile ? (
           // Mobile Layout
           <div className='flex flex-col font-chesna'>

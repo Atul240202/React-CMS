@@ -82,8 +82,8 @@ export default function TransitionEffect({
     if (!isLoading && progress === 100 && !minimumVisibleTime) {
       const timer = setTimeout(() => {
         setIsAnimating(false);
-      }, 100);
-      onTransitionComplete();
+        onTransitionComplete();
+      }, 500);
 
       return () => clearTimeout(timer);
     }

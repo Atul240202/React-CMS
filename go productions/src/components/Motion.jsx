@@ -18,7 +18,7 @@ const Motion = () => {
   //   onLoad();
   // }, [onLoad]);
   return (
-    <div className={`motion-section ${isMobile ? 'h-auto' : 'h-[120vh]'}`}>
+    <div className={`motion-section ${isMobile ? 'h-auto' : 'h-auto'}`}>
       <div className='motion-header'>
         <div>
           <h2 className='font-chesna'>MOTION</h2>

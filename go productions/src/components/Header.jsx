@@ -78,7 +78,7 @@ const Header = () => {
           }
         `}
       </style>
-      <header className='fixed top-0 flex justify-between items-center w-screen h-[5vh] p-[18px] bg-[#0c0c0c] z-[1000]'>
+      <header className='fixed top-0 flex justify-between items-center w-screen h-[5vh] p-[18px] bg-[#0c0c0c] z-[999]'>
         <Link
           to='/'
           className={`z-[1001] ml-[1%]  ${isMobile ? 'w-[50%]' : 'w-[30%]'}`}

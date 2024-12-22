@@ -38,7 +38,7 @@ const StillsPageContent = ({ stillPageData }) => {
               ? 'flex-row'
               : 'flex-row-reverse'
           } 
-            items-center justify-between w-full max-w-[85rem] ${
+            items-center justify-between w-[90vw] ${
               isMobile ? 'h-auto' : 'h-[80vh]'
             } mb-8`}
         >
