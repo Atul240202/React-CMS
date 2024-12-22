@@ -110,7 +110,10 @@ const Slider = ({ onSliderLoad }) => {
   }
 
   return (
-    <div className='main-slider' onClick={handleClick}>
+    <div
+      className={`main-slider ${isMobile ? '' : 'min-h-[95vh]'}`}
+      onClick={handleClick}
+    >
       <div className='slider-layer current'>
         <img
           src={heroBanners[currentIndex].imageUrl}

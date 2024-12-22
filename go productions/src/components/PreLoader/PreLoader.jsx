@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const images = [
+const lanscapeimages = [
   'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624904/RT1586_1_-min_m8dqnz.jpg',
   'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/pantaloons5720_mzsih7.jpg',
   'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/240129-08-165B_ozq35j.jpg',
 ];
 
+const portraitImages = [
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734863902/Soch_Campaign_1386-min_xmjjko.jpg',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734863899/240515-FLIPKART-3118-min_uswfkp.jpg',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734863899/Chique_0234-min_l34p39.jpg',
+];
+
 function PreLoader({ isExiting }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const images = isMobile ? portraitImages : lanscapeimages;
 
   useEffect(() => {
     const handleResize = () => {

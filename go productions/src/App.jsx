@@ -39,6 +39,7 @@ function AppWithRouter() {
   const [isLoading, setIsLoading] = useState(true);
   const [showTransition, setShowTransition] = useState(false);
   const [transitionProgress, setTransitionProgress] = useState(0);
+  const [isExitingPreloader, setIsExitingPreloader] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -49,20 +50,26 @@ function AppWithRouter() {
       console.log('visit count', visitCount);
       if (visitCount === 0) {
         setIsFirstVisit(true);
-        sessionStorage.setItem('countVisit', 1);
+        sessionStorage.setItem('countVisit', '1');
+        console.log('First visit detected.');
       } else if (visitCount > 1) {
         setIsFirstVisit(false);
         sessionStorage.setItem('countVisit', (visitCount + 1).toString());
         setShowTransition(true);
-      } else {
+      } else if (visitCount === 1) {
         sessionStorage.setItem('countVisit', (visitCount + 1).toString());
+        console.log(
+          'Session storage value in else',
+          sessionStorage.getItem('countVisit')
+        );
       }
     }
   }, [location.pathname]);
 
   const handleSliderLoad = () => {
     if (isFirstVisit) {
-      setIsLoading(false);
+      setIsExitingPreloader(true);
+      setTimeout(() => setIsLoading(false), 2000);
     } else {
       setTransitionProgress(100);
       setTimeout(() => {
@@ -79,7 +86,7 @@ function AppWithRouter() {
   return (
     <>
       {isFirstVisit && isLoading && location.pathname === '/' && (
-        <PreLoader isExiting={!isLoading} />
+        <PreLoader isExiting={isExitingPreloader} />
       )}
       {!isFirstVisit && showTransition && location.pathname === '/' && (
         <TransitionEffect
