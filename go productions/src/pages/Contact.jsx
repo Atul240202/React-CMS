@@ -147,7 +147,7 @@ function Contact() {
   };
 
   const handleTransitionComplete = () => {
-    console.log('Transition complete! Content is now visible.');
+    // console.log('Transition complete! Content is now visible.');
   };
 
   return (
