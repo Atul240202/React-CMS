@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Slider.css';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../Firebase';
@@ -12,6 +12,7 @@ const Slider = ({ onSliderLoad }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +22,7 @@ const Slider = ({ onSliderLoad }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
   const prefetchImages = async (images) => {
     const promises = images.map(
       (image) =>
@@ -49,12 +51,14 @@ const Slider = ({ onSliderLoad }) => {
         await prefetchImages(fetchedBanners);
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
-        console.log('silder component progress', fetchedBanners);
-        onSliderLoad();
+        setAllImagesLoaded(true);
+        console.log('slider component progress', fetchedBanners);
+        onSliderLoad(true); // Pass true to indicate all images are loaded
       } catch (err) {
         console.error('Error fetching hero banners:', err);
         setError('Failed to load images. Please try again later.');
         setIsLoading(false);
+        onSliderLoad(false); // Pass false to indicate error in loading
       }
     };
 

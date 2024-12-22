@@ -35,48 +35,61 @@ function App() {
 
 function AppWithRouter() {
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showTransition, setShowTransition] = useState(false);
+  const [transitionProgress, setTransitionProgress] = useState(0);
 
   useEffect(() => {
-    // Check session storage for the countVisit value
-    const visitCount = parseInt(
-      sessionStorage.getItem('countVisit') || '0',
-      10
-    );
-
-    if (visitCount === 0 && location.pathname === '/') {
-      // First visit: Set isLoading to true and increment visit count
-      setIsLoading(true);
-      sessionStorage.setItem('countVisit', 1);
-    } else {
-      // Not the first visit: Increment visit count without showing preloader
-      if (location.pathname === '/') {
-        sessionStorage.setItem('countVisit', visitCount + 1);
+    if (location.pathname === '/') {
+      const visitCount = parseInt(
+        sessionStorage.getItem('countVisit') || '0',
+        10
+      );
+      console.log('visit count', visitCount);
+      if (visitCount === 0) {
+        setIsFirstVisit(true);
+        sessionStorage.setItem('countVisit', 1);
+      } else if (visitCount > 1) {
+        setIsFirstVisit(false);
+        sessionStorage.setItem('countVisit', (visitCount + 1).toString());
+        setShowTransition(true);
+      } else {
+        sessionStorage.setItem('countVisit', (visitCount + 1).toString());
       }
     }
   }, [location.pathname]);
 
   const handleSliderLoad = () => {
-    console.log('handle slider load in app');
-    setIsExiting(true);
+    if (isFirstVisit) {
+      setIsLoading(false);
+    } else {
+      setTransitionProgress(100);
+      setTimeout(() => {
+        setShowTransition(false);
+        setIsLoading(false);
+      }, 2000); // Adjust this timeout to match your transition duration
+    }
+  };
 
-    setTimeout(() => {
-      setIsLoading(false); // Hide the PreLoader after the animation
-    }, 1500);
+  const handleTransitionComplete = () => {
+    setShowTransition(false);
   };
 
   return (
     <>
-      {isLoading && location.pathname === '/' && (
-        <PreLoader isExiting={isExiting} />
+      {isFirstVisit && isLoading && location.pathname === '/' && (
+        <PreLoader isExiting={!isLoading} />
       )}
-      <div
-        style={{
-          visibility:
-            isLoading && location.pathname === '/' ? 'hidden' : 'visible',
-        }}
-      >
+      {!isFirstVisit && showTransition && location.pathname === '/' && (
+        <TransitionEffect
+          isLoading={isLoading}
+          progress={transitionProgress}
+          pageName='Home'
+          onTransitionComplete={handleTransitionComplete}
+        />
+      )}
+      <div>
         <AppContent onSliderLoad={handleSliderLoad} />
       </div>
     </>

@@ -35,7 +35,7 @@ function PreLoader({ isExiting }) {
     <AnimatePresence>
       {!isExiting && (
         <motion.div
-          className='fixed inset-0 bg-black z-50 flex flex-col items-center justify-center overflow-hidden'
+          className='fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center overflow-hidden'
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1, delay: exitTransitionDelay }}

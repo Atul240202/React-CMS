@@ -58,7 +58,7 @@ const SwiperComponent = () => {
   }
 
   return (
-    <div className='swiper-container'>
+    <div className={`swiper-container ${isMobile ? 'h-[80vh]' : 'h-auto'}`}>
       <Swiper
         modules={[Navigation]}
         loop={true}
