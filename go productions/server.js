@@ -27,7 +27,6 @@ Message: ${content}`,
       to: process.env.VITE_YOUR_WHATSAPP_NUMBER,
     });
 
-    console.log('Message sent:', message.sid);
     res.json({ success: true, messageSid: message.sid });
   } catch (error) {
     console.error('Error sending message:', error);
@@ -62,7 +61,6 @@ Message: ${message}
       to: process.env.VITE_YOUR_WHATSAPP_NUMBER,
     });
 
-    console.log('Message sent:', inputMessage.sid);
     res.json({ success: true, messageSid: inputMessage.sid });
   } catch (error) {
     console.error('Error sending message:', error);
@@ -72,5 +70,5 @@ Message: ${message}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  // console.log(`Server running on port ${PORT}`);
 });

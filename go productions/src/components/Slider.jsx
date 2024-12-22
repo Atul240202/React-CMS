@@ -52,7 +52,6 @@ const Slider = ({ onSliderLoad }) => {
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
         setAllImagesLoaded(true);
-        console.log('slider component progress', fetchedBanners);
         onSliderLoad(true); // Pass true to indicate all images are loaded
       } catch (err) {
         console.error('Error fetching hero banners:', err);

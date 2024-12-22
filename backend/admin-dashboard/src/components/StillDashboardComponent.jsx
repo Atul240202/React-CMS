@@ -213,7 +213,6 @@ const StillDashboardComponent = () => {
   };
 
   const handleCropComplete = async (id, croppedFile) => {
-    console.log('handleCropComplete', id, croppedFile);
     if (!selectedStill || !croppedFile) return;
 
     try {

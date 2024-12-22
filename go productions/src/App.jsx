@@ -47,20 +47,17 @@ function AppWithRouter() {
         sessionStorage.getItem('countVisit') || '0',
         10
       );
-      console.log('Visit count before switch:', visitCount);
 
       switch (true) {
         case visitCount === 0: {
           setIsFirstVisit(true);
           sessionStorage.setItem('countVisit', '1');
-          console.log('First visit detected, visit count set to 1.');
           break;
         }
         case visitCount >= 1: {
           setIsFirstVisit(false);
           sessionStorage.setItem('countVisit', (visitCount + 1).toString());
           setShowTransition(true);
-          console.log('Returning visit, visit count incremented.');
           break;
         }
         default:
