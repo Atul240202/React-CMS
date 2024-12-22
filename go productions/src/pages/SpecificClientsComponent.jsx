@@ -63,10 +63,8 @@ export default function SpecificClientsComponent() {
         setError('Failed to load client data. Please try again later.');
         setProgress(100); // Ensure progress reaches 100% even on error
       } finally {
-        console.log('In final block');
         setTimeout(() => {
           setLoading(false); // Ensure loading ends
-          console.log('In final timeout block');
           setShowContent(true); // Show the content (or error message if applicable)
         }, 500); // Allow a smooth transition
       }
