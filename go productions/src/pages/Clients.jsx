@@ -64,7 +64,9 @@ export default function Clients() {
   };
 
   const handleTransitionComplete = () => {
-    setShowContent(true);
+    setTimeout(() => {
+      setShowContent(true);
+    }, 3000);
   };
 
   // Animation variants for container
