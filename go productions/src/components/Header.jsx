@@ -78,10 +78,10 @@ const Header = () => {
           }
         `}
       </style>
-      <header className='fixed top-0 flex justify-between items-center w-screen h-[5vh] p-[18px] bg-[#0c0c0c] z-[999]'>
+      <header className='fixed top-0 flex justify-between items-center w-screen h-[4vh] p-[18px] bg-gradient-to-b from-white/12 to-gray-300/0 backdrop-blur-[9.95px] z-[999]'>
         <Link
           to='/'
-          className={`z-[1001] ml-[1%]  ${isMobile ? 'w-[50%]' : 'w-[30%]'}`}
+          className={`z-[1001] ml-[1%]  ${isMobile ? 'w-[50%]' : 'w-[20%]'}`}
         >
           <img src={gopro} alt='logo' className='w-full' />
         </Link>
@@ -121,7 +121,7 @@ const Header = () => {
                   <Link
                     key={item}
                     to={`/${item.toLowerCase().replace(' ', 's')}`}
-                    className='mobile-nav-link text-2xl text-white my-8 font-bold tracking-[0.5rem] transition-all duration-300'
+                    className='mobile-nav-link text-lg text-white my-8 font-bold tracking-[0.5rem] transition-all duration-300'
                     data-hover={item}
                     onClick={closeMenu}
                   >

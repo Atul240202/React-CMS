@@ -7,7 +7,7 @@ import MotionContent from '../components/MotionComponents/MotionContent';
 import TransitionEffect from '../components/TransitionEffect';
 
 export default function SpecificClientsComponent() {
-  const { clientKey } = useParams();
+  const { clientId } = useParams();
   const location = useLocation();
   const [isStill, setIsStill] = useState(true);
   const [clientData, setClientData] = useState(null);
@@ -29,7 +29,7 @@ export default function SpecificClientsComponent() {
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const clientDoc = doc(db, 'clients', clientKey);
+        const clientDoc = doc(db, 'clients', clientId);
         const clientSnapshot = await getDoc(clientDoc);
 
         if (clientSnapshot.exists()) {
@@ -72,7 +72,7 @@ export default function SpecificClientsComponent() {
 
     fetchClientData();
     window.scrollTo(0, 0);
-  }, [clientKey]);
+  }, [clientId]);
 
   const handleTransitionComplete = () => {
     setShowContent(true);
@@ -130,7 +130,7 @@ export default function SpecificClientsComponent() {
 
             <div style={styles.contentDisplay}>
               {isStill ? (
-                <StillsPageContent stillPageData={clientData?.stills || []} />
+                <StillsPageContent stillsData={clientData?.stills || []} />
               ) : (
                 <MotionContent motionData={clientData?.motions || []} />
               )}

@@ -57,7 +57,10 @@ const MotionContent = ({ motionData }) => {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center max-w-[90vw] mx-auto p-4 md:p-8 bg-black'>
+    <div
+      className={`flex flex-col items-center justify-center  mx-auto p-4 md:p-8 bg-black
+    ${isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'}`}
+    >
       {motionData.map((motion, index) => (
         <div
           key={motion.id}
@@ -71,7 +74,7 @@ const MotionContent = ({ motionData }) => {
         >
           <div
             className={`video-container ${
-              isMobile ? 'w-full mb-4 h-[20vh]' : 'w-[40%] h-[30vh]'
+              isMobile ? 'w-full mb-2 h-[20vh]' : 'w-[40%] h-[30vh]'
             }`}
           >
             <video
@@ -109,7 +112,7 @@ const MotionContent = ({ motionData }) => {
               {motion.text}
             </h2>
             <div
-              className={`border-top w-0 h-[1px] bg-white absolute top-0 left-0 ${
+              className={`border-top w-0 bg-white absolute top-0 left-0 ${
                 isMobile ? 'h-[0px]' : 'h-[1px]'
               }`}
             />

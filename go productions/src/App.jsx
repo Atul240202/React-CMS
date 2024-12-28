@@ -123,6 +123,10 @@ function AppContent({ onSliderLoad }) {
             path='/stills/:clientId/:stillId'
             element={<SpecificStillsComponent />}
           />
+          <Route
+            path='/stills/:stillId'
+            element={<SpecificStillsComponent />}
+          />
           <Route path='/locations' element={<Locations />} />
           <Route
             path='/locations/:locationKey'
@@ -130,7 +134,7 @@ function AppContent({ onSliderLoad }) {
           />
           <Route path='/clients' element={<Clients />} />
           <Route
-            path='/clients/:clientKey'
+            path='/clients/:clientId'
             element={<SpecificClientsComponent />}
           />
           <Route path='/contact' element={<Contact />} />

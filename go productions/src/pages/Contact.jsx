@@ -159,7 +159,12 @@ function Contact() {
         onTransitionComplete={handleTransitionComplete}
       />
       {!loading && (
-        <div style={styles.container} className='font-chesna'>
+        <div
+          style={styles.container}
+          className={`font-chesna ${
+            isMobile ? 'max-w-[90vw]' : 'max-w-[75vw]'
+          }`}
+        >
           <h1 style={styles.title} className='font-chesna'>
             CONTACT US
           </h1>
@@ -278,6 +283,7 @@ const styles = {
     color: '#fff',
     padding: '2rem',
     textAlign: 'center',
+    margin: 'auto',
   },
   title: {
     fontSize: '2.5rem',

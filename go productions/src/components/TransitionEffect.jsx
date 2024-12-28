@@ -115,7 +115,7 @@ export default function TransitionEffect({
                 GO
               </span>
               <span
-                className={`productions ${
+                className={`productions font-chesnal ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
                     : 'text-[54.85px] leading-[76.79px]'
@@ -136,7 +136,7 @@ export default function TransitionEffect({
                 GO
               </span>
               <span
-                className={`productions ${
+                className={`productions font-chesnal ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
                     : 'text-[54.85px] leading-[76.79px]'

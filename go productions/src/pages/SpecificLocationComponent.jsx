@@ -223,7 +223,7 @@ const styles = {
     width: '100%',
     height: 'auto',
     marginBottom: '1.5rem',
-    paddingTop: '10vh',
+    // paddingTop: '8vh',
     cursor: 'pointer',
   },
   headerImage: {

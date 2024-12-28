@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const StillsPageContent = ({ stillPageData }) => {
+const StillsPageContent = ({ stillsData }) => {
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  const [visibleItems, setVisibleItems] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  React.useEffect(() => {
+  const itemsRef = useRef([]);
+
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -18,59 +21,174 @@ const StillsPageContent = ({ stillPageData }) => {
     navigate(`/stills/${still.clientKey}/${still.id}`, { state: { still } });
   };
 
-  if (!Array.isArray(stillPageData) || stillPageData.length === 0) {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleItems((prevVisibleItems) => ({
+              ...prevVisibleItems,
+              [entry.target.dataset.id]: true,
+            }));
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    itemsRef.current.forEach((item) => {
+      if (item) observer.observe(item);
+    });
+
+    return () => {
+      itemsRef.current.forEach((item) => {
+        if (item) observer.unobserve(item);
+      });
+    };
+  }, []);
+
+  if (!Array.isArray(stillsData) || stillsData.length === 0) {
     return (
       <div className='text-white text-xl text-center mt-[10vh] mb-[10vh]'>
-        No stills available for the selected filter.
+        No stills data available for the selected filter.
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col items-center p-4 md:p-8 bg-black'>
-      {stillPageData.map((item, index) => (
+    <div
+      className={`flex flex-col items-center justify-center ${
+        isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'
+      } mx-auto p-4 md:p-8 bg-black`}
+    >
+      {stillsData.map((still, index) => (
         <div
-          key={item.id || index}
-          className={`flex ${
-            isMobile
-              ? 'flex-col'
-              : index % 2 === 0
-              ? 'flex-row'
-              : 'flex-row-reverse'
-          } 
-            items-center justify-between w-[90vw] ${
-              isMobile ? 'h-auto' : 'h-[80vh]'
-            } mb-8`}
+          key={still.id || index}
+          className={`w-full flex ${
+            isMobile ? 'flex-col items-center' : 'items-center justify-between'
+          } mb-8 md:mb-12 text-white relative ${
+            visibleItems[still.id] ? 'animate' : ''
+          }`}
+          data-id={still.id}
+          ref={(el) => (itemsRef.current[index] = el)}
         >
           <div
-            className={`flex flex-col items-center justify-center ${
-              isMobile ? 'w-full' : 'w-2/3'
+            className={`image-container ${
+              isMobile ? 'w-full mb-2 h-[25vh]' : 'w-[40%] h-[40vh]'
             }`}
           >
             <img
-              src={item.image}
-              alt={item.text}
-              className={`w-full ${
-                isMobile ? 'h-[40vh]' : 'h-[70vh]'
-              } object-cover cursor-pointer`}
-              onClick={() => handleClick(item)}
+              className='w-full h-full object-cover cursor-pointer'
+              src={still.image}
+              alt={still.text}
+              onClick={() => handleClick(still)}
               loading='lazy'
             />
-            <div className='flex flex-row items-center justify-between w-full'>
-              <h2 className='text-xl md:text-2xl lg:text-3xl font-chesnal text-white'>
-                {item.text}
-              </h2>
-              <img
-                src={item.logo || item.clientImage}
-                alt='Logo'
-                className='w-24 md:w-32 lg:w-[150px] h-auto'
-                loading='lazy'
-              />
-            </div>
           </div>
-          {!isMobile && <div className='flex-1' />}
+          <div
+            className={`flex ${
+              isMobile
+                ? 'flex-row items-center'
+                : 'flex-col items-start h-[40vh]'
+            } justify-between relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
+          >
+            <img
+              src={still.logo || still.clientImage}
+              alt='Logo'
+              className={`logo ${
+                isMobile ? 'w-28 md:w-40 mb-4 ml-0' : 'w-56 max-h-[10vh]'
+              } h-auto self-end mb-auto`}
+              loading='lazy'
+            />
+            <h2
+              className={`still-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna ${
+                isMobile
+                  ? 'text-center mt-0 text-lg mr-7'
+                  : 'text-left mb-0 max-h-[10vh]'
+              }`}
+            >
+              {still.text}
+            </h2>
+            <div
+              className={`border-top w-0 bg-white absolute top-0 left-0 ${
+                isMobile ? 'h-[0px]' : 'h-[1px]'
+              }`}
+            />
+          </div>
         </div>
       ))}
+      <style>{`
+        .animate .image-container {
+          animation: expandImage 1s ease-out forwards;
+        }
+        .animate .still-text {
+          animation: slideTextFromBehind 1s ease-out forwards;
+        }
+        .animate .logo {
+          animation: slideLogoFromRight 1s ease-out forwards;
+        }
+        .animate .border-top {
+          animation: expandBorderFromLeft 1s ease-out forwards;
+        }
+
+        @keyframes expandImage {
+          from {
+            transform: scale(0.5);
+            transform-origin: bottom left;
+          }
+          to {
+            transform: scale(1);
+            transform-origin: bottom left;
+          }
+        }
+
+        @keyframes slideTextFromBehind {
+          0% {
+            transform: translateX(-120%);
+            opacity: 0;
+          }
+          70% {
+            transform: translateX(20%);
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(30px);
+          }
+        }
+
+        @keyframes slideLogoFromRight {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes expandBorderFromLeft {
+          from {
+            width: 0;
+          }
+          to {
+            width: 100%;
+          }
+        }
+
+        .image-container,
+        .still-text,
+        .logo {
+          opacity: 0;
+        }
+
+        .animate .image-container,
+        .animate .still-text,
+        .animate .logo {
+          opacity: 1;
+        }
+      `}</style>
     </div>
   );
 };
