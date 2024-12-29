@@ -74,7 +74,7 @@ const StillsPageContent = ({ stillsData }) => {
           ref={(el) => (itemsRef.current[index] = el)}
         >
           <div
-            className={`image-container ${
+            className={`image-container-1 ${
               isMobile ? 'w-full mb-2 h-[25vh]' : 'w-[40%] h-[40vh]'
             }`}
           >
@@ -119,7 +119,7 @@ const StillsPageContent = ({ stillsData }) => {
         </div>
       ))}
       <style>{`
-        .animate .image-container {
+        .animate .image-container-1 {
           animation: expandImage 1s ease-out forwards;
         }
         .animate .still-text {
@@ -177,13 +177,13 @@ const StillsPageContent = ({ stillsData }) => {
           }
         }
 
-        .image-container,
+        .image-container-1,
         .still-text,
         .logo {
           opacity: 0;
         }
 
-        .animate .image-container,
+        .animate .image-container-1,
         .animate .still-text,
         .animate .logo {
           opacity: 1;
