@@ -21,6 +21,8 @@ export default function SpecificMotionComponent() {
         let motionData;
         if (location.state?.motion) {
           motionData = location.state.motion;
+          console.log('Motion data top', motionData);
+          console.log('Motion data state', location.state);
           setProgress(100);
         } else {
           const clientDoc = doc(db, 'clients', clientId);
@@ -41,6 +43,7 @@ export default function SpecificMotionComponent() {
               clientImage: clientData.image,
               ...motionData,
             };
+            console.log('Motion data', motionData);
 
             setProgress(100);
           } else {
@@ -102,7 +105,7 @@ export default function SpecificMotionComponent() {
               loop
               style={styles.video}
               className={`${
-                isMobile ? 'w-[100%] mt-[5vh] ' : 'w-[100%] h-[95vh]'
+                isMobile ? 'w-[100%] mt-[5vh] ' : 'w-[100%] h-[100vh]'
               }`}
               onClick={handleVideoClick}
             />
@@ -148,10 +151,23 @@ export default function SpecificMotionComponent() {
             <h3
               style={styles.creditContent}
               className={`${
-                isMobile ? 'text-sm ' : 'text-2xl leading-[0] flex-1'
+                isMobile
+                  ? 'text-sm '
+                  : 'items-center gap-2 text-2xl leading-[0] flex-1'
               }`}
             >
-              CLIENT- {motion.clientName}
+              CLIENT-
+              {motion.clientName ? (
+                <>CLIENT- {motion.clientName}</>
+              ) : (
+                <img
+                  src={motion.logo}
+                  alt='Logo'
+                  style={styles.logo}
+                  loading='lazy'
+                  className={` ${isMobile ? 'max-w-[100px]' : 'w-[200px]'}`}
+                />
+              )}
             </h3>
           </div>
           <hr
@@ -227,7 +243,6 @@ export default function SpecificMotionComponent() {
 
 const styles = {
   container: {
-    paddingTop: '5vh',
     paddingBottom: '5vh',
     position: 'relative',
     textAlign: 'center',

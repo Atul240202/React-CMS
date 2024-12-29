@@ -63,8 +63,8 @@ function PreLoader({ isExiting }) {
 
           {/* Subtitle */}
           <motion.h4
-            className={`text-white font-chesna ${
-              isMobile ? 'text-sm mt-2' : 'text-2xl mt-0'
+            className={`text-white font-chesnal ${
+              isMobile ? 'text-sm mt-2' : 'text-xl mt-0'
             }`}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}

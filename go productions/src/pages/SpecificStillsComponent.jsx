@@ -28,6 +28,7 @@ export default function SpecificStillsComponent() {
           setProgress(50);
         } else {
           const clientDoc = await getDoc(doc(db, 'clients', clientId));
+          console.log('client doc', clientId);
           setProgress(30);
           if (clientDoc.exists()) {
             const clientData = clientDoc.data();
@@ -162,7 +163,7 @@ export default function SpecificStillsComponent() {
           alt={still.text}
           style={styles.mainImage}
           className={`${
-            isMobile ? 'h-[30vh] w-[100%] m-auto' : 'h-[90vh] w-[100%]'
+            isMobile ? 'h-[30vh] w-[100%] m-auto' : 'h-[100vh] w-[100%]'
           }`}
         />
         <div
@@ -237,9 +238,22 @@ export default function SpecificStillsComponent() {
           ></div>
           <div
             style={styles.creditContent}
-            className={`${isMobile ? 'text-sm' : 'text-2xl flex-1 px-4'}`}
+            className={`${
+              isMobile ? 'text-sm' : 'items-center gap-2 text-2xl flex-1 px-4'
+            }`}
           >
-            CLIENT: {still.clientName}
+            CLIENT-
+            {still.clientName ? (
+              <>CLIENT- {still.clientName}</>
+            ) : (
+              <img
+                src={still.logo}
+                alt='Logo'
+                style={styles.logo}
+                loading='lazy'
+                className={` ${isMobile ? 'max-w-[100px]' : 'w-[200px]'}`}
+              />
+            )}{' '}
           </div>
         </div>
         <hr style={styles.styleLine1} />
@@ -296,7 +310,6 @@ const styles = {
     textAlign: 'center',
     backgroundColor: '#000',
     color: '#fff',
-    marginTop: '10vh',
   },
   imgTextContainer: {
     position: 'relative',

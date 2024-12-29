@@ -27,7 +27,7 @@ const FooterComponent = () => {
           <div className='flex flex-col font-chesna'>
             <div className='flex justify-between items-center mb-8'>
               <Link to='/' className='w-32'>
-                <img src={gopro} alt='GO PRODUCTIONS' className='w-[200px]' />
+                <img src={gopro} alt='GO PRODUCTIONS' className='w-[150px]' />
               </Link>
               <div className='flex gap-4 text-xl'>
                 <FaInstagram />
@@ -93,9 +93,9 @@ const FooterComponent = () => {
           <div className='flex flex-col font-chesna'>
             <div className='flex justify-between items-start mb-12'>
               <Link to='/' className='w-1/4'>
-                <img src={gopro} alt='logo' className='w-[400px]' />
+                <img src={gopro} alt='logo' className='w-[300px]' />
               </Link>
-              <div className='flex gap-6 text-2xl'>
+              <div className='flex gap-6 text-xl'>
                 <FaInstagram />
                 <FaTwitter />
                 <FaFacebook />

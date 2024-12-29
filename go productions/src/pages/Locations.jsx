@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../Firebase';
@@ -15,6 +15,9 @@ export default function Locations() {
   const [showContent, setShowContent] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [hoveredItems, setHoveredItems] = useState(new Set());
+  const [visibleItems, setVisibleItems] = useState({});
+
+  const itemsRef = useRef([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,6 +57,33 @@ export default function Locations() {
     fetchLocations();
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleItems((prevVisibleItems) => ({
+              ...prevVisibleItems,
+              [entry.target.dataset.id]: true,
+            }));
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    itemsRef.current.forEach((item) => {
+      if (item) observer.observe(item);
+    });
+
+    return () => {
+      itemsRef.current.forEach((item) => {
+        if (item) observer.unobserve(item);
+      });
+    };
+  }, [locations, showContent]);
+
   const navigateToLocationPage = (locationId) => {
     navigate(`/locations/${locationId}`);
   };
@@ -62,17 +92,17 @@ export default function Locations() {
     setShowContent(true);
   };
 
-  const textVariants = {
-    initial: { y: 100, opacity: 0 },
-    hover: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
-  };
+  // const textVariants = {
+  //   initial: { y: 100, opacity: 0 },
+  //   hover: {
+  //     y: 0,
+  //     opacity: 1,
+  //     transition: {
+  //       duration: 0.6,
+  //       ease: 'easeOut',
+  //     },
+  //   },
+  // };
 
   return (
     <>
@@ -153,69 +183,61 @@ export default function Locations() {
             </div>
           </div>
 
-          <div className='flex flex-col items-center p-4 md:p-8 bg-black'>
-            {locations.map((item, index) => (
-              <motion.div
-                key={item.id}
-                className={`flex ${
+          {/* Internal location grid starts here */}
+          <div
+            className={`flex flex-col items-center justify-center mx-auto ${
+              isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'
+            } p-4 md:p-8 bg-black`}
+          >
+            {locations.map((location, index) => (
+              <div
+                key={location.id}
+                className={`w-full flex ${
                   isMobile
                     ? 'flex-col items-center'
-                    : index % 2 === 0
-                    ? 'flex-row'
-                    : 'flex-row-reverse'
-                } 
-                  justify-between w-full max-w-[85rem] ${
-                    isMobile ? 'h-auto mb-12' : 'h-[60vh] mb-8'
-                  }`}
-                initial='initial'
-                animate={hoveredItems.has(item.id) ? 'hover' : 'initial'}
-                whileHover='hover'
-                onHoverStart={() => {
-                  setHoveredItems((prev) => new Set(prev).add(item.id));
-                }}
+                    : 'items-center justify-between'
+                } mb-8 md:mb-12 text-white relative ${
+                  visibleItems[location.id] ? 'animate' : ''
+                }`}
+                data-id={location.id}
+                ref={(el) => (itemsRef.current[index] = el)}
               >
                 <div
-                  className={`${isMobile ? 'w-full' : 'w-1/2'} cursor-pointer`}
-                  onClick={() => navigateToLocationPage(item.id)}
+                  className={`image-container ${
+                    isMobile ? 'w-full mb-2 h-[25vh]' : 'w-[40%] h-[35vh]'
+                  }`}
+                  onClick={() => navigateToLocationPage(location.id)}
                 >
                   <img
-                    src={item.image}
-                    alt={item.text}
-                    className={`w-full ${
-                      isMobile ? 'h-[40vh]' : 'h-[60vh]'
-                    } object-cover`}
+                    className='w-full h-full object-cover cursor-pointer'
+                    src={location.image}
+                    alt={location.text}
                     loading='lazy'
                   />
                 </div>
                 <div
-                  className={`flex  ${
+                  className={`flex ${
                     isMobile
-                      ? 'flex-row w-full text-center items-start justify-between'
-                      : 'justify-center items-center flex-col w-1/2'
-                  }`}
+                      ? 'flex-row items-center'
+                      : 'flex-col items-start h-[35vh]'
+                  } justify-end relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
                 >
-                  <motion.h2
-                    variants={isMobile ? '' : textVariants}
-                    className={`text-white font-chesna ${
+                  <h2
+                    className={`location-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna ${
                       isMobile
-                        ? 'text-lg md:text-xl mb-4 max-w-[35%]'
-                        : 'text-4xl mb-1'
+                        ? 'text-center mt-0 text-lg mr-7'
+                        : 'text-left mb-0 max-h-[10vh]'
                     }`}
                   >
-                    {item.text}
-                  </motion.h2>
-                  <motion.h2
-                    variants={isMobile ? '' : textVariants}
-                    className={`text-white font-chesna ${
-                      isMobile
-                        ? 'text-lg md:text-xl max-w-[60%]'
-                        : 'text-3xl text-center ml-1'
+                    {location.text}
+                  </h2>
+                  <div
+                    className={`border-top w-0 bg-white absolute top-0 left-0 ${
+                      isMobile ? 'h-[0px]' : 'h-[1px]'
                     }`}
-                  >
-                    {item.address}
-                  </motion.h2>
+                  />
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </>
@@ -223,6 +245,61 @@ export default function Locations() {
       {error && (
         <div className='text-white text-xl text-center mt-8'>{error}</div>
       )}
+      <style>{`
+        .animate .image-container {
+          animation: expandImage 1s ease-out forwards;
+        }
+        .animate .location-text {
+          animation: slideTextFromBehind 1s ease-out forwards;
+        }
+        .animate .border-top {
+          animation: expandBorderFromLeft 1s ease-out forwards;
+        }
+
+        @keyframes expandImage {
+          from {
+            transform: scale(0.5);
+            transform-origin: bottom left;
+          }
+          to {
+            transform: scale(1);
+            transform-origin: bottom left;
+          }
+        }
+
+        @keyframes slideTextFromBehind {
+          0% {
+            transform: translateX(-120%);
+            opacity: 0;
+          }
+          70% {
+            transform: translateX(20%);
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(30px);
+          }
+        }
+
+        @keyframes expandBorderFromLeft {
+          from {
+            width: 0;
+          }
+          to {
+            width: 100%;
+          }
+        }
+
+        .image-container,
+        .location-text {
+          opacity: 0;
+        }
+
+        .animate .image-container,
+        .animate .location-text {
+          opacity: 1;
+        }
+      `}</style>
     </>
   );
 }
