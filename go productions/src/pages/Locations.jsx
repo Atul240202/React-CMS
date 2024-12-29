@@ -124,26 +124,26 @@ export default function Locations() {
                 className={`flex ${
                   isMobile
                     ? 'flex-row justify-center items-center'
-                    : 'justify-between'
-                } w-[90vw] md:w-[80vw] mx-auto  gap-2.5 ${
+                    : 'justify-between w-[60vw]'
+                }  mx-auto  gap-2.5 ${
                   isMobile ? 'h-auto mb-[3vh]' : 'h-[35vh] mb-[5vh]'
                 }`}
               >
                 <motion.h1
-                  initial={{ x: '-150%' }}
+                  initial={{ x: '-200%' }}
                   animate={{ x: 0 }}
                   transition={{ duration: 0.7, delay: 0.5 }}
-                  className={`font-extrabold text-center ${
+                  className={`text-center ${
                     isMobile
-                      ? 'text-4xl md:text-5xl lg:text-6xl mb-0'
-                      : 'text-[150px] -mb-[30px] self-end'
+                      ? 'text-4xl md:text-5xl lg:text-6xl mb-0 font-extrabold '
+                      : 'text-[100px] -mb-[30px] self-end font-bold '
                   }`}
                 >
                   FEATURE
                 </motion.h1>
                 {!isMobile && (
                   <img
-                    className='fadeinout w-[30%] max-h-[30vh] self-center'
+                    className='fadeinout w-[40%] max-h-[30vh] self-center'
                     src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/1ad23f85ffce6677e3e4a7975417c597_y5rffi.png'
                     alt='slider-image'
                     loading='lazy'
@@ -152,18 +152,18 @@ export default function Locations() {
               </div>
 
               {!isMobile && (
-                <div className='flex justify-between w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 h-[35vh]'>
+                <div className='flex justify-between w-[60vw] mx-auto mb-[5vh] gap-2.5 h-[35vh]'>
                   <img
-                    className='fadeinout w-[30%]'
+                    className='fadeinout w-[40%]'
                     src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728323935/abd03797bf7fe8d160553bd5d01191bd_gv5vbi.png'
                     alt='slider-image'
                     loading='lazy'
                   />
                   <motion.h1
-                    initial={{ x: '150%' }}
+                    initial={{ x: '200%' }}
                     animate={{ x: 0 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
-                    className='font-extrabold leading-none text-[150px] -mt-[27px]'
+                    className='font-bold leading-none text-[100px] -mt-[10px]'
                   >
                     LOCATION
                   </motion.h1>
@@ -186,7 +186,7 @@ export default function Locations() {
           {/* Internal location grid starts here */}
           <div
             className={`flex flex-col items-center justify-center mx-auto ${
-              isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'
+              isMobile ? 'max-w-[90vw]' : 'max-w-[75vw]'
             } p-4 md:p-8 bg-black`}
           >
             {locations.map((location, index) => (
@@ -223,10 +223,10 @@ export default function Locations() {
                   } justify-end relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
                 >
                   <h2
-                    className={`location-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna ${
+                    className={`location-text min-mt-[10vh]  ${
                       isMobile
-                        ? 'text-center mt-0 text-lg mr-7'
-                        : 'text-left mb-0 max-h-[10vh]'
+                        ? 'text-center mt-0 text-lg mr-7 font-chesna'
+                        : 'text-left mb-0 max-h-[10vh] text-4xl font-chesnal '
                     }`}
                   >
                     {location.text}

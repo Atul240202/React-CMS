@@ -217,9 +217,9 @@ function Contact() {
             <button
               type='submit'
               style={styles.button}
-              className={`rounded-[0] ${
-                isMobile ? 'text-[20px]' : 'text-[1.5rem]'
-              }`}
+              className={`rounded-[0] font-chesna bg-[#111]  ${
+                isMobile ? 'text-[20px]' : 'text-[1.5rem] '
+              } transition-all duration-300 hover:bg-white/20`}
             >
               SEND
             </button>
@@ -342,7 +342,7 @@ const styles = {
   button: {
     width: '25%',
     padding: '0.5rem',
-    backgroundColor: '#111',
+    // backgroundColor: '#111',
     border: 'none',
     color: '#fff',
     fontWeight: 'bold',

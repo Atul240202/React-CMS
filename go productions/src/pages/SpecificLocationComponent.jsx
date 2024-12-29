@@ -158,7 +158,7 @@ export default function SpecificLocationComponent() {
               <button
                 className={`${
                   isMobile ? 'text-md px-3 py-2' : 'text-xl px-6 py-3'
-                } bg-white/10 border-2 uppercase font-chesna rounded-[0] border-white text-white  hover:bg-white/20 hover:border-white transition-all duration-300`}
+                } bg-white/10 border-0 uppercase font-chesna rounded-[0] border-white text-white  hover:bg-white/20 hover:border-white transition-all duration-300`}
                 onClick={openForm}
               >
                 Request availability

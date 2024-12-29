@@ -114,10 +114,10 @@ const SliderComponent = () => {
               />
               <div
                 className={`sample-text ${
-                  isMobile ? 'text-[30px]' : 'text-[50px]'
+                  isMobile ? 'text-[30px]' : 'text-[40px]'
                 }`}
               >
-                <p className='font-chesna'>{item.productTitle}</p>
+                <p className='font-chesnal'>{item.productTitle}</p>
               </div>
             </SwiperSlide>
           ))}

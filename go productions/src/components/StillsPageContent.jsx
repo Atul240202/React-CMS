@@ -59,7 +59,7 @@ const StillsPageContent = ({ stillsData }) => {
   return (
     <div
       className={`flex flex-col items-center justify-center ${
-        isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'
+        isMobile ? 'max-w-[90vw]' : 'max-w-[75vw]'
       } mx-auto p-4 md:p-8 bg-black`}
     >
       {stillsData.map((still, index) => (
@@ -75,7 +75,7 @@ const StillsPageContent = ({ stillsData }) => {
         >
           <div
             className={`image-container-1 ${
-              isMobile ? 'w-full mb-2 h-[25vh]' : 'w-[40%] h-[40vh]'
+              isMobile ? 'w-full mb-2 h-[25vh]' : 'w-[40%] h-[30vh]'
             }`}
           >
             <img
@@ -90,7 +90,7 @@ const StillsPageContent = ({ stillsData }) => {
             className={`flex ${
               isMobile
                 ? 'flex-row items-center'
-                : 'flex-col items-start h-[40vh]'
+                : 'flex-col items-start h-[30vh]'
             } justify-between relative ${isMobile ? 'w-full' : 'w-[60%]'}`}
           >
             <img
@@ -102,10 +102,10 @@ const StillsPageContent = ({ stillsData }) => {
               loading='lazy'
             />
             <h2
-              className={`still-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna ${
+              className={`still-text min-mt-[10vh]  ${
                 isMobile
-                  ? 'text-center mt-0 text-lg mr-7'
-                  : 'text-left mb-0 max-h-[10vh]'
+                  ? 'text-center mt-0 text-lg mr-7 font-chesna'
+                  : 'text-left mb-0 max-h-[10vh] text-4xl font-chesnal '
               }`}
             >
               {still.text}

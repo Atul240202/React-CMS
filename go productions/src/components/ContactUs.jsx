@@ -102,7 +102,10 @@ const ContactUs = () => {
             className='contact-textarea'
             required
           ></textarea>
-          <button type='submit' className='contact-btn font-chesna'>
+          <button
+            type='submit'
+            className='contact-btn bg-[#444] hover:bg-white/20 font-chesna'
+          >
             SEND
           </button>
           {statusMessage && <p className='status-message'>{statusMessage}</p>}

@@ -144,20 +144,20 @@ export default function Stills() {
       <StillSlider />
       <div
         className={`flex flex-row justify-evenly my-4 ${
-          isMobile ? 'space-x-2 mx-2' : 'space-x-4 max-w-[50%] ml-[10vw]'
+          isMobile ? 'space-x-2 mx-2' : 'space-x-4 max-w-[50%] ml-[12vw]'
         }`}
       >
         {filterOptions.map((option) => (
           <button
             key={option}
-            className={`focus:outline-none border-0 bg-black ${
+            className={`focus:outline-none border-0  bg-black ${
               activeFilter === option
                 ? 'border-b-2'
                 : 'border-b-2 border-transparent'
             } ${
               isMobile
                 ? 'text-md px-2 py-1 font-chesnal'
-                : ' font-chesna text-xl px-4 py-2'
+                : ' font-chesnal text-xl px-4 py-2'
             } `}
             onClick={() => setActiveFilter(option)}
           >

@@ -138,7 +138,7 @@ const Header = () => {
                 <Link
                   key={item}
                   to={`/${item.toLowerCase()}`}
-                  className='nav-link ml-5 text-white text-lg font-semibold relative overflow-hidden inline-block transition-colors duration-300'
+                  className='nav-link ml-5 text-white text-[18px] font-semibold relative overflow-hidden inline-block transition-colors duration-300'
                   data-hover={item}
                 >
                   <span>{item}</span>
