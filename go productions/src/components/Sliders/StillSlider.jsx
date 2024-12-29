@@ -36,31 +36,31 @@ function StillSlider() {
     <div
       className={`w-full ${
         isMobile ? 'h-[25vh]' : 'h-[90vh]'
-      } pt-[15vh] relative overflow-hidden`}
+      } pt-[12vh] relative overflow-hidden`}
     >
       <div className='flex flex-col'>
         <div
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
-          } w-[90vw] md:w-[80vw] mx-auto  gap-2.5 ${
+          } w-[60vw]  mx-auto  gap-2.5 ${
             isMobile ? 'h-auto mb-[2vh]' : 'h-[38vh] mb-[5vh]'
           }`}
         >
           <motion.h1
-            initial={{ x: '-120%' }}
+            initial={{ x: '-180%' }}
             animate={{ x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className={`font-extrabold m-0 ${
+            className={`m-0 ${
               isMobile
-                ? 'text-5xl md:text-7xl lg:text-8xl mb-4'
-                : 'text-[150px] max-h-[25vh] leading-none pt-[15vh]'
+                ? 'text-5xl md:text-7xl font-extrabold lg:text-8xl mb-4'
+                : 'text-[100px] max-h-[25vh] font-bold pt-[19vh]'
             }`}
           >
             FEATURE
           </motion.h1>
           {!isMobile && (
             <img
-              className='fadeinout w-[30%] max-h-[30vh] self-center'
+              className='fadeinout w-[40%] max-h-[30vh] self-center'
               src='https://res.cloudinary.com/da3r1iagy/image/upload/v1727814576/9d8d7a1ee3ba214afae49997eaedf852_l6snn2.png'
               alt='slider-image'
               loading='lazy'
@@ -71,13 +71,13 @@ function StillSlider() {
         <div
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
-          } w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 ${
-            isMobile ? 'h-auto' : 'h-[43vh]'
+          } w-[60vw] mx-auto mb-[5vh] gap-2.5 ${
+            isMobile ? 'h-auto' : 'h-[40vh]'
           }`}
         >
           {!isMobile && (
             <img
-              className='fadeinout w-[45%] max-h-[40vh] ml-[10px]'
+              className='fadeinout w-[55%] max-h-[35vh]'
               src='https://res.cloudinary.com/da3r1iagy/image/upload/v1728759721/FEST0088-scaled_uispvw.png'
               alt='slider-image'
               loading='lazy'
@@ -85,13 +85,13 @@ function StillSlider() {
           )}
           <div className='flex flex-col'>
             <motion.h1
-              initial={{ x: '150%' }}
+              initial={{ x: '210%' }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className={`font-extrabold leading-none ${
+              className={` ${
                 isMobile
-                  ? 'text-5xl md:text-7xl lg:text-8xl text-center mt-0'
-                  : 'text-[170px] -mt-[27px]'
+                  ? 'text-5xl md:text-7xl font-extrabold lg:text-8xl text-center mt-0'
+                  : 'text-[100px] -mt-[27px] font-bold'
               } mb-0`}
             >
               STILL
@@ -107,7 +107,7 @@ function StillSlider() {
                   className={`text-center font-bold ${
                     isMobile
                       ? 'text-xl md:text-6xl lg:text-7xl text-center'
-                      : 'text-[35px]'
+                      : 'text-[25px]'
                   } mt-7`}
                 >
                   {words[currentIndex]}
@@ -118,7 +118,7 @@ function StillSlider() {
                   src={gifSrc}
                   alt='Animation'
                   className={`object-cover ${
-                    isMobile ? 'h-14 w-14 mt-5 absolute' : 'h-20 w-20'
+                    isMobile ? 'h-14 w-14 mt-5 absolute' : 'h-15 w-12'
                   }`}
                 />
               </div>

@@ -42,25 +42,25 @@ function MotionSlider() {
         <div
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
-          } w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 ${
+          } w-[60vw] mx-auto mb-[5vh] gap-2.5 ${
             isMobile ? 'h-auto' : 'h-[30vh]'
           }`}
         >
           <motion.h1
-            initial={{ x: '-150%' }}
+            initial={{ x: '-180%' }}
             animate={{ x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className={`font-extrabold m-0 ${
+            className={` m-0 ${
               isMobile
-                ? 'text-5xl '
-                : 'text-[150px] max-h-[25vh] leading-none pt-[11vh]'
+                ? 'text-5xl font-extrabold '
+                : 'text-[100px] font-bold max-h-[25vh] leading-none pt-[19vh]'
             }`}
           >
             FEATURE
           </motion.h1>
           {!isMobile && (
             <video
-              className='fadeinout object-cover w-[30%] max-h-[30vh] self-center'
+              className='fadeinout object-cover w-[40%] max-h-[30vh] self-center'
               src='https://res.cloudinary.com/da3r1iagy/video/upload/v1727868661/-ceaf-47ec-8e60-9468da999b3f_gemyqj.mp4'
               muted
               autoPlay
@@ -72,13 +72,13 @@ function MotionSlider() {
         <div
           className={`flex ${
             isMobile ? 'flex-col items-center' : 'justify-between'
-          } w-[90vw] md:w-[80vw] mx-auto mb-[5vh] gap-2.5 ${
+          } w-[60vw] mx-auto mb-[5vh] gap-2.5 ${
             isMobile ? 'h-auto' : 'h-[40vh]'
           }`}
         >
           {!isMobile && (
             <video
-              className='fadeinout object-cover w-[40%] mt-6'
+              className='fadeinout object-cover w-[50%] mt-6'
               src='https://res.cloudinary.com/da3r1iagy/video/upload/v1727868655/-f4de-4cd6-8720-860efd6c272b_ac1fhk.mp4'
               muted
               autoPlay
@@ -87,13 +87,13 @@ function MotionSlider() {
           )}
           <div className='flex flex-col'>
             <motion.h1
-              initial={{ x: '150%' }}
+              initial={{ x: '180%' }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className={`font-extrabold leading-none my-0 ${
+              className={` leading-none my-0 ${
                 isMobile
-                  ? 'text-5xl md:text-7xl lg:text-8xl text-center'
-                  : 'text-[150px]'
+                  ? 'text-5xl md:text-7xl font-extrabold lg:text-8xl text-center'
+                  : 'text-[100px] font-bold'
               }`}
             >
               MOTION
@@ -109,7 +109,7 @@ function MotionSlider() {
                   className={`leading-none m-0 place-items-center mt-7 ${
                     isMobile
                       ? 'text-xl md:text-6xl lg:text-7xl text-center'
-                      : 'text-[35px]'
+                      : 'text-[25px]'
                   }`}
                 >
                   {words[currentIndex]}
@@ -120,7 +120,9 @@ function MotionSlider() {
                   src={gifSrc}
                   alt='Animation'
                   className={`object-cover ${
-                    isMobile ? 'h-14 w-14 mt-5 absolute' : 'h-20 w-20'
+                    isMobile
+                      ? 'h-14 w-14 mt-5 absolute'
+                      : 'h-20 w-12 absolute mt-5'
                   }`}
                 />
               </div>

@@ -59,7 +59,7 @@ const MotionContent = ({ motionData }) => {
   return (
     <div
       className={`flex flex-col items-center justify-center  mx-auto p-4 md:p-8 bg-black
-    ${isMobile ? 'max-w-[90vw]' : 'max-w-[79vw]'}`}
+    ${isMobile ? 'max-w-[90vw]' : 'max-w-[72vw]'}`}
     >
       {motionData.map((motion, index) => (
         <div
@@ -103,10 +103,10 @@ const MotionContent = ({ motionData }) => {
               loading='lazy'
             />
             <h2
-              className={`video-text min-mt-[10vh] text-2xl md:text-4xl lg:text-5xl font-chesna${
+              className={`video-text min-mt-[10vh]  font-chesna${
                 isMobile
                   ? 'text-center mt-0 text-lg mr-7'
-                  : 'text-left mb-0 max-h-[10vh]'
+                  : 'text-left mb-0 max-h-[10vh] text-4xl'
               } `}
             >
               {motion.text}
