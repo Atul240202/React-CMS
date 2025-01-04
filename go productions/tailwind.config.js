@@ -7,6 +7,12 @@ export default {
         chesna: ['"Chesna Bold"', 'sans-serif'],
         chesnal: ['"Chesna Light"', 'sans-serif'],
         chesnaextra: ['"Chesna ExtraBold"', 'sans-serif'],
+        raleway: ['"Raleway"', 'serif'],
+      },
+      fontWeight: {
+        ralewaylight: '300',
+        ralewaybold: '700',
+        ralewayextrabold: '800',
       },
     },
   },

@@ -52,7 +52,7 @@ function LocationSection() {
             letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
-          className='font-chesna my-0'
+          className='font-raleway my-0'
         >
           LOCATION
         </h1>
@@ -65,9 +65,9 @@ function LocationSection() {
             letterSpacing: '0.05em',
             fontStyle: 'normal',
           }}
-          className='font-chesna my-0'
+          className='font-raleway my-0'
         >
-          GO PRODUCTION
+          GO PRODUCTIONS
         </h2>
       </div>
     </div>
@@ -161,11 +161,11 @@ function Contact() {
       {!loading && (
         <div
           style={styles.container}
-          className={`font-chesna ${
+          className={`font-raleway ${
             isMobile ? 'max-w-[90vw]' : 'max-w-[75vw]'
           }`}
         >
-          <h1 style={styles.title} className='font-chesna'>
+          <h1 style={styles.title} className='font-raleway'>
             CONTACT US
           </h1>
           <hr style={styles.styleLine} />
@@ -173,7 +173,7 @@ function Contact() {
           <h2
             style={styles.subtitle}
             className={`${
-              isMobile ? 'text-md' : 'text-[1.5rem] font-extrabold font-chesna'
+              isMobile ? 'text-md' : 'text-[1.5rem] font-extrabold font-raleway'
             }`}
           >
             LETS CREATE MAGIC TOGETHER
@@ -217,7 +217,7 @@ function Contact() {
             <button
               type='submit'
               style={styles.button}
-              className={`rounded-[0] font-chesna bg-[#111]  ${
+              className={`rounded-[0] font-raleway bg-[#111]  ${
                 isMobile ? 'text-[20px]' : 'text-[1.5rem] '
               } transition-all duration-300 hover:bg-white/20`}
             >
@@ -231,7 +231,7 @@ function Contact() {
             <div style={styles.contactDetails}>
               <h3 style={{ fontSize: '1.5rem' }}>ADDRESS</h3>
               <hr style={styles.styleLine1} />
-              <p className='font-sans font-extrabold'>
+              <p className='font-sans font-medium'>
                 KH NO. 621 SILVER OAK FARMS, ZERO NUMBER RD, GHITORNI, NEW
                 DELHI, DELHI - 110030
               </p>
@@ -245,7 +245,7 @@ function Contact() {
                 </h3>
                 <p
                   style={{ margin: '0' }}
-                  className={`font-sans font-extrabold ${
+                  className={`font-sans font-medium ${
                     isMobile ? 'text-md' : 'text-[1.5rem]'
                   }`}
                 >
@@ -262,7 +262,7 @@ function Contact() {
                 >
                   SEND MAIL
                 </h3>
-                <p style={{ margin: '0' }} className='font-sans font-extrabold'>
+                <p style={{ margin: '0' }} className='font-raleway font-medium'>
                   <a style={{ color: 'white' }} href='mailto:help@gostudio.in'>
                     help@gostudio.in
                   </a>

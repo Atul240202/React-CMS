@@ -61,7 +61,7 @@ const ContactUs = () => {
   return (
     <div className='w-[93vw] ml-[3.5vw] mr-[3.5vw] mb-[10vh]'>
       <div className='home-contact-header '>
-        <h2 className='font-chesna'>GET IN TOUCH</h2>
+        <h2 className='font-raleway'>GET IN TOUCH</h2>
       </div>
       <div className='contact-us-container pt-5'>
         <form className='contact-form' onSubmit={handleSubmit}>
@@ -104,7 +104,7 @@ const ContactUs = () => {
           ></textarea>
           <button
             type='submit'
-            className='contact-btn bg-[#444] hover:bg-white/20 font-chesna'
+            className='contact-btn bg-[#444] hover:bg-white/20 font-raleway font-bold'
           >
             SEND
           </button>

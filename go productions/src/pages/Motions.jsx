@@ -113,28 +113,34 @@ export default function Motions() {
         <>
           <MotionSlider />
           <div
-            className={`flex flex-row justify-evenly  my-4 font-chesna ${
+            className={`flex flex-row justify-evenly my-4 font-raleway ${
               isMobile ? 'space-x-2 mx-2' : 'space-x-4 max-w-[50%] ml-[12vw]'
             }`}
           >
             {filterOptions.map((option) => (
               <button
                 key={option}
-                className={`focus:outline-none border-0  bg-black ${
+                className={`relative focus:outline-none border-0 bg-black text-white ${
                   activeFilter === option
-                    ? 'border-b-2 '
-                    : 'border-b-2 border-transparent'
+                    ? 'border-b-2 border-white'
+                    : 'border-b-2 border-transparent group'
                 } ${
                   isMobile
-                    ? 'text-md px-2 py-1 font-chesnal'
-                    : ' font-chesnal text-xl px-4 py-2 '
-                } `}
+                    ? 'text-md px-2 py-1 font-raleway font-medium'
+                    : 'font-raleway font-medium text-xl px-4 py-2'
+                }`}
                 onClick={() => setActiveFilter(option)}
               >
                 {option}
+                {activeFilter !== option && (
+                  <span
+                    className={`absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 ease-in-out group-hover:w-full group-hover:left-0`}
+                  ></span>
+                )}
               </button>
             ))}
           </div>
+
           <MotionContent motionData={filteredMotionData} />
         </>
       )}

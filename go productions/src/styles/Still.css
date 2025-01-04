@@ -135,7 +135,6 @@
 .hover-text {
   color: white;
   font-size: 40px;
-  font-family: 'Chesna Grotesk', sans-serif;
   opacity: 0;
   transition: opacity 0.5s ease;
 }

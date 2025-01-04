@@ -104,8 +104,8 @@ const StillsPageContent = ({ stillsData }) => {
             <h2
               className={`still-text min-mt-[10vh]  ${
                 isMobile
-                  ? 'text-center mt-0 text-lg mr-7 font-chesna'
-                  : 'text-left mb-0 max-h-[10vh] text-4xl font-chesnal '
+                  ? 'text-center mt-0 text-lg mr-7 font-raleway'
+                  : 'text-left mb-0 max-h-[10vh] text-4xl font-raleway font-medium '
               }`}
             >
               {still.text}

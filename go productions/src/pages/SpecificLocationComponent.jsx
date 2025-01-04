@@ -137,7 +137,7 @@ export default function SpecificLocationComponent() {
             >
               <h2
                 style={styles.locationTitle}
-                className={`font-chesna ${
+                className={`font-raleway ${
                   isMobile
                     ? 'text-[24px] mb-[2px] mt-[2px]'
                     : 'text-[36px] mb-[0.5rem] mt-[0.5rem]'
@@ -147,7 +147,7 @@ export default function SpecificLocationComponent() {
               </h2>
               <p
                 style={styles.locationAddress}
-                className={`font-chesna ${
+                className={`font-raleway ${
                   isMobile ? 'text-[12px] mt-0' : 'text-[24px] mt-[0.5rem]'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function SpecificLocationComponent() {
               <button
                 className={`${
                   isMobile ? 'text-md px-3 py-2' : 'text-xl px-6 py-3'
-                } bg-white/10 border-0 uppercase font-chesna rounded-[0] border-white text-white  hover:bg-white/20 hover:border-white transition-all duration-300`}
+                } bg-white/10 border-0 uppercase font-raleway font-bold rounded-[0] border-white text-white  hover:bg-white/20 hover:border-white transition-all duration-300`}
                 onClick={openForm}
               >
                 Request availability

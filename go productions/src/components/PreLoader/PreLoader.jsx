@@ -16,6 +16,7 @@ const portraitImages = [
 function PreLoader({ isExiting }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [tempExit, setTempExit] = useState(false);
   const images = isMobile ? portraitImages : lanscapeimages;
 
   useEffect(() => {
@@ -30,13 +31,14 @@ function PreLoader({ isExiting }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      setTempExit(true);
     }, 2000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const exitTransitionDelay = isExiting ? 0 : 1; // Make delay 0 when exiting
-  const textExitTransitionDelay = isExiting ? 0 : 2;
+  const exitTransitionDelay = tempExit ? 0 : 1; // Make delay 0 when exiting
+  const textExitTransitionDelay = tempExit ? 0 : 2;
 
   return (
     <AnimatePresence>
@@ -44,7 +46,7 @@ function PreLoader({ isExiting }) {
         <motion.div
           className='fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center overflow-hidden'
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          exit={{ opacity: 1 }}
           transition={{ duration: 1, delay: exitTransitionDelay }}
         >
           {/* Title */}
@@ -86,7 +88,10 @@ function PreLoader({ isExiting }) {
                 initial={{ x: '-80%', opacity: 0 }}
                 animate={{ x: '-10vw', opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ delay: textExitTransitionDelay, duration: 1 }}
+                transition={{
+                  delay: textExitTransitionDelay,
+                  duration: 1,
+                }}
               >
                 STILL
               </motion.div>
@@ -101,7 +106,10 @@ function PreLoader({ isExiting }) {
                 initial={{ x: '80%', opacity: 0 }}
                 animate={{ x: '15vw', opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ delay: textExitTransitionDelay, duration: 1 }}
+                transition={{
+                  delay: textExitTransitionDelay,
+                  duration: 1,
+                }}
               >
                 MOTION
               </motion.div>
@@ -130,7 +138,7 @@ function PreLoader({ isExiting }) {
             }}
             exit={{
               opacity: 1,
-              scale: 2,
+              scale: 1,
               width: '100vw',
               height: '100vh',
               position: 'fixed',
@@ -149,7 +157,7 @@ function PreLoader({ isExiting }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 2 }}
+                transition={{ duration: 1 }}
               />
             </AnimatePresence>
           </motion.div>

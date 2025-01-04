@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Slider.css';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../Firebase';
@@ -22,6 +22,31 @@ const Slider = ({ onSliderLoad }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const goToNext = useCallback(() => {
+    if (isAnimating || heroBanners.length <= 1) return;
+    console.log(
+      'Go next is getting triggered',
+      heroBanners.length,
+      isAnimating
+    );
+    const nextIndex = (currentIndex + 1) % heroBanners.length;
+    startAnimation(nextIndex, 'bottom-to-top');
+  }, [currentIndex, isAnimating, heroBanners.length]);
+
+  useEffect(() => {
+    let interval;
+    if (heroBanners.length > 1 && !isAnimating) {
+      interval = setInterval(() => {
+        goToNext();
+        console.log('moving animation');
+      }, 5000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [goToNext, heroBanners.length, isAnimating]);
 
   const prefetchImages = async (images) => {
     const promises = images.map(
@@ -52,30 +77,17 @@ const Slider = ({ onSliderLoad }) => {
         setHeroBanners(fetchedBanners);
         setIsLoading(false);
         setAllImagesLoaded(true);
-        onSliderLoad(true); // Pass true to indicate all images are loaded
+        onSliderLoad(true);
       } catch (err) {
         console.error('Error fetching hero banners:', err);
         setError('Failed to load images. Please try again later.');
         setIsLoading(false);
-        onSliderLoad(false); // Pass false to indicate error in loading
+        onSliderLoad(false);
       }
     };
 
     fetchHeroBanners();
   }, [onSliderLoad]);
-
-  const goToPrev = () => {
-    if (isAnimating || heroBanners.length <= 1) return;
-    const prevIndex =
-      currentIndex === 0 ? heroBanners.length - 1 : currentIndex - 1;
-    startAnimation(prevIndex, 'top-to-bottom');
-  };
-
-  const goToNext = () => {
-    if (isAnimating || heroBanners.length <= 1) return;
-    const nextIndex = (currentIndex + 1) % heroBanners.length;
-    startAnimation(nextIndex, 'bottom-to-top');
-  };
 
   const startAnimation = (newIndex, direction) => {
     setIsAnimating(true);
@@ -86,7 +98,14 @@ const Slider = ({ onSliderLoad }) => {
       setCurrentIndex(newIndex);
       setNewIndex(null);
       setIsAnimating(false);
-    }, 500); // Match CSS animation duration
+    }, 500);
+  };
+
+  const goToPrev = () => {
+    if (isAnimating || heroBanners.length <= 1) return;
+    const prevIndex =
+      currentIndex === 0 ? heroBanners.length - 1 : currentIndex - 1;
+    startAnimation(prevIndex, 'top-to-bottom');
   };
 
   const handleClick = (e) => {
@@ -137,7 +156,15 @@ const Slider = ({ onSliderLoad }) => {
             <span
               key={index}
               className={`dot ${index === currentIndex ? 'active' : ''}`}
-              onClick={() => !isAnimating && setCurrentIndex(index)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isAnimating && index !== currentIndex) {
+                  startAnimation(
+                    index,
+                    index > currentIndex ? 'bottom-to-top' : 'top-to-bottom'
+                  );
+                }
+              }}
             ></span>
           ))}
         </div>

@@ -98,12 +98,12 @@ const Still = () => {
 
   return (
     <section className='still-section'>
-      <div className='still-header'>
+      <div className='still-header '>
         <div>
-          <h2 className='font-chesna'>STILL</h2>
-          <p>YOUR VISION, OUR EXPERTISE</p>
+          <h2 className='font-raleway'>STILL</h2>
+          <p className='font-raleway font-medium'>YOUR VISION, OUR EXPERTISE</p>
         </div>
-        <a href='/stills' className='see-more'>
+        <a href='/stills' className='see-more font-raleway font-medium'>
           SEE MORE
         </a>
       </div>
@@ -144,7 +144,7 @@ const Still = () => {
                         loading='lazy'
                       />
                       <p
-                        className={`hover-text ${
+                        className={`hover-text font-raleway font-medium  ${
                           isLarge ? 'bottom-center' : 'right-center'
                         }`}
                       >

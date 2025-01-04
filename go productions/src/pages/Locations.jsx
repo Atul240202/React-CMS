@@ -115,7 +115,7 @@ export default function Locations() {
       {showContent && (
         <>
           <div
-            className={`w-full ${
+            className={`font-raleway w-full ${
               isMobile ? 'h-[20vh] pt-[10vh]' : 'h-[85vh] pt-[15vh]'
             }  relative overflow-hidden`}
           >
@@ -225,8 +225,8 @@ export default function Locations() {
                   <h2
                     className={`location-text min-mt-[10vh]  ${
                       isMobile
-                        ? 'text-center mt-0 text-lg mr-7 font-chesna'
-                        : 'text-left mb-0 max-h-[10vh] text-4xl font-chesnal '
+                        ? 'text-center mt-0 text-lg mr-7 font-raleway font-medium'
+                        : 'text-left mb-0 max-h-[10vh] text-4xl font-raleway font-medium '
                     }`}
                   >
                     {location.text}
