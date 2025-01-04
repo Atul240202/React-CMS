@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { FaTimes } from 'react-icons/fa';
 
 const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
   const [formData, setFormData] = useState({
@@ -47,74 +48,75 @@ const PopupForm = ({ onClose, onSubmit, locationName, locationAddress }) => {
   };
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center font-chesna items-center z-50 p-4'>
-      <div className='bg-white p-4 sm:p-8 w-full max-w-md relative'>
+    <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center font-raleway items-center z-50 p-4'>
+      <div className='bg-black p-6 sm:p-8 w-full max-w-md relative'>
         <button
           onClick={handleCancel}
-          className='absolute top-2 right-2 text-black bg-white bg-opacity-10 text-2xl'
+          className='absolute top-2 right-2 bg-black outline-none focus:outline-none mt-2 text-white border-none text-xl '
         >
-          &times;
+          <FaTimes />
         </button>
-        <h2 className='text-3xl sm:text-4xl font-bold mb-4 text-black uppercase'>
+        <h2 className='text-3xl sm:text-4xl font-raleway mb-4 text-white uppercase'>
           Request Availability
         </h2>
         <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            name='name'
-            value={formData.name}
-            onChange={handleChange}
-            placeholder='NAME'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
-            required
-          />
-          <input
-            type='email'
-            name='email'
-            value={formData.email}
-            onChange={handleChange}
-            placeholder='EMAIL'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
-            required
-          />
-          <input
-            type='tel'
-            name='phone'
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder='PHONE'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
-            required
-          />
+          <div className='w-full text-left'>
+            <input
+              type='text'
+              name='name'
+              value={formData.name}
+              onChange={handleChange}
+              placeholder='WRITE YOUR NAME HERE,'
+              className='w-[23vw] pl-[2%] py-3 mb-4 bg-[#333] text-white border-none  focus:outline-none'
+              required
+            />
+          </div>
+          <div className='w-full text-left'>
+            <input
+              type='email'
+              name='email'
+              value={formData.email}
+              onChange={handleChange}
+              placeholder='WRITE YOUR EMAIL ID HERE,'
+              className='w-[23vw] pl-[2%] py-3 mb-4 bg-[#333] text-white border-none focus:outline-none'
+              required
+            />
+          </div>
+          <div className='w-full text-left'>
+            <input
+              type='tel'
+              name='phone'
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder='ENTER YOUR MOBILE NO.'
+              className='w-[23vw] pl-[2%] py-3 mb-4 bg-[#333] text-white border-none focus:outline-none'
+              required
+            />
+          </div>
           <div className='w-full text-left'>
             <DatePicker
               selected={formData.date}
               onChange={handleDateChange}
-              className='w-full py-3 pl-1 mb-4 bg-white border-2 border-black text-black'
+              className='w-[23vw] pl-[2%] py-3 mb-4 placeholder-[#333] bg-[#333] border-2 focus:outline-none border-none '
               placeholderText='SELECT DATE'
               required
             />
           </div>
-          <textarea
-            name='message'
-            value={formData.message}
-            onChange={handleChange}
-            placeholder='MESSAGE'
-            className='w-full py-3 pl-1 mb-4 bg-white border-2 text-black border-black'
-            rows='4'
-            required
-          ></textarea>
+          <div className='w-full text-left'>
+            <textarea
+              name='message'
+              value={formData.message}
+              onChange={handleChange}
+              placeholder='DESCRIBE YOUR REQUIREMENT HERE,'
+              className='w-[23vw] pl-[2%] py-3 mb-4 bg-[#333] text-white border-none focus:outline-none'
+              rows='4'
+              required
+            ></textarea>
+          </div>
           <div className='flex justify-end'>
             <button
-              type='button'
-              onClick={handleCancel}
-              className='bg-white border-2 border-black text-black px-4 py-2 mr-2 uppercase'
-            >
-              Cancel
-            </button>
-            <button
               type='submit'
-              className='bg-white text-black border-2 border-black px-4 py-2 uppercase'
+              className='bg-white font-raleway font-medium text-black border-none px-8 py-2 text-lg uppercase tracking-wide'
             >
               Send
             </button>

@@ -36,7 +36,7 @@ function StillSlider() {
     <div
       className={`w-full ${
         isMobile ? 'h-[25vh]' : 'h-[90vh]'
-      } pt-[12vh] relative overflow-hidden`}
+      } pt-[12vh] relative overflow-hidden font-raleway `}
     >
       <div className='flex flex-col'>
         <div

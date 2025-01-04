@@ -24,7 +24,7 @@ const ShootLocation = () => {
       }`}
     >
       <div className='location-header'>
-        <h2 style={{ fontWeight: 800 }} className='font-chesna'>
+        <h2 style={{ fontWeight: 800 }} className='font-raleway'>
           LOCATION
         </h2>
       </div>

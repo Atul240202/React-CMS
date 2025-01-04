@@ -1,8 +1,26 @@
+/* Importing Raleway font */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
 .App {
-  font-family: 'Chesna Grotesk', sans-serif;
+  font-family: 'Raleway', serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* Adding Raleway-specific class styles */
+.raleway-bold {
+  font-family: 'Raleway', serif;
+  font-optical-sizing: auto;
+  font-weight: 700; /* Example weight */
+  font-style: normal;
+}
+
+.raleway-light {
+  font-family: 'Raleway', serif;
+  font-optical-sizing: auto;
+  font-weight: 300; /* Example weight */
+  font-style: normal;
 }
 
 @font-face {

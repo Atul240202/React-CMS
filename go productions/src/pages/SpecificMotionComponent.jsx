@@ -112,11 +112,13 @@ export default function SpecificMotionComponent() {
           </div>
           <div
             style={styles.textContainer}
-            className={`${isMobile ? 'mt-3' : 'mx-7 '}`}
+            className={` ${isMobile ? 'mt-3' : 'mx-7 '}`}
           >
             <h1
               style={styles.text}
-              className={`${isMobile ? 'text-sm' : 'text-4xl my-[auto]'}`}
+              className={`font-raleway ${
+                isMobile ? 'text-sm' : 'text-4xl my-[auto]'
+              }`}
             >
               {motion.text}
             </h1>
@@ -130,11 +132,11 @@ export default function SpecificMotionComponent() {
           </div>
           <div
             style={styles.creditContainer}
-            className={`${isMobile ? '' : 'ml-[2vw] mr-[2vw]'}`}
+            className={`${isMobile ? '' : 'ml-[1.5vw] mr-[1.5vw]'}`}
           >
             <h3
               style={styles.creditHeader}
-              className={`${isMobile ? 'text-md' : 'text-4xl'}`}
+              className={`font-raleway ${isMobile ? 'text-md' : 'text-4xl'}`}
             >
               CREDITS
             </h3>
@@ -150,15 +152,15 @@ export default function SpecificMotionComponent() {
             ></div>
             <h3
               style={styles.creditContent}
-              className={`${
+              className={`font-raleway font-medium ${
                 isMobile
                   ? 'text-sm '
                   : 'items-center gap-2 text-2xl leading-[0] flex-1'
               }`}
             >
-              CLIENT-
+              CLIENT :
               {motion.clientName ? (
-                <>CLIENT- {motion.clientName}</>
+                <> {motion.clientName}</>
               ) : (
                 <img
                   src={motion.logo}
@@ -177,13 +179,15 @@ export default function SpecificMotionComponent() {
           <div style={styles.creditData}>
             <div
               style={styles.creditBlanks}
-              className={`${isMobile ? '' : 'flex-1'}`}
+              className={`font-raleway font-medium ${isMobile ? '' : 'flex-1'}`}
             ></div>
             <div
               style={styles.creditContent}
-              className={`${isMobile ? 'text-sm' : 'text-2xl  flex-1'}`}
+              className={`font-raleway font-medium ${
+                isMobile ? 'text-sm' : 'text-2xl  flex-1'
+              }`}
             >
-              CAMPAIGN TITLE- {motion.productTitle || 'N/A'}
+              CAMPAIGN TITLE : {motion.productTitle || 'N/A'}
             </div>
           </div>
           {motion.credits &&
@@ -207,11 +211,11 @@ export default function SpecificMotionComponent() {
                       ></div>
                       <div
                         style={styles.creditContent}
-                        className={`${
+                        className={`font-raleway font-medium ${
                           isMobile ? 'text-sm' : 'text-2xl flex-1'
                         }`}
                       >
-                        {key.toUpperCase()}: {value}
+                        {key.toUpperCase()} : {value}
                       </div>
                     </div>
                   </React.Fragment>
@@ -279,7 +283,6 @@ const styles = {
 
   creditContent: {
     display: 'flex',
-    fontWeight: 'bold',
   },
   creditBlanks: {},
   logo: {},

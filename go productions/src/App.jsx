@@ -70,7 +70,8 @@ function AppWithRouter() {
   const handleSliderLoad = () => {
     if (isFirstVisit) {
       setIsExitingPreloader(true);
-      setTimeout(() => setIsLoading(false), 2000);
+      console.log('exiting in app', isExitingPreloader);
+      setTimeout(() => setIsLoading(false), 3000);
     } else {
       setTransitionProgress(100);
       setTimeout(() => {

@@ -117,7 +117,7 @@ const SliderComponent = () => {
                   isMobile ? 'text-[30px]' : 'text-[40px]'
                 }`}
               >
-                <p className='font-chesnal'>{item.productTitle}</p>
+                <p className='font-raleway font-medium'>{item.productTitle}</p>
               </div>
             </SwiperSlide>
           ))}

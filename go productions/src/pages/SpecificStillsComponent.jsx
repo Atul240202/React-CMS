@@ -182,7 +182,9 @@ export default function SpecificStillsComponent() {
           <div style={styles.descriptionContainer}>
             <h2
               style={styles.description}
-              className={`${isMobile ? 'text-sm' : 'text-[2.5rem]'}`}
+              className={`font-raleway ${
+                isMobile ? 'text-sm' : 'text-[2.5rem]'
+              }`}
             >
               {still.text}
             </h2>
@@ -225,7 +227,7 @@ export default function SpecificStillsComponent() {
       >
         <h3
           style={styles.creditHeader}
-          className={`${isMobile ? 'text-md' : 'text-4xl'}`}
+          className={`font-raleway ${isMobile ? 'text-md' : 'text-4xl'}`}
         >
           CREDITS
         </h3>
@@ -238,13 +240,13 @@ export default function SpecificStillsComponent() {
           ></div>
           <div
             style={styles.creditContent}
-            className={`${
+            className={`font-raleway font-medium ${
               isMobile ? 'text-sm' : 'items-center gap-2 text-2xl flex-1 px-4'
             }`}
           >
-            CLIENT-
+            CLIENT :
             {still.clientName ? (
-              <>CLIENT- {still.clientName}</>
+              <> {still.clientName}</>
             ) : (
               <img
                 src={still.logo}
@@ -271,13 +273,13 @@ export default function SpecificStillsComponent() {
                     ></div>
                     <div
                       style={styles.creditContent}
-                      className={`${
+                      className={`font-raleway font-medium ${
                         isMobile
                           ? 'text-sm flex-7 ml-[0]'
                           : 'text-2xl flex-1 ml-[0]'
                       }`}
                     >
-                      {key.toUpperCase()}: {value}
+                      {key.toUpperCase()} : {value}
                     </div>
                   </div>
                   <hr
@@ -382,7 +384,6 @@ const styles = {
   },
   creditContent: {
     display: 'flex',
-    fontWeight: 'bold',
   },
   creditBlanks: {},
   creditLabel: {

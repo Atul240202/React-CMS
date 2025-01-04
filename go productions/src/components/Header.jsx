@@ -90,20 +90,20 @@ const Header = () => {
           <>
             <button
               onClick={toggleMenu}
-              className='flex md:hidden flex-col justify-around w-8 h-8 bg-transparent border-none cursor-pointer p-0 z-[1001] mr-8 focus:outline-none'
+              className='flex md:hidden flex-col justify-around w-5 h-5 bg-transparent border-none cursor-pointer p-0 z-[1001] mr-8 focus:outline-none'
             >
               <div
-                className={`w-8 h-1 bg-white rounded-[10px] transition-all duration-300 origin-[1px] ${
+                className={`w-5 h-1 bg-white rounded-[10px] transition-all duration-300 origin-[1px] ${
                   isMenuOpen ? 'rotate-45' : 'rotate-0'
                 }`}
               />
               <div
-                className={`w-8 h-1 bg-white rounded-[10px] transition-all duration-300 ${
+                className={`w-5 h-1 bg-white rounded-[10px] transition-all duration-300 ${
                   isMenuOpen ? 'opacity-0' : 'opacity-100'
                 }`}
               />
               <div
-                className={`w-8 h-1 bg-white rounded-[10px] transition-all duration-300 origin-[1px] ${
+                className={`w-5 h-1 bg-white rounded-[10px] transition-all duration-300 origin-[1px] ${
                   isMenuOpen ? '-rotate-45' : 'rotate-0'
                 }`}
               />
@@ -121,7 +121,7 @@ const Header = () => {
                   <Link
                     key={item}
                     to={`/${item.toLowerCase().replace(' ', 's')}`}
-                    className='mobile-nav-link text-lg text-white my-8 font-bold tracking-[0.5rem] transition-all duration-300'
+                    className='mobile-nav-link text-lg text-white font-medium font-raleway my-8 tracking-[0.5rem] transition-all duration-300'
                     data-hover={item}
                     onClick={closeMenu}
                   >
@@ -138,7 +138,7 @@ const Header = () => {
                 <Link
                   key={item}
                   to={`/${item.toLowerCase()}`}
-                  className='nav-link ml-5 text-white text-[18px] font-semibold relative overflow-hidden inline-block transition-colors duration-300'
+                  className='nav-link ml-5 text-white text-[18px] font-medium font-raleway relative overflow-hidden inline-block transition-colors duration-300'
                   data-hover={item}
                 >
                   <span>{item}</span>

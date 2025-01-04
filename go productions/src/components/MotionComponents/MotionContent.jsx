@@ -103,7 +103,7 @@ const MotionContent = ({ motionData }) => {
               loading='lazy'
             />
             <h2
-              className={`video-text min-mt-[10vh]  font-chesna${
+              className={`video-text min-mt-[10vh] font-raleway font-medium ${
                 isMobile
                   ? 'text-center mt-0 text-lg mr-7'
                   : 'text-left mb-0 max-h-[10vh] text-4xl'

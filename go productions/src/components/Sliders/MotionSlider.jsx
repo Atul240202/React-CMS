@@ -34,7 +34,7 @@ function MotionSlider() {
 
   return (
     <div
-      className={`w-full pt-[15vh] relative overflow-hidden ${
+      className={`w-full pt-[15vh] relative overflow-hidden font-raleway ${
         isMobile ? 'h-[25vh]' : 'h-[85vh]'
       }`}
     >

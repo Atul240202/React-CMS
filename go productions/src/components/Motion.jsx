@@ -21,11 +21,11 @@ const Motion = () => {
     <div className={`motion-section ${isMobile ? 'h-auto' : 'h-auto'}`}>
       <div className='motion-header'>
         <div>
-          <h2 className='font-chesna'>MOTION</h2>
-          <p>YOUR VISION, OUR EXPERTISE</p>
+          <h2 className='font-raleway'>MOTION</h2>
+          <p className='font-raleway font-medium'>YOUR VISION, OUR EXPERTISE</p>
         </div>
 
-        <a href='/motions' className='see-more'>
+        <a href='/motions' className='see-more '>
           SEE MORE
         </a>
       </div>
