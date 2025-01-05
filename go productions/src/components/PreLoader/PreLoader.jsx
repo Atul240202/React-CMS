@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const lanscapeimages = [
   'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624904/RT1586_1_-min_m8dqnz.jpg',
-  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/pantaloons5720_mzsih7.jpg',
+
   'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/240129-08-165B_ozq35j.jpg',
+  'https://res.cloudinary.com/da3r1iagy/image/upload/v1734624896/pantaloons5720_mzsih7.jpg',
 ];
 
 const portraitImages = [
@@ -38,7 +39,7 @@ function PreLoader({ isExiting }) {
   }, []);
 
   const exitTransitionDelay = tempExit ? 0 : 1; // Make delay 0 when exiting
-  const textExitTransitionDelay = tempExit ? 0 : 2;
+  const textExitTransitionDelay = tempExit ? 0 : 1;
 
   return (
     <AnimatePresence>
@@ -46,8 +47,8 @@ function PreLoader({ isExiting }) {
         <motion.div
           className='fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center overflow-hidden'
           initial={{ opacity: 1 }}
-          exit={{ opacity: 1 }}
-          transition={{ duration: 1, delay: exitTransitionDelay }}
+          exit={{ y: '-100vh' }}
+          transition={{ duration: 0.5, delay: 1 }}
         >
           {/* Title */}
           <motion.h1
@@ -146,7 +147,7 @@ function PreLoader({ isExiting }) {
               y: '0',
               transformOrigin: 'center',
             }}
-            transition={{ duration: 2, ease: 'easeInOut' }}
+            transition={{ duration: 1, ease: 'easeInOut' }}
           >
             <AnimatePresence>
               <motion.img
