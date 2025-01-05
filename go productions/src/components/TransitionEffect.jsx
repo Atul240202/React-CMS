@@ -105,8 +105,7 @@ export default function TransitionEffect({
           >
             <div className='text-container'>
               <span
-                style={{ fontFamily: 'Chesna Bold' }}
-                className={`go ${
+                className={`go font-chesna ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
                     : 'text-[54.85px] leading-[76.79px]'
@@ -126,8 +125,7 @@ export default function TransitionEffect({
             </div>
             <div className='text-overlay'>
               <span
-                style={{ fontFamily: 'Chesna Bold' }}
-                className={`go ${
+                className={`go font-chesna ${
                   isMobile
                     ? 'text-[34.85px] leading-[36.79px]'
                     : 'text-[54.85px] leading-[76.79px]'
@@ -147,8 +145,8 @@ export default function TransitionEffect({
             </div>
           </div>
           <div className='quote-wrapper'>
-            <p className='quote-text'>"{randomQuote.text}"</p>
-            <p className='quote-author'>-{randomQuote.author}</p>
+            <p className='quote-text font-raleway'>"{randomQuote.text}"</p>
+            <p className='quote-author font-raleway'>-{randomQuote.author}</p>
           </div>
         </div>
       </div>
